@@ -1,0 +1,9 @@
+id: m31
+name: "Andromeda Galaxy"
+type: "Galaxy"
+constellation: "Andromeda"
+aliases: ["Messier 31", "NGC 224"]
+distance_ly: 2537000
+description: "Спіральна галактика; широка мозаїка."
+credits: "© Володимир"
+license: "CC BY-NC 4.0"

@@ -1,0 +1,13 @@
+---
+import GalleryItem from '../components/GalleryItem.astro';
+const pages = await Astro.glob('../content/galaxy/*.mdx');
+---
+<html lang="uk">
+  <head><meta charset="utf-8" /><title>Astro Gallery</title></head>
+  <body>
+    <h1>Astro Gallery</h1>
+    <ul>
+      {pages.map((p) => <li><a href={p.url}>{p.frontmatter.title}</a></li>)}
+    </ul>
+  </body>
+</html>

@@ -1,0 +1,15 @@
+{
+  "name": "astro-gallery",
+  "private": true,
+  "scripts": {
+    "prepare": "node ../tools/generate-pages.mjs && node ../tools/copy-thumbs.mjs",
+    "dev": "astro dev",
+    "build": "npm run prepare && astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "astro": "^4.0.0",
+    "gray-matter": "^4.0.3",
+    "yaml": "^2.4.2"
+  }
+}

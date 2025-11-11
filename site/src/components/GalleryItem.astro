@@ -1,0 +1,8 @@
+---
+const { title, preview, final, meta } = Astro.props;
+---
+<li>
+  <a href={final}>{title}</a>
+  {preview && (<div><img src={preview} alt={title} loading="lazy" /></div>)}
+  {meta && (<pre>{JSON.stringify(meta, null, 2)}</pre>)}
+</li>

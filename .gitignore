@@ -1,0 +1,16 @@
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.tmp
+*.xosmplog
+PI-AutoSave-*.xisf
+siril*.seq
+*.lst
+*.info
+*.autosave
+*.pp3
+*.xmp
+thumbnails/
+site/dist/
+node_modules/
