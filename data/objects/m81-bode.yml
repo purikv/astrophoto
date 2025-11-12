@@ -1,0 +1,9 @@
+id: m81
+name: "Галактика Боде"
+type: "Галактика"
+constellation: "Велика Ведмедиця"
+aliases: ["Messier 81", "M81", "NGC 3031"]
+distance_ly: 11800000
+description: "Велика спіральна галактика, названа на честь німецького астронома Йоганна Боде"
+credits: "© Володимир"
+license: "CC BY-NC 4.0"

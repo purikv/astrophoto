@@ -1,10 +1,24 @@
 [
   {
     "id": "2025-10-03_m31_kharkiv",
-    "title": "m31 — 2025-10-03",
+    "title": "Галактика Андромеди — 2025-10-03",
     "preview": "thumbnails/m31_2025-10-03_v1_2000.jpg",
     "final": "images/m31/final/m31_2025-10-03_v1.png",
-    "object": {},
+    "object": {
+      "id": "m31",
+      "name": "Галактика Андромеди",
+      "type": "Галактика",
+      "constellation": "Андромеда",
+      "aliases": [
+        "Messier 31",
+        "M31",
+        "NGC 224"
+      ],
+      "distance_ly": 2537000,
+      "description": "Спіральна галактика, найближча велика галактика до Чумацького Шляху",
+      "credits": "© Володимир",
+      "license": "CC BY-NC 4.0"
+    },
     "session": {
       "object_id": "m31",
       "date_utc": "2025-10-03",

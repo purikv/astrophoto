@@ -2,6 +2,7 @@
 Thumbs.db
 .idea/
 .vscode/
+.claude/
 *.tmp
 *.xosmplog
 PI-AutoSave-*.xisf
@@ -13,3 +14,4 @@ siril*.seq
 *.xmp
 site/dist/
 node_modules/
+run_thumbs.bat

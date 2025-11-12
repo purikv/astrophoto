@@ -1,9 +1,9 @@
-id: m42
-name: "Велика туманність Оріона"
-type: "Туманність"
-constellation: "Оріон"
-aliases: ["Messier 31", "NGC 224"]
+id: m31
+name: "Галактика Андромеди"
+type: "Галактика"
+constellation: "Андромеда"
+aliases: ["Messier 31", "M31", "NGC 224"]
 distance_ly: 2537000
-description: "Емісійна туманність Оріона"
+description: "Спіральна галактика, найближча велика галактика до Чумацького Шляху"
 credits: "© Володимир"
 license: "CC BY-NC 4.0"

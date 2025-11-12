@@ -1,0 +1,9 @@
+id: ngc281
+name: "Туманність Пакман"
+type: "Туманність"
+constellation: "Кассіопея"
+aliases: ["NGC 281", "IC 11", "Sh2-184"]
+distance_ly: 9500
+description: "Емісійна туманність з розсіяним скупченням IC 1590, отримала назву через схожість з персонажем гри Pac-Man"
+credits: "© Володимир"
+license: "CC BY-NC 4.0"

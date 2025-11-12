@@ -1,0 +1,9 @@
+id: ngc891
+name: "Галактика Срібна Щепка"
+type: "Галактика"
+constellation: "Андромеда"
+aliases: ["NGC 891", "Caldwell 23", "Silver Sliver Galaxy"]
+distance_ly: 30000000
+description: "Спіральна галактика, видима з ребра, що створює характерну витягнуту форму срібної щепки"
+credits: "© Володимир"
+license: "CC BY-NC 4.0"

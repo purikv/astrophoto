@@ -19,7 +19,7 @@ const base = import.meta.env.BASE_URL;
       h1 { color: #fff; text-align: center; margin-bottom: 2rem; }
       .gallery {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
         gap: 2rem;
       }
       .gallery-item {
@@ -37,17 +37,40 @@ const base = import.meta.env.BASE_URL;
         cursor: pointer;
       }
       .gallery-info {
-        padding: 1rem;
+        padding: 1.25rem;
       }
       .gallery-info h2 {
         margin: 0 0 0.5rem 0;
-        font-size: 1.2rem;
+        font-size: 1.3rem;
         color: #fff;
       }
+      .gallery-info h3 {
+        margin: 1rem 0 0.5rem 0;
+        font-size: 1rem;
+        color: #4a9eff;
+        border-bottom: 1px solid #333;
+        padding-bottom: 0.25rem;
+      }
       .gallery-info p {
-        margin: 0.25rem 0;
-        font-size: 0.9rem;
-        color: #999;
+        margin: 0.3rem 0;
+        font-size: 0.85rem;
+        color: #bbb;
+        line-height: 1.5;
+      }
+      .info-label {
+        color: #888;
+        font-weight: 600;
+      }
+      .info-section {
+        margin-bottom: 0.75rem;
+      }
+      .description {
+        font-style: italic;
+        color: #aaa;
+        margin: 0.5rem 0;
+      }
+      .subs-list {
+        margin: 0.5rem 0;
       }
       .gallery-item a {
         color: #4a9eff;
@@ -55,6 +78,20 @@ const base = import.meta.env.BASE_URL;
       }
       .gallery-item a:hover {
         text-decoration: underline;
+      }
+      .download-btn {
+        display: inline-block;
+        margin-top: 0.75rem;
+        padding: 0.5rem 1rem;
+        background: #4a9eff;
+        color: white;
+        border-radius: 5px;
+        text-align: center;
+        transition: background 0.2s;
+      }
+      .download-btn:hover {
+        background: #3a7fd5;
+        text-decoration: none;
       }
       /* Lightbox styles */
       .lightbox {
@@ -141,11 +178,104 @@ const base = import.meta.env.BASE_URL;
         <div class="gallery-item">
           {item.preview && <img src={`${base}/${item.preview}`} alt={item.title} loading="lazy" class="gallery-thumbnail" data-full={`${base}/${item.preview.replace('_800', '_2000')}`} />}
           <div class="gallery-info">
-            <h2>{item.title}</h2>
-            {item.session.location && <p>📍 {item.session.location}</p>}
-            {item.session.camera && <p>📷 {item.session.camera}</p>}
-            {item.session.telescope && <p>🔭 {item.session.telescope}</p>}
-            {item.final && <p><a href={`${base}/${item.final}`} download>⬇️ Завантажити фінал</a></p>}
+            <h2>{item.object?.name || item.title}</h2>
+
+            {/* Об'єкт інформація */}
+            {item.object && (
+              <div class="info-section">
+                {item.object.type && <p><span class="info-label">Тип:</span> {item.object.type}</p>}
+                {item.object.constellation && <p><span class="info-label">Сузір'я:</span> {item.object.constellation}</p>}
+                {item.object.distance_ly && (
+                  <p><span class="info-label">Відстань:</span> {item.object.distance_ly.toLocaleString('uk-UA')} св. років</p>
+                )}
+                {item.object.description && <p class="description">{item.object.description}</p>}
+                {item.object.aliases && item.object.aliases.length > 0 && (
+                  <p><span class="info-label">Каталоги:</span> {item.object.aliases.join(', ')}</p>
+                )}
+              </div>
+            )}
+
+            <h3>📸 Деталі зйомки</h3>
+            <div class="info-section">
+              {item.session.date_utc && <p><span class="info-label">Дата:</span> {item.session.date_utc}</p>}
+              {item.session.location && <p><span class="info-label">Локація:</span> {item.session.location}</p>}
+              {item.session.bortle && <p><span class="info-label">Bortle:</span> {item.session.bortle}</p>}
+            </div>
+
+            <h3>🔧 Обладнання</h3>
+            <div class="info-section">
+              {item.session.camera && <p><span class="info-label">Камера:</span> {item.session.camera}</p>}
+              {item.session.telescope && <p><span class="info-label">Телескоп:</span> {item.session.telescope}</p>}
+              {item.session.mount && <p><span class="info-label">Монтування:</span> {item.session.mount}</p>}
+              {item.session.filters && item.session.filters.length > 0 && (
+                <p><span class="info-label">Фільтри:</span> {item.session.filters.join(', ')}</p>
+              )}
+              {item.session.guiding && (
+                <p><span class="info-label">Гідування:</span> RMS {item.session.guiding.rms_arcsec}" ({item.session.guiding.software})</p>
+              )}
+            </div>
+
+            {/* Експозиції */}
+            {item.session.subs && item.session.subs.length > 0 && (
+              <>
+                <h3>⏱️ Експозиції</h3>
+                <div class="info-section subs-list">
+                  {item.session.subs.map((sub, idx) => (
+                    <p key={idx}>
+                      <span class="info-label">{sub.band}:</span> {sub.count} × {sub.exposure_s}s
+                      {sub.iso && ` (ISO ${sub.iso})`}
+                    </p>
+                  ))}
+                  {item.session.subs.reduce && (
+                    <p><span class="info-label">Загалом:</span> {
+                      Math.floor(item.session.subs.reduce((acc, sub) => acc + (sub.count * sub.exposure_s), 0) / 60)
+                    } хв</p>
+                  )}
+                </div>
+              </>
+            )}
+
+            {/* Калібрація */}
+            {item.session.calibration && (
+              <>
+                <h3>🎯 Калібрація</h3>
+                <div class="info-section">
+                  {item.session.calibration.bias && <p><span class="info-label">Bias:</span> {item.session.calibration.bias}</p>}
+                  {item.session.calibration.darks && (
+                    <p><span class="info-label">Darks:</span> {item.session.calibration.darks.count} × {item.session.calibration.darks.exposure_s}s</p>
+                  )}
+                  {item.session.calibration.flats && (
+                    <p><span class="info-label">Flats:</span> {item.session.calibration.flats.count}</p>
+                  )}
+                </div>
+              </>
+            )}
+
+            {/* Обробка */}
+            <h3>💻 Обробка</h3>
+            <div class="info-section">
+              {item.session.stacking_software && (
+                <p><span class="info-label">Стекінг:</span> {item.session.stacking_software}</p>
+              )}
+              {item.session.processing_software && item.session.processing_software.length > 0 && (
+                <p><span class="info-label">Обробка:</span> {item.session.processing_software.join(', ')}</p>
+              )}
+            </div>
+
+            {/* Примітки */}
+            {item.session.notes && (
+              <>
+                <h3>📝 Примітки</h3>
+                <p class="description">{item.session.notes}</p>
+              </>
+            )}
+
+            {/* Завантаження */}
+            {item.final && (
+              <a href={`${base}/${item.final}`} download class="download-btn">
+                ⬇️ Завантажити фінал
+              </a>
+            )}
           </div>
         </div>
       ))}
