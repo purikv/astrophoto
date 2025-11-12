@@ -1,0 +1,14 @@
+object_id: m42
+date_utc: "2024-11-10"
+location: "Dnipropetrovska oblast, UA"
+bortle: 5
+camera: "Canon 450D (mod)"
+mount: "AZ-EQ5 GT"
+telescope: "Arsenal CGO 203/1000 (f/5) + TS GPU CC"
+filters: ["Player One Anti-Halo"]
+stacking_software: "Siril"
+processing_software: ["Siril", "GraXpert"]
+finals:
+  - path: "images/m42/final/M42__.png"
+    preview: "thumbnails/M42___800.jpg"
+    plate_solved: false
