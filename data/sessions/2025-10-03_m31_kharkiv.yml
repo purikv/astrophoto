@@ -1,26 +1,26 @@
 object_id: m31
-date_utc: "2025-10-03"
+date_utc: "2025-09-28"
 location: "Dnipropetrovska oblast, UA"
 bortle: 5
 camera: "Canon 450D (mod)"
-sensor_temp_c: 15
+sensor_temp_c: -
 mount: "AZ-EQ5 GT"
 telescope: "Arsenal CGO 203/1000 (f/5) + TS GPU CC"
-filters: ["Player One Anti-Halo"]
-guiding: { rms_arcsec: 0.9, software: "PHD2" }
+filters: ["UV IR-cut Anti-Halo"]
+guiding: { rms_arcsec: -, software: "PHD2" }
 subs:
   - band: "Luminance"
     iso: 800
-    exposure_s: 180
-    count: 120
+    exposure_s: 300
+    count: 37
 calibration:
-  bias: 50
-  darks: { exposure_s: 180, count: 30, temp_c: 15 }
-  flats: { count: 50, method: "flat panel" }
+  bias: 60
+  darks: { exposure_s: 300, count: 28, temp_c: - }
+  flats: { count: 60, method: "flat panel" }
 stacking_software: "Siril 1.4-RC1"
 processing_software: ["Siril", "GraXpert"]
 finals:
   - path: "images/m31/final/M31.png"
     preview: "thumbnails/M31_800.jpg"
     plate_solved: true
-notes: "Дрібний дізер кожні 2 кадри; легкий градієнт на NE."
+notes: ""

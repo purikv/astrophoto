@@ -8,165 +8,270 @@ const base = import.meta.env.BASE_URL;
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Astro Gallery</title>
     <style>
-      body {
-        font-family: system-ui, -apple-system, sans-serif;
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 2rem;
-        background: #0a0a0a;
-        color: #e0e0e0;
+      * {
+        box-sizing: border-box;
       }
-      h1 { color: #fff; text-align: center; margin-bottom: 2rem; }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+        margin: 0;
+        padding: 1rem;
+        background: #000;
+        color: #e0e0e0;
+        line-height: 1.5;
+      }
+
+      h1 {
+        color: #fff;
+        text-align: center;
+        margin: 0 0 2rem 0;
+        font-size: 1.75rem;
+        font-weight: 400;
+        letter-spacing: 0.1em;
+      }
+
+      /* Responsive Grid */
       .gallery {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
-        gap: 2rem;
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        max-width: 1400px;
+        margin: 0 auto;
       }
+
+      @media (min-width: 640px) {
+        body { padding: 1.5rem; }
+        h1 { font-size: 2rem; margin-bottom: 2.5rem; }
+        .gallery {
+          grid-template-columns: repeat(2, 1fr);
+          gap: 2rem;
+        }
+      }
+
+      @media (min-width: 1024px) {
+        body { padding: 2rem; }
+        h1 { font-size: 2.25rem; margin-bottom: 3rem; }
+        .gallery {
+          grid-template-columns: repeat(3, 1fr);
+          gap: 2.5rem;
+        }
+      }
+
+      /* Card Styles - Minimal */
       .gallery-item {
-        background: linear-gradient(145deg, #1e1e1e, #151515);
-        border-radius: 12px;
+        background: #111;
+        border: 1px solid #222;
         overflow: hidden;
-        transition: all 0.3s ease;
-        border: 1px solid #252525;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        transition: border-color 0.3s;
       }
+
       .gallery-item:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 12px 24px rgba(74, 158, 255, 0.15);
-        border-color: #4a9eff;
+        border-color: #444;
       }
+
       .gallery-item img {
         width: 100%;
-        height: 280px;
+        height: 250px;
         object-fit: cover;
         display: block;
         cursor: pointer;
-        transition: transform 0.3s ease;
+        transition: opacity 0.3s;
       }
+
+      @media (min-width: 640px) {
+        .gallery-item img {
+          height: 280px;
+        }
+      }
+
+      @media (min-width: 1024px) {
+        .gallery-item img {
+          height: 320px;
+        }
+      }
+
       .gallery-item:hover img {
-        transform: scale(1.05);
+        opacity: 0.85;
       }
+
       .gallery-info {
-        padding: 1.5rem;
+        padding: 1rem;
       }
+
+      @media (min-width: 640px) {
+        .gallery-info {
+          padding: 1.25rem;
+        }
+      }
+
+      @media (min-width: 1024px) {
+        .gallery-info {
+          padding: 1.5rem;
+        }
+      }
+
+      /* Header */
       .object-header {
         margin-bottom: 1rem;
-        border-bottom: 2px solid #2a2a2a;
-        padding-bottom: 1rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 1px solid #222;
       }
+
       .gallery-info h2 {
-        margin: 0 0 0.5rem 0;
-        font-size: 1.5rem;
+        margin: 0 0 0.75rem 0;
+        font-size: 1.25rem;
         color: #fff;
-        font-weight: 600;
+        font-weight: 500;
       }
+
+      @media (min-width: 640px) {
+        .gallery-info h2 {
+          font-size: 1.35rem;
+        }
+      }
+
+      /* Meta Badges - Simplified */
       .object-meta {
         display: flex;
         flex-wrap: wrap;
-        gap: 0.75rem;
-        margin-top: 0.75rem;
+        gap: 0.5rem;
       }
+
       .meta-badge {
-        background: #252525;
-        padding: 0.35rem 0.75rem;
-        border-radius: 20px;
-        font-size: 0.75rem;
-        color: #aaa;
-        border: 1px solid #333;
+        background: #1a1a1a;
+        padding: 0.25rem 0.65rem;
+        font-size: 0.7rem;
+        color: #999;
+        border: 1px solid #222;
       }
+
+      @media (min-width: 640px) {
+        .meta-badge {
+          font-size: 0.75rem;
+          padding: 0.3rem 0.7rem;
+        }
+      }
+
       .meta-badge strong {
-        color: #4a9eff;
-        font-weight: 600;
+        color: #fff;
+        font-weight: 500;
       }
+
+      /* Description - Minimal */
       .description {
         font-style: italic;
-        color: #999;
-        margin: 1rem 0;
-        font-size: 0.9rem;
+        color: #888;
+        margin: 1rem 0 0 0;
+        font-size: 0.85rem;
         line-height: 1.6;
-        padding: 0.75rem;
-        background: #1a1a1a;
-        border-left: 3px solid #4a9eff;
-        border-radius: 4px;
+        padding-left: 0.75rem;
+        border-left: 2px solid #333;
       }
+
+      @media (min-width: 640px) {
+        .description {
+          font-size: 0.9rem;
+        }
+      }
+
+      /* Technical Details */
       .tech-details {
         margin-top: 1rem;
       }
+
       .tech-summary {
         cursor: pointer;
         user-select: none;
-        font-size: 0.95rem;
-        font-weight: 600;
-        color: #4a9eff;
-        padding: 0.75rem;
-        background: #1a1a1a;
-        border-radius: 6px;
-        margin-bottom: 0.5rem;
+        font-size: 0.85rem;
+        font-weight: 500;
+        color: #aaa;
+        padding: 0.65rem 0.75rem;
+        background: #0a0a0a;
+        border: 1px solid #1a1a1a;
         display: flex;
         align-items: center;
         gap: 0.5rem;
-        transition: background 0.2s;
+        transition: all 0.2s;
+        margin-bottom: 0.5rem;
       }
+
+      @media (min-width: 640px) {
+        .tech-summary {
+          font-size: 0.9rem;
+          padding: 0.75rem 1rem;
+        }
+      }
+
       .tech-summary:hover {
-        background: #222;
+        background: #151515;
+        color: #fff;
       }
+
       .tech-summary::before {
         content: '▶';
         transition: transform 0.2s;
-        font-size: 0.7rem;
+        font-size: 0.6rem;
       }
+
       details[open] .tech-summary::before {
         transform: rotate(90deg);
       }
+
       .tech-content {
-        padding: 1rem;
-        background: #181818;
-        border-radius: 6px;
-        margin-bottom: 1rem;
+        padding: 0.75rem;
+        background: #0a0a0a;
+        border: 1px solid #1a1a1a;
+        border-top: none;
+        margin-bottom: 0.5rem;
       }
+
+      @media (min-width: 640px) {
+        .tech-content {
+          padding: 1rem;
+        }
+      }
+
       .tech-grid {
         display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 0.75rem;
-        font-size: 0.85rem;
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+        font-size: 0.8rem;
       }
+
+      @media (min-width: 640px) {
+        .tech-grid {
+          grid-template-columns: repeat(2, 1fr);
+          gap: 0.65rem;
+          font-size: 0.85rem;
+        }
+      }
+
       .tech-item {
         padding: 0.5rem;
-        background: #1e1e1e;
-        border-radius: 4px;
-        border-left: 2px solid #333;
+        background: #111;
+        border-left: 1px solid #333;
       }
+
       .tech-item-label {
         display: block;
-        color: #888;
-        font-size: 0.75rem;
+        color: #666;
+        font-size: 0.7rem;
         text-transform: uppercase;
         letter-spacing: 0.5px;
         margin-bottom: 0.25rem;
       }
+
+      @media (min-width: 640px) {
+        .tech-item-label {
+          font-size: 0.75rem;
+        }
+      }
+
       .tech-item-value {
-        color: #ddd;
-        font-weight: 500;
+        color: #ccc;
+        font-weight: 400;
       }
-      .download-btn {
-        display: block;
-        margin-top: 1.25rem;
-        padding: 0.75rem 1.5rem;
-        background: linear-gradient(135deg, #4a9eff, #3a7fd5);
-        color: white;
-        border-radius: 8px;
-        text-align: center;
-        font-weight: 600;
-        transition: all 0.3s;
-        box-shadow: 0 2px 8px rgba(74, 158, 255, 0.3);
-      }
-      .download-btn:hover {
-        background: linear-gradient(135deg, #5aa9ff, #4a8fe5);
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(74, 158, 255, 0.5);
-        text-decoration: none;
-      }
-      /* Lightbox styles */
+
+      /* Lightbox - Unchanged */
       .lightbox {
         display: none;
         position: fixed;
@@ -178,11 +283,13 @@ const base = import.meta.env.BASE_URL;
         z-index: 9999;
         overflow: hidden;
       }
+
       .lightbox.active {
         display: flex;
         align-items: center;
         justify-content: center;
       }
+
       .lightbox-content {
         position: relative;
         width: 100%;
@@ -193,6 +300,7 @@ const base = import.meta.env.BASE_URL;
         overflow: hidden;
         touch-action: none;
       }
+
       .lightbox-image {
         max-width: 100%;
         max-height: 100%;
@@ -200,10 +308,12 @@ const base = import.meta.env.BASE_URL;
         transition: transform 0.2s ease-out;
         cursor: grab;
       }
+
       .lightbox-image.dragging {
         cursor: grabbing;
         transition: none;
       }
+
       .lightbox-close {
         position: fixed;
         top: 20px;
@@ -222,9 +332,11 @@ const base = import.meta.env.BASE_URL;
         transition: background 0.2s;
         z-index: 10000;
       }
+
       .lightbox-close:hover {
         background: rgba(255, 255, 255, 0.2);
       }
+
       .lightbox-zoom-info {
         position: fixed;
         bottom: 20px;
@@ -239,13 +351,14 @@ const base = import.meta.env.BASE_URL;
         opacity: 0;
         transition: opacity 0.3s;
       }
+
       .lightbox-zoom-info.show {
         opacity: 1;
       }
     </style>
   </head>
   <body>
-    <h1>🌌 Astro Gallery</h1>
+    <h1>🌌 ASTRO GALLERY</h1>
     <div class="gallery">
       {galleryData.map((item) => (
         <div class="gallery-item">
@@ -257,12 +370,11 @@ const base = import.meta.env.BASE_URL;
 
               <div class="object-meta">
                 {item.object?.type && <span class="meta-badge"><strong>{item.object.type}</strong></span>}
-                {item.object?.constellation && <span class="meta-badge">🌟 {item.object.constellation}</span>}
+                {item.object?.constellation && <span class="meta-badge">{item.object.constellation}</span>}
                 {item.object?.distance_ly && (
-                  <span class="meta-badge">📏 {item.object.distance_ly.toLocaleString('uk-UA')} св.р.</span>
+                  <span class="meta-badge">{item.object.distance_ly.toLocaleString('uk-UA')} св.р.</span>
                 )}
-                {item.session?.date_utc && <span class="meta-badge">📅 {item.session.date_utc}</span>}
-                {item.session?.location && <span class="meta-badge">📍 {item.session.location}</span>}
+                {item.session?.date_utc && <span class="meta-badge">{item.session.date_utc}</span>}
               </div>
             </div>
 
@@ -272,7 +384,7 @@ const base = import.meta.env.BASE_URL;
 
             <div class="tech-details">
               <details>
-                <summary class="tech-summary">Обладнання та налаштування</summary>
+                <summary class="tech-summary">Обладнання</summary>
                 <div class="tech-content">
                   <div class="tech-grid">
                     {item.session?.camera && (
@@ -299,7 +411,7 @@ const base = import.meta.env.BASE_URL;
                         <div class="tech-item-value">{item.session.filters.join(', ')}</div>
                       </div>
                     )}
-                    {item.session?.guiding && (
+                    {item.session?.guiding && item.session.guiding.rms_arcsec && item.session.guiding.rms_arcsec !== '-' && (
                       <div class="tech-item">
                         <span class="tech-item-label">Гідування</span>
                         <div class="tech-item-value">RMS {item.session.guiding.rms_arcsec}" ({item.session.guiding.software})</div>
@@ -307,7 +419,7 @@ const base = import.meta.env.BASE_URL;
                     )}
                     {item.session?.bortle && (
                       <div class="tech-item">
-                        <span class="tech-item-label">Bortle Scale</span>
+                        <span class="tech-item-label">Bortle</span>
                         <div class="tech-item-value">{item.session.bortle}</div>
                       </div>
                     )}
@@ -317,7 +429,7 @@ const base = import.meta.env.BASE_URL;
 
               {item.session?.subs && item.session.subs.length > 0 && (
                 <details>
-                  <summary class="tech-summary">Експозиції та калібрація</summary>
+                  <summary class="tech-summary">Експозиції</summary>
                   <div class="tech-content">
                     <div class="tech-grid">
                       {item.session.subs.map((sub, idx) => (
@@ -335,19 +447,19 @@ const base = import.meta.env.BASE_URL;
                           {Math.floor(item.session.subs.reduce((acc, sub) => acc + (sub.count * sub.exposure_s), 0) / 60)} хв
                         </div>
                       </div>
-                      {item.session.calibration?.bias && (
+                      {item.session.calibration?.bias > 0 && (
                         <div class="tech-item">
                           <span class="tech-item-label">Bias</span>
                           <div class="tech-item-value">{item.session.calibration.bias}</div>
                         </div>
                       )}
-                      {item.session.calibration?.darks && (
+                      {item.session.calibration?.darks && item.session.calibration.darks.count > 0 && (
                         <div class="tech-item">
                           <span class="tech-item-label">Darks</span>
                           <div class="tech-item-value">{item.session.calibration.darks.count} × {item.session.calibration.darks.exposure_s}s</div>
                         </div>
                       )}
-                      {item.session.calibration?.flats && (
+                      {item.session.calibration?.flats && item.session.calibration.flats.count > 0 && (
                         <div class="tech-item">
                           <span class="tech-item-label">Flats</span>
                           <div class="tech-item-value">{item.session.calibration.flats.count}</div>
@@ -376,21 +488,10 @@ const base = import.meta.env.BASE_URL;
                         </div>
                       )}
                     </div>
-                    {item.session.notes && (
-                      <div style="margin-top: 0.75rem; font-size: 0.85rem; color: #999; font-style: italic;">
-                        {item.session.notes}
-                      </div>
-                    )}
                   </div>
                 </details>
               )}
             </div>
-
-            {item.final && (
-              <a href={`${base}/${item.final}`} download class="download-btn">
-                ⬇️ Завантажити високу якість
-              </a>
-            )}
           </div>
         </div>
       ))}

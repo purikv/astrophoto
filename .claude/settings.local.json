@@ -5,7 +5,22 @@
       "Bash(npm install)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
-      "Bash(git push)"
+      "Bash(git push)",
+      "Bash(python tools/make_thumbs.py:*)",
+      "Bash(py:*)",
+      "Bash(powershell.exe -Command \"python --version\")",
+      "Bash(powershell.exe -Command \"cd ''C:\\Users\\purik\\astrophoto''; pip install pillow; python tools/make_thumbs.py\")",
+      "Bash(powershell.exe -Command \"cd ''C:\\Users\\purik\\astrophoto''; python -m pip install --upgrade pillow 2>&1; python tools/make_thumbs.py 2>&1\")",
+      "Bash(cmd.exe //C run_thumbs.bat)",
+      "Bash(./run_thumbs.bat)",
+      "Bash(where python.exe)",
+      "Bash(npm install:*)",
+      "Bash(node tools/make-thumbs.mjs:*)",
+      "Bash(npm run generate:*)",
+      "Bash(git mv:*)",
+      "Bash(cat:*)",
+      "Bash(git reset:*)",
+      "Bash(git rm:*)"
     ],
     "deny": [],
     "ask": []
