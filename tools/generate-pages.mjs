@@ -1,11 +1,15 @@
 // tools/generate-pages.mjs
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
 import YAML from 'yaml';
 
-const sessionsDir = path.resolve('data/sessions');
-const objectsDir = path.resolve('data/objects');
-const outDir = path.resolve('site/src/content/galaxy');
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const rootDir = path.resolve(__dirname, '..');
+
+const sessionsDir = path.join(rootDir, 'data/sessions');
+const objectsDir = path.join(rootDir, 'data/objects');
+const outDir = path.join(rootDir, 'site/src/content/galaxy');
 fs.mkdirSync(outDir, { recursive: true });
 
 const objects = Object.fromEntries(
