@@ -1,0 +1,30 @@
+object_id: ngc281
+date_utc: "2024-10-20"
+location: "Dnipropetrovska oblast, UA"
+bortle: 5
+camera: "Canon 450D (mod)"
+sensor_temp_c: 12
+mount: "AZ-EQ5 GT"
+telescope: "Arsenal CGO 203/1000 (f/5) + TS GPU CC"
+filters: ["H-alpha", "OIII", "SII"]
+guiding: { rms_arcsec: 0.85, software: "PHD2" }
+subs:
+  - band: "H-alpha"
+    iso: 800
+    exposure_s: 300
+    count: 80
+  - band: "OIII"
+    iso: 800
+    exposure_s: 300
+    count: 40
+calibration:
+  bias: 50
+  darks: { exposure_s: 300, count: 30, temp_c: 12 }
+  flats: { count: 50, method: "flat panel" }
+stacking_software: "Siril 1.4"
+processing_software: ["Siril", "PixInsight", "GraXpert"]
+finals:
+  - path: "images/ngc281/final/NGC 281.png"
+    preview: "thumbnails/NGC 281_800.jpg"
+    plate_solved: true
+notes: "Narrowband зйомка з використанням HOO палітри"
