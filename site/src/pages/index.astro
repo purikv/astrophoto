@@ -1,5 +1,6 @@
 ---
 import galleryData from '../data/gallery.json';
+const base = import.meta.env.BASE_URL;
 ---
 <html lang="uk">
   <head>
@@ -61,13 +62,13 @@ import galleryData from '../data/gallery.json';
     <div class="gallery">
       {galleryData.map((item) => (
         <div class="gallery-item">
-          {item.preview && <img src={`/${item.preview}`} alt={item.title} loading="lazy" />}
+          {item.preview && <img src={`${base}/${item.preview}`} alt={item.title} loading="lazy" />}
           <div class="gallery-info">
             <h2>{item.title}</h2>
             {item.session.location && <p>📍 {item.session.location}</p>}
             {item.session.camera && <p>📷 {item.session.camera}</p>}
             {item.session.telescope && <p>🔭 {item.session.telescope}</p>}
-            {item.final && <p><a href={`/${item.final}`} download>⬇️ Завантажити фінал</a></p>}
+            {item.final && <p><a href={`${base}/${item.final}`} download>⬇️ Завантажити фінал</a></p>}
           </div>
         </div>
       ))}

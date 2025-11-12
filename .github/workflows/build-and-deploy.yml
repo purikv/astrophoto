@@ -31,6 +31,11 @@ jobs:
       - name: Install deps
         working-directory: site
         run: npm ci || npm i
+      - name: Copy media files to public
+        run: |
+          mkdir -p site/public
+          cp -r thumbnails site/public/ || true
+          cp -r images site/public/ || true
       - name: Build site
         working-directory: site
         run: npm run build

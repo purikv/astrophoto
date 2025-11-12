@@ -3,7 +3,7 @@
     "id": "2025-10-03_m31_kharkiv",
     "title": "Andromeda Galaxy — 2025-10-03",
     "preview": "thumbnails/m31_2025-10-03_v1_2000.jpg",
-    "final": "images/m31/final/m31_2025-10-03_v1.tif",
+    "final": "images/m31/final/m31_2025-10-03_v1.png",
     "object": {
       "id": "m31",
       "name": "Andromeda Galaxy",
@@ -21,7 +21,7 @@
     "session": {
       "object_id": "m31",
       "date_utc": "2025-10-03",
-      "location": "Kharkiv oblast, UA",
+      "location": "Dnipropetrovska oblast, UA",
       "bortle": 5,
       "camera": "Canon 450D (mod)",
       "sensor_temp_c": 15,
@@ -54,16 +54,14 @@
           "method": "flat panel"
         }
       },
-      "stacking_software": "Siril 1.3",
+      "stacking_software": "Siril 1.4-RC1",
       "processing_software": [
         "Siril",
-        "GraXpert",
-        "PixInsight",
-        "GIMP"
+        "GraXpert"
       ],
       "finals": [
         {
-          "path": "images/m31/final/m31_2025-10-03_v1.tif",
+          "path": "images/m31/final/m31_2025-10-03_v1.png",
           "preview": "thumbnails/m31_2025-10-03_v1_2000.jpg",
           "plate_solved": true
         }
