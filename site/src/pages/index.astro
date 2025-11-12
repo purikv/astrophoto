@@ -19,78 +19,151 @@ const base = import.meta.env.BASE_URL;
       h1 { color: #fff; text-align: center; margin-bottom: 2rem; }
       .gallery {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
         gap: 2rem;
       }
       .gallery-item {
-        background: #1a1a1a;
-        border-radius: 8px;
+        background: linear-gradient(145deg, #1e1e1e, #151515);
+        border-radius: 12px;
         overflow: hidden;
-        transition: transform 0.2s;
+        transition: all 0.3s ease;
+        border: 1px solid #252525;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.3);
       }
-      .gallery-item:hover { transform: translateY(-4px); }
+      .gallery-item:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 24px rgba(74, 158, 255, 0.15);
+        border-color: #4a9eff;
+      }
       .gallery-item img {
         width: 100%;
-        height: 250px;
+        height: 280px;
         object-fit: cover;
         display: block;
         cursor: pointer;
+        transition: transform 0.3s ease;
+      }
+      .gallery-item:hover img {
+        transform: scale(1.05);
       }
       .gallery-info {
-        padding: 1.25rem;
+        padding: 1.5rem;
+      }
+      .object-header {
+        margin-bottom: 1rem;
+        border-bottom: 2px solid #2a2a2a;
+        padding-bottom: 1rem;
       }
       .gallery-info h2 {
         margin: 0 0 0.5rem 0;
-        font-size: 1.3rem;
+        font-size: 1.5rem;
         color: #fff;
-      }
-      .gallery-info h3 {
-        margin: 1rem 0 0.5rem 0;
-        font-size: 1rem;
-        color: #4a9eff;
-        border-bottom: 1px solid #333;
-        padding-bottom: 0.25rem;
-      }
-      .gallery-info p {
-        margin: 0.3rem 0;
-        font-size: 0.85rem;
-        color: #bbb;
-        line-height: 1.5;
-      }
-      .info-label {
-        color: #888;
         font-weight: 600;
       }
-      .info-section {
-        margin-bottom: 0.75rem;
+      .object-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        margin-top: 0.75rem;
+      }
+      .meta-badge {
+        background: #252525;
+        padding: 0.35rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        color: #aaa;
+        border: 1px solid #333;
+      }
+      .meta-badge strong {
+        color: #4a9eff;
+        font-weight: 600;
       }
       .description {
         font-style: italic;
-        color: #aaa;
-        margin: 0.5rem 0;
+        color: #999;
+        margin: 1rem 0;
+        font-size: 0.9rem;
+        line-height: 1.6;
+        padding: 0.75rem;
+        background: #1a1a1a;
+        border-left: 3px solid #4a9eff;
+        border-radius: 4px;
       }
-      .subs-list {
-        margin: 0.5rem 0;
+      .tech-details {
+        margin-top: 1rem;
       }
-      .gallery-item a {
+      .tech-summary {
+        cursor: pointer;
+        user-select: none;
+        font-size: 0.95rem;
+        font-weight: 600;
         color: #4a9eff;
-        text-decoration: none;
-      }
-      .gallery-item a:hover {
-        text-decoration: underline;
-      }
-      .download-btn {
-        display: inline-block;
-        margin-top: 0.75rem;
-        padding: 0.5rem 1rem;
-        background: #4a9eff;
-        color: white;
-        border-radius: 5px;
-        text-align: center;
+        padding: 0.75rem;
+        background: #1a1a1a;
+        border-radius: 6px;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
         transition: background 0.2s;
       }
+      .tech-summary:hover {
+        background: #222;
+      }
+      .tech-summary::before {
+        content: '▶';
+        transition: transform 0.2s;
+        font-size: 0.7rem;
+      }
+      details[open] .tech-summary::before {
+        transform: rotate(90deg);
+      }
+      .tech-content {
+        padding: 1rem;
+        background: #181818;
+        border-radius: 6px;
+        margin-bottom: 1rem;
+      }
+      .tech-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+        font-size: 0.85rem;
+      }
+      .tech-item {
+        padding: 0.5rem;
+        background: #1e1e1e;
+        border-radius: 4px;
+        border-left: 2px solid #333;
+      }
+      .tech-item-label {
+        display: block;
+        color: #888;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 0.25rem;
+      }
+      .tech-item-value {
+        color: #ddd;
+        font-weight: 500;
+      }
+      .download-btn {
+        display: block;
+        margin-top: 1.25rem;
+        padding: 0.75rem 1.5rem;
+        background: linear-gradient(135deg, #4a9eff, #3a7fd5);
+        color: white;
+        border-radius: 8px;
+        text-align: center;
+        font-weight: 600;
+        transition: all 0.3s;
+        box-shadow: 0 2px 8px rgba(74, 158, 255, 0.3);
+      }
       .download-btn:hover {
-        background: #3a7fd5;
+        background: linear-gradient(135deg, #5aa9ff, #4a8fe5);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(74, 158, 255, 0.5);
         text-decoration: none;
       }
       /* Lightbox styles */
@@ -177,103 +250,145 @@ const base = import.meta.env.BASE_URL;
       {galleryData.map((item) => (
         <div class="gallery-item">
           {item.preview && <img src={`${base}/${item.preview}`} alt={item.title} loading="lazy" class="gallery-thumbnail" data-full={`${base}/${item.preview.replace('_800', '_2000')}`} />}
+
           <div class="gallery-info">
-            <h2>{item.object?.name || item.title}</h2>
+            <div class="object-header">
+              <h2>{item.object?.name || item.title}</h2>
 
-            {/* Об'єкт інформація */}
-            {item.object && (
-              <div class="info-section">
-                {item.object.type && <p><span class="info-label">Тип:</span> {item.object.type}</p>}
-                {item.object.constellation && <p><span class="info-label">Сузір'я:</span> {item.object.constellation}</p>}
-                {item.object.distance_ly && (
-                  <p><span class="info-label">Відстань:</span> {item.object.distance_ly.toLocaleString('uk-UA')} св. років</p>
+              <div class="object-meta">
+                {item.object?.type && <span class="meta-badge"><strong>{item.object.type}</strong></span>}
+                {item.object?.constellation && <span class="meta-badge">🌟 {item.object.constellation}</span>}
+                {item.object?.distance_ly && (
+                  <span class="meta-badge">📏 {item.object.distance_ly.toLocaleString('uk-UA')} св.р.</span>
                 )}
-                {item.object.description && <p class="description">{item.object.description}</p>}
-                {item.object.aliases && item.object.aliases.length > 0 && (
-                  <p><span class="info-label">Каталоги:</span> {item.object.aliases.join(', ')}</p>
-                )}
+                {item.session?.date_utc && <span class="meta-badge">📅 {item.session.date_utc}</span>}
+                {item.session?.location && <span class="meta-badge">📍 {item.session.location}</span>}
               </div>
+            </div>
+
+            {item.object?.description && (
+              <p class="description">{item.object.description}</p>
             )}
 
-            <h3>📸 Деталі зйомки</h3>
-            <div class="info-section">
-              {item.session.date_utc && <p><span class="info-label">Дата:</span> {item.session.date_utc}</p>}
-              {item.session.location && <p><span class="info-label">Локація:</span> {item.session.location}</p>}
-              {item.session.bortle && <p><span class="info-label">Bortle:</span> {item.session.bortle}</p>}
-            </div>
-
-            <h3>🔧 Обладнання</h3>
-            <div class="info-section">
-              {item.session.camera && <p><span class="info-label">Камера:</span> {item.session.camera}</p>}
-              {item.session.telescope && <p><span class="info-label">Телескоп:</span> {item.session.telescope}</p>}
-              {item.session.mount && <p><span class="info-label">Монтування:</span> {item.session.mount}</p>}
-              {item.session.filters && item.session.filters.length > 0 && (
-                <p><span class="info-label">Фільтри:</span> {item.session.filters.join(', ')}</p>
-              )}
-              {item.session.guiding && (
-                <p><span class="info-label">Гідування:</span> RMS {item.session.guiding.rms_arcsec}" ({item.session.guiding.software})</p>
-              )}
-            </div>
-
-            {/* Експозиції */}
-            {item.session.subs && item.session.subs.length > 0 && (
-              <>
-                <h3>⏱️ Експозиції</h3>
-                <div class="info-section subs-list">
-                  {item.session.subs.map((sub, idx) => (
-                    <p key={idx}>
-                      <span class="info-label">{sub.band}:</span> {sub.count} × {sub.exposure_s}s
-                      {sub.iso && ` (ISO ${sub.iso})`}
-                    </p>
-                  ))}
-                  {item.session.subs.reduce && (
-                    <p><span class="info-label">Загалом:</span> {
-                      Math.floor(item.session.subs.reduce((acc, sub) => acc + (sub.count * sub.exposure_s), 0) / 60)
-                    } хв</p>
-                  )}
+            <div class="tech-details">
+              <details>
+                <summary class="tech-summary">Обладнання та налаштування</summary>
+                <div class="tech-content">
+                  <div class="tech-grid">
+                    {item.session?.camera && (
+                      <div class="tech-item">
+                        <span class="tech-item-label">Камера</span>
+                        <div class="tech-item-value">{item.session.camera}</div>
+                      </div>
+                    )}
+                    {item.session?.telescope && (
+                      <div class="tech-item">
+                        <span class="tech-item-label">Телескоп</span>
+                        <div class="tech-item-value">{item.session.telescope}</div>
+                      </div>
+                    )}
+                    {item.session?.mount && (
+                      <div class="tech-item">
+                        <span class="tech-item-label">Монтування</span>
+                        <div class="tech-item-value">{item.session.mount}</div>
+                      </div>
+                    )}
+                    {item.session?.filters && item.session.filters.length > 0 && (
+                      <div class="tech-item">
+                        <span class="tech-item-label">Фільтри</span>
+                        <div class="tech-item-value">{item.session.filters.join(', ')}</div>
+                      </div>
+                    )}
+                    {item.session?.guiding && (
+                      <div class="tech-item">
+                        <span class="tech-item-label">Гідування</span>
+                        <div class="tech-item-value">RMS {item.session.guiding.rms_arcsec}" ({item.session.guiding.software})</div>
+                      </div>
+                    )}
+                    {item.session?.bortle && (
+                      <div class="tech-item">
+                        <span class="tech-item-label">Bortle Scale</span>
+                        <div class="tech-item-value">{item.session.bortle}</div>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </>
-            )}
+              </details>
 
-            {/* Калібрація */}
-            {item.session.calibration && (
-              <>
-                <h3>🎯 Калібрація</h3>
-                <div class="info-section">
-                  {item.session.calibration.bias && <p><span class="info-label">Bias:</span> {item.session.calibration.bias}</p>}
-                  {item.session.calibration.darks && (
-                    <p><span class="info-label">Darks:</span> {item.session.calibration.darks.count} × {item.session.calibration.darks.exposure_s}s</p>
-                  )}
-                  {item.session.calibration.flats && (
-                    <p><span class="info-label">Flats:</span> {item.session.calibration.flats.count}</p>
-                  )}
-                </div>
-              </>
-            )}
-
-            {/* Обробка */}
-            <h3>💻 Обробка</h3>
-            <div class="info-section">
-              {item.session.stacking_software && (
-                <p><span class="info-label">Стекінг:</span> {item.session.stacking_software}</p>
+              {item.session?.subs && item.session.subs.length > 0 && (
+                <details>
+                  <summary class="tech-summary">Експозиції та калібрація</summary>
+                  <div class="tech-content">
+                    <div class="tech-grid">
+                      {item.session.subs.map((sub, idx) => (
+                        <div class="tech-item" key={idx}>
+                          <span class="tech-item-label">{sub.band}</span>
+                          <div class="tech-item-value">
+                            {sub.count} × {sub.exposure_s}s
+                            {sub.iso && ` (ISO ${sub.iso})`}
+                          </div>
+                        </div>
+                      ))}
+                      <div class="tech-item">
+                        <span class="tech-item-label">Загальний час</span>
+                        <div class="tech-item-value">
+                          {Math.floor(item.session.subs.reduce((acc, sub) => acc + (sub.count * sub.exposure_s), 0) / 60)} хв
+                        </div>
+                      </div>
+                      {item.session.calibration?.bias && (
+                        <div class="tech-item">
+                          <span class="tech-item-label">Bias</span>
+                          <div class="tech-item-value">{item.session.calibration.bias}</div>
+                        </div>
+                      )}
+                      {item.session.calibration?.darks && (
+                        <div class="tech-item">
+                          <span class="tech-item-label">Darks</span>
+                          <div class="tech-item-value">{item.session.calibration.darks.count} × {item.session.calibration.darks.exposure_s}s</div>
+                        </div>
+                      )}
+                      {item.session.calibration?.flats && (
+                        <div class="tech-item">
+                          <span class="tech-item-label">Flats</span>
+                          <div class="tech-item-value">{item.session.calibration.flats.count}</div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </details>
               )}
-              {item.session.processing_software && item.session.processing_software.length > 0 && (
-                <p><span class="info-label">Обробка:</span> {item.session.processing_software.join(', ')}</p>
+
+              {(item.session?.stacking_software || item.session?.processing_software) && (
+                <details>
+                  <summary class="tech-summary">Обробка</summary>
+                  <div class="tech-content">
+                    <div class="tech-grid">
+                      {item.session.stacking_software && (
+                        <div class="tech-item">
+                          <span class="tech-item-label">Стекінг</span>
+                          <div class="tech-item-value">{item.session.stacking_software}</div>
+                        </div>
+                      )}
+                      {item.session.processing_software && item.session.processing_software.length > 0 && (
+                        <div class="tech-item">
+                          <span class="tech-item-label">Обробка</span>
+                          <div class="tech-item-value">{item.session.processing_software.join(', ')}</div>
+                        </div>
+                      )}
+                    </div>
+                    {item.session.notes && (
+                      <div style="margin-top: 0.75rem; font-size: 0.85rem; color: #999; font-style: italic;">
+                        {item.session.notes}
+                      </div>
+                    )}
+                  </div>
+                </details>
               )}
             </div>
 
-            {/* Примітки */}
-            {item.session.notes && (
-              <>
-                <h3>📝 Примітки</h3>
-                <p class="description">{item.session.notes}</p>
-              </>
-            )}
-
-            {/* Завантаження */}
             {item.final && (
               <a href={`${base}/${item.final}`} download class="download-btn">
-                ⬇️ Завантажити фінал
+                ⬇️ Завантажити високу якість
               </a>
             )}
           </div>

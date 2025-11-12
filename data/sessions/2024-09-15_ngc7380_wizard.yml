@@ -6,7 +6,7 @@ camera: "Canon 450D (mod)"
 sensor_temp_c: 18
 mount: "AZ-EQ5 GT"
 telescope: "Arsenal CGO 203/1000 (f/5) + TS GPU CC"
-filters: ["H-alpha", "OIII"]
+filters: ["Player One Anti-Halo"]
 guiding: { rms_arcsec: 0.9, software: "PHD2" }
 subs:
   - band: "H-alpha"
