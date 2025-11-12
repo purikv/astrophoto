@@ -11,6 +11,5 @@ siril*.seq
 *.autosave
 *.pp3
 *.xmp
-thumbnails/
 site/dist/
 node_modules/
