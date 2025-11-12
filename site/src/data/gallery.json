@@ -1,23 +1,10 @@
 [
   {
     "id": "2025-10-03_m31_kharkiv",
-    "title": "Andromeda Galaxy — 2025-10-03",
+    "title": "m31 — 2025-10-03",
     "preview": "thumbnails/m31_2025-10-03_v1_2000.jpg",
     "final": "images/m31/final/m31_2025-10-03_v1.png",
-    "object": {
-      "id": "m31",
-      "name": "Andromeda Galaxy",
-      "type": "Galaxy",
-      "constellation": "Andromeda",
-      "aliases": [
-        "Messier 31",
-        "NGC 224"
-      ],
-      "distance_ly": 2537000,
-      "description": "Спіральна галактика; широка мозаїка.",
-      "credits": "© Володимир",
-      "license": "CC BY-NC 4.0"
-    },
+    "object": {},
     "session": {
       "object_id": "m31",
       "date_utc": "2025-10-03",

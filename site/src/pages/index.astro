@@ -34,6 +34,7 @@ const base = import.meta.env.BASE_URL;
         height: 250px;
         object-fit: cover;
         display: block;
+        cursor: pointer;
       }
       .gallery-info {
         padding: 1rem;
@@ -55,6 +56,82 @@ const base = import.meta.env.BASE_URL;
       .gallery-item a:hover {
         text-decoration: underline;
       }
+      /* Lightbox styles */
+      .lightbox {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.95);
+        z-index: 9999;
+        overflow: hidden;
+      }
+      .lightbox.active {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .lightbox-content {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        touch-action: none;
+      }
+      .lightbox-image {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+        transition: transform 0.2s ease-out;
+        cursor: grab;
+      }
+      .lightbox-image.dragging {
+        cursor: grabbing;
+        transition: none;
+      }
+      .lightbox-close {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: rgba(255, 255, 255, 0.1);
+        border: none;
+        color: white;
+        font-size: 32px;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.2s;
+        z-index: 10000;
+      }
+      .lightbox-close:hover {
+        background: rgba(255, 255, 255, 0.2);
+      }
+      .lightbox-zoom-info {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 10px 20px;
+        border-radius: 20px;
+        font-size: 14px;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+      .lightbox-zoom-info.show {
+        opacity: 1;
+      }
     </style>
   </head>
   <body>
@@ -62,7 +139,7 @@ const base = import.meta.env.BASE_URL;
     <div class="gallery">
       {galleryData.map((item) => (
         <div class="gallery-item">
-          {item.preview && <img src={`${base}/${item.preview}`} alt={item.title} loading="lazy" />}
+          {item.preview && <img src={`${base}/${item.preview}`} alt={item.title} loading="lazy" class="gallery-thumbnail" data-full={`${base}/${item.preview.replace('_800', '_2000')}`} />}
           <div class="gallery-info">
             <h2>{item.title}</h2>
             {item.session.location && <p>📍 {item.session.location}</p>}
@@ -73,5 +150,186 @@ const base = import.meta.env.BASE_URL;
         </div>
       ))}
     </div>
+
+    <!-- Lightbox Modal -->
+    <div class="lightbox" id="lightbox">
+      <button class="lightbox-close" id="lightbox-close">&times;</button>
+      <div class="lightbox-content" id="lightbox-content">
+        <img src="" alt="" class="lightbox-image" id="lightbox-image" />
+      </div>
+      <div class="lightbox-zoom-info" id="zoom-info">Колесико миші для zoom</div>
+    </div>
+
+    <script>
+      // Lightbox functionality with zoom and pan
+      const lightbox = document.getElementById('lightbox');
+      const lightboxImage = document.getElementById('lightbox-image');
+      const lightboxContent = document.getElementById('lightbox-content');
+      const lightboxClose = document.getElementById('lightbox-close');
+      const zoomInfo = document.getElementById('zoom-info');
+      const thumbnails = document.querySelectorAll('.gallery-thumbnail');
+
+      let scale = 1;
+      let translateX = 0;
+      let translateY = 0;
+      let isDragging = false;
+      let startX = 0;
+      let startY = 0;
+      let lastTouchDistance = 0;
+
+      // Open lightbox
+      thumbnails.forEach(thumb => {
+        thumb.addEventListener('click', (e) => {
+          const fullSrc = e.target.dataset.full;
+          const alt = e.target.alt;
+
+          lightboxImage.src = fullSrc;
+          lightboxImage.alt = alt;
+          lightbox.classList.add('active');
+          document.body.style.overflow = 'hidden';
+
+          // Show zoom info briefly
+          zoomInfo.classList.add('show');
+          setTimeout(() => zoomInfo.classList.remove('show'), 2000);
+
+          // Reset transform
+          scale = 1;
+          translateX = 0;
+          translateY = 0;
+          updateTransform();
+        });
+      });
+
+      // Close lightbox
+      const closeLightbox = () => {
+        lightbox.classList.remove('active');
+        document.body.style.overflow = '';
+        scale = 1;
+        translateX = 0;
+        translateY = 0;
+        updateTransform();
+      };
+
+      lightboxClose.addEventListener('click', closeLightbox);
+
+      lightbox.addEventListener('click', (e) => {
+        if (e.target === lightbox) {
+          closeLightbox();
+        }
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && lightbox.classList.contains('active')) {
+          closeLightbox();
+        }
+      });
+
+      // Update transform
+      const updateTransform = () => {
+        lightboxImage.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+      };
+
+      // Mouse wheel zoom
+      lightboxContent.addEventListener('wheel', (e) => {
+        e.preventDefault();
+
+        const delta = e.deltaY > 0 ? -0.1 : 0.1;
+        const newScale = Math.max(1, Math.min(5, scale + delta));
+
+        if (newScale !== scale) {
+          scale = newScale;
+
+          // Reset position when zooming out to 1
+          if (scale === 1) {
+            translateX = 0;
+            translateY = 0;
+          }
+
+          updateTransform();
+        }
+      });
+
+      // Mouse drag to pan
+      lightboxImage.addEventListener('mousedown', (e) => {
+        if (scale > 1) {
+          isDragging = true;
+          startX = e.clientX - translateX;
+          startY = e.clientY - translateY;
+          lightboxImage.classList.add('dragging');
+        }
+      });
+
+      document.addEventListener('mousemove', (e) => {
+        if (isDragging) {
+          translateX = e.clientX - startX;
+          translateY = e.clientY - startY;
+          updateTransform();
+        }
+      });
+
+      document.addEventListener('mouseup', () => {
+        isDragging = false;
+        lightboxImage.classList.remove('dragging');
+      });
+
+      // Touch pinch-to-zoom
+      lightboxContent.addEventListener('touchstart', (e) => {
+        if (e.touches.length === 2) {
+          e.preventDefault();
+          const touch1 = e.touches[0];
+          const touch2 = e.touches[1];
+          lastTouchDistance = Math.hypot(
+            touch2.clientX - touch1.clientX,
+            touch2.clientY - touch1.clientY
+          );
+        } else if (e.touches.length === 1 && scale > 1) {
+          isDragging = true;
+          startX = e.touches[0].clientX - translateX;
+          startY = e.touches[0].clientY - translateY;
+        }
+      }, { passive: false });
+
+      lightboxContent.addEventListener('touchmove', (e) => {
+        if (e.touches.length === 2) {
+          e.preventDefault();
+          const touch1 = e.touches[0];
+          const touch2 = e.touches[1];
+          const currentDistance = Math.hypot(
+            touch2.clientX - touch1.clientX,
+            touch2.clientY - touch1.clientY
+          );
+
+          if (lastTouchDistance > 0) {
+            const delta = (currentDistance - lastTouchDistance) * 0.01;
+            const newScale = Math.max(1, Math.min(5, scale + delta));
+
+            if (newScale !== scale) {
+              scale = newScale;
+
+              if (scale === 1) {
+                translateX = 0;
+                translateY = 0;
+              }
+
+              updateTransform();
+            }
+          }
+
+          lastTouchDistance = currentDistance;
+        } else if (e.touches.length === 1 && isDragging) {
+          e.preventDefault();
+          translateX = e.touches[0].clientX - startX;
+          translateY = e.touches[0].clientY - startY;
+          updateTransform();
+        }
+      }, { passive: false });
+
+      lightboxContent.addEventListener('touchend', (e) => {
+        if (e.touches.length === 0) {
+          isDragging = false;
+          lastTouchDistance = 0;
+        }
+      });
+    </script>
   </body>
 </html>
