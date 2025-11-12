@@ -2,7 +2,7 @@
   "name": "astro-gallery",
   "private": true,
   "scripts": {
-    "generate": "node ../tools/generate-pages.mjs && node ../tools/copy-thumbs.mjs",
+    "generate": "node ../tools/generate-gallery-json.mjs",
     "dev": "astro dev",
     "build": "npm run generate && astro build",
     "preview": "astro preview"

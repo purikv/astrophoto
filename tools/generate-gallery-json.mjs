@@ -1,4 +1,4 @@
-// tools/generate-pages.mjs
+// tools/generate-gallery-json.mjs
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -9,9 +9,12 @@ const rootDir = path.resolve(__dirname, '..');
 
 const sessionsDir = path.join(rootDir, 'data/sessions');
 const objectsDir = path.join(rootDir, 'data/objects');
-const outDir = path.join(rootDir, 'site/src/content/galaxy');
-fs.mkdirSync(outDir, { recursive: true });
+const outFile = path.join(rootDir, 'site/src/data/gallery.json');
 
+// Ensure output directory exists
+fs.mkdirSync(path.dirname(outFile), { recursive: true });
+
+// Load all objects
 const objects = Object.fromEntries(
   fs.readdirSync(objectsDir)
     .filter(f => f.endsWith('.yml'))
@@ -21,37 +24,27 @@ const objects = Object.fromEntries(
     })
 );
 
+// Load all sessions and combine with objects
+const gallery = [];
 for (const f of fs.readdirSync(sessionsDir)) {
   if (!f.endsWith('.yml')) continue;
+
   const ses = YAML.parse(fs.readFileSync(path.join(sessionsDir, f), 'utf8'));
   const obj = objects[ses.object_id] || {};
   const title = `${obj.name || ses.object_id} — ${ses.date_utc}`;
   const finals = (ses.finals || []);
   const first = finals[0] || {};
 
-  // Create frontmatter data as object
-  const frontmatter = {
-    title: title,
+  gallery.push({
+    id: f.replace(/\.yml$/, ''),
+    title,
     preview: first.preview || '',
     final: first.path || '',
-    meta: {
-      object: obj,
-      session: ses
-    }
-  };
-
-  // Convert to YAML and create MDX
-  const yamlFrontmatter = YAML.stringify(frontmatter);
-  const mdx = `---
-${yamlFrontmatter}---
-
-# ${title}
-
-![preview](${first.preview || ''})
-
-[Завантажити фінал](${first.path || ''})
-`;
-  const out = path.join(outDir, f.replace(/\.yml$/, '.mdx'));
-  fs.writeFileSync(out, mdx, 'utf8');
-  console.log('Generated', out);
+    object: obj,
+    session: ses
+  });
 }
+
+// Write JSON file
+fs.writeFileSync(outFile, JSON.stringify(gallery, null, 2), 'utf8');
+console.log(`Generated ${outFile} with ${gallery.length} items`);

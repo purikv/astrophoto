@@ -1,13 +1,76 @@
 ---
-import GalleryItem from '../components/GalleryItem.astro';
-const pages = await Astro.glob('../content/galaxy/*.mdx');
+import galleryData from '../data/gallery.json';
 ---
 <html lang="uk">
-  <head><meta charset="utf-8" /><title>Astro Gallery</title></head>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Astro Gallery</title>
+    <style>
+      body {
+        font-family: system-ui, -apple-system, sans-serif;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+        background: #0a0a0a;
+        color: #e0e0e0;
+      }
+      h1 { color: #fff; text-align: center; margin-bottom: 2rem; }
+      .gallery {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 2rem;
+      }
+      .gallery-item {
+        background: #1a1a1a;
+        border-radius: 8px;
+        overflow: hidden;
+        transition: transform 0.2s;
+      }
+      .gallery-item:hover { transform: translateY(-4px); }
+      .gallery-item img {
+        width: 100%;
+        height: 250px;
+        object-fit: cover;
+        display: block;
+      }
+      .gallery-info {
+        padding: 1rem;
+      }
+      .gallery-info h2 {
+        margin: 0 0 0.5rem 0;
+        font-size: 1.2rem;
+        color: #fff;
+      }
+      .gallery-info p {
+        margin: 0.25rem 0;
+        font-size: 0.9rem;
+        color: #999;
+      }
+      .gallery-item a {
+        color: #4a9eff;
+        text-decoration: none;
+      }
+      .gallery-item a:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
   <body>
-    <h1>Astro Gallery</h1>
-    <ul>
-      {pages.map((p) => <li><a href={p.url}>{p.frontmatter.title}</a></li>)}
-    </ul>
+    <h1>🌌 Astro Gallery</h1>
+    <div class="gallery">
+      {galleryData.map((item) => (
+        <div class="gallery-item">
+          {item.preview && <img src={`/${item.preview}`} alt={item.title} loading="lazy" />}
+          <div class="gallery-info">
+            <h2>{item.title}</h2>
+            {item.session.location && <p>📍 {item.session.location}</p>}
+            {item.session.camera && <p>📷 {item.session.camera}</p>}
+            {item.session.telescope && <p>🔭 {item.session.telescope}</p>}
+            {item.final && <p><a href={`/${item.final}`} download>⬇️ Завантажити фінал</a></p>}
+          </div>
+        </div>
+      ))}
+    </div>
   </body>
 </html>
