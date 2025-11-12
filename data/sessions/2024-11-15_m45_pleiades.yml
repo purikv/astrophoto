@@ -6,7 +6,7 @@ camera: "Canon 450D (mod)"
 sensor_temp_c: 10
 mount: "AZ-EQ5 GT"
 telescope: "Arsenal CGO 203/1000 (f/5) + TS GPU CC"
-filters: ["UV/IR-cut"]
+filters: ["UV/IR-cut Optolong Anti-Halo"]
 guiding: { rms_arcsec: 0.8, software: "PHD2" }
 subs:
   - band: "RGB"

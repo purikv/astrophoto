@@ -29,7 +29,7 @@
       "mount": "AZ-EQ5 GT",
       "telescope": "Arsenal CGO 203/1000 (f/5) + TS GPU CC",
       "filters": [
-        "UV/IR-cut"
+        "UV/IR-cut Optolong Anti-Halo"
       ],
       "guiding": {
         "rms_arcsec": 0.7,
@@ -101,7 +101,7 @@
       "mount": "AZ-EQ5 GT",
       "telescope": "Arsenal CGO 203/1000 (f/5) + TS GPU CC",
       "filters": [
-        "UV/IR-cut"
+        "UV/IR-cut Optolong Anti-Halo"
       ],
       "guiding": {
         "rms_arcsec": 0.75,
@@ -337,7 +337,7 @@
       "mount": "AZ-EQ5 GT",
       "telescope": "Arsenal CGO 203/1000 (f/5) + TS GPU CC",
       "filters": [
-        "UV/IR-cut"
+        "UV/IR-cut Optolong Anti-Halo"
       ],
       "guiding": {
         "rms_arcsec": 0.8,
@@ -409,7 +409,7 @@
       "mount": "AZ-EQ5 GT",
       "telescope": "Arsenal CGO 203/1000 (f/5) + TS GPU CC",
       "filters": [
-        "UV/IR-cut"
+        "UV/IR-cut Optolong Anti-Halo"
       ],
       "guiding": {
         "rms_arcsec": 0.9,
