@@ -1,7 +1,7 @@
 [
   {
     "id": "2024-02-25_ngc891_silver-sliver",
-    "title": "Галактика Срібна Щепка — 2024-02-25",
+    "title": "Галактика Срібна Щепка — 2025-09-23",
     "preview": "thumbnails/result_12060s_800.jpg",
     "final": "images/ngc891/final/result_12060s.png",
     "object": {
@@ -15,43 +15,46 @@
         "Silver Sliver Galaxy"
       ],
       "distance_ly": 30000000,
-      "description": "Спіральна галактика, видима з ребра, що створює характерну витягнуту форму срібної щепки",
-      "credits": "© Володимир",
+      "description": "Спіральна галактика, видима з ребра, що створює характерну витягнуту форму срібної щепки. Демонструє виражену темну пилову смугу вздовж галактичної площини та яскравий балдж у центрі. Вважається близьким аналогом нашої галактики Чумацький Шлях за розмірами та структурою.",
+      "extended_description": "NGC 891 - це спіральна галактика типу SA(s)b, яку ми бачимо точно з ребра. Її діаметр становить близько 100 000 світлових років - майже як у Чумацького Шляху. Темна пилова смуга вздовж диска чітко видима і простягається на всю довжину галактики. Над і під диском помітні волокнисті структури - це газ, викинутий з диска наднових зірок і зоряних вітрів. Галактика демонструє ознаки деформації диска, можливо, через взаємодію з супутниковими карликовими галактиками.",
+      "credits": "© Володимир Пурик",
       "license": "CC BY-NC 4.0"
     },
     "session": {
       "object_id": "ngc891",
-      "date_utc": "2024-02-25",
+      "date_utc": "2025-09-23",
       "location": "Dnipropetrovska oblast, UA",
       "bortle": 5,
       "camera": "Canon 450D (mod)",
-      "sensor_temp_c": 2,
+      "sensor_temp_c": null,
       "mount": "AZ-EQ5 GT",
-      "telescope": "Arsenal CGO 203/1000 (f/5) + TS GPU CC",
+      "telescope": "Arsenal SGO 203/1000 (f/5)",
+      "coma_corrector": "TS GPU CC",
       "filters": [
-        "Player One Anti-Halo"
+        "UV IR-cut Anti-Halo"
       ],
       "guiding": {
-        "rms_arcsec": 0.7,
+        "camera": "ZWO ASI 120 M",
+        "rms_arcsec": null,
         "software": "PHD2"
       },
       "subs": [
         {
-          "band": "Luminance",
+          "band": "RGB",
           "iso": 800,
-          "exposure_s": 300,
-          "count": 134
+          "exposure_s": 180,
+          "count": 67
         }
       ],
       "calibration": {
-        "bias": 50,
+        "bias": 17,
         "darks": {
-          "exposure_s": 300,
-          "count": 30,
-          "temp_c": 2
+          "exposure_s": 180,
+          "count": 17,
+          "temp_c": null
         },
         "flats": {
-          "count": 50,
+          "count": 15,
           "method": "flat panel"
         }
       },
@@ -67,12 +70,12 @@
           "plate_solved": true
         }
       ],
-      "notes": "Довга експозиція 12060 секунд, видно пиловий диск з ребра"
+      "notes": ""
     }
   },
   {
     "id": "2024-03-10_m81-m82_bode-cigar",
-    "title": "Галактика Боде — 2024-03-10",
+    "title": "Галактика Боде — 2025-09-25",
     "preview": "thumbnails/Боде та сигара_800.jpg",
     "final": "images/m81-m82/final/Боде та сигара.png",
     "object": {
@@ -86,49 +89,46 @@
         "NGC 3031"
       ],
       "distance_ly": 11800000,
-      "description": "Велика спіральна галактика, названа на честь німецького астронома Йоганна Боде",
-      "credits": "© Володимир",
+      "description": "Велика спіральна галактика, названа на честь німецького астронома Йоганна Боде. Одна з найяскравіших галактик на північному небі з чітко вираженими спіральними рукавами та яскравим ядром. Входить до гравітаційно зв'язаної пари з галактикою M82, з якою взаємодіяла близько 300 мільйонів років тому.",
+      "extended_description": "M81 має діаметр близько 90 000 світлових років і містить приблизно 250 мільярдів зірок. Галактика демонструє класичну структуру спіральної галактики з балджем, диском та спіральними рукавами. У центрі галактики знаходиться надмасивна чорна діра з масою близько 70 мільйонів мас Сонця. M81 є домінуючою галактикою в групі галактик M81, яка налічує близько 34 членів.",
+      "credits": "© Володимир Пурик",
       "license": "CC BY-NC 4.0"
     },
     "session": {
       "object_id": "m81",
-      "date_utc": "2024-03-10",
+      "date_utc": "2025-09-25",
       "location": "Dnipropetrovska oblast, UA",
       "bortle": 5,
       "camera": "Canon 450D (mod)",
-      "sensor_temp_c": 5,
+      "sensor_temp_c": null,
       "mount": "AZ-EQ5 GT",
-      "telescope": "Arsenal CGO 203/1000 (f/5) + TS GPU CC",
+      "telescope": "Arsenal SGO 203/1000 (f/5)",
+      "coma_corrector": "TS GPU CC",
       "filters": [
-        "Player One Anti-Halo"
+        "UV IR-cut Anti-Halo"
       ],
       "guiding": {
-        "rms_arcsec": 0.75,
+        "camera": "ZWO ASI 120 M",
+        "rms_arcsec": null,
         "software": "PHD2"
       },
       "subs": [
         {
-          "band": "Luminance",
-          "iso": 800,
-          "exposure_s": 240,
-          "count": 100
-        },
-        {
           "band": "RGB",
           "iso": 800,
           "exposure_s": 180,
-          "count": 60
+          "count": 55
         }
       ],
       "calibration": {
-        "bias": 50,
+        "bias": 17,
         "darks": {
-          "exposure_s": 240,
-          "count": 30,
-          "temp_c": 5
+          "exposure_s": 180,
+          "count": 17,
+          "temp_c": null
         },
         "flats": {
-          "count": 50,
+          "count": 30,
           "method": "flat panel"
         }
       },
@@ -144,7 +144,7 @@
           "plate_solved": true
         }
       ],
-      "notes": "Широке поле з M81 (Боде) та M82 (Сигара), видно взаємодію галактик"
+      "notes": ""
     }
   },
   {
@@ -162,8 +162,9 @@
         "Sh2-142"
       ],
       "distance_ly": 7200,
-      "description": "Відкрите зоряне скупчення, оточене емісійною туманністю, що нагадує чарівника з піднятими руками",
-      "credits": "© Володимир",
+      "description": "Відкрите зоряне скупчення, оточене емісійною туманністю, що нагадує чарівника з піднятими руками. Молоді гарячі зірки скупчення іонізують оточуючий водень, створюючи яскраву емісійну туманність з характерними 'рукавами'. Область активного зореутворення з численними темними структурами пилу.",
+      "extended_description": "NGC 7380 - молоде відкрите скупчення віком близько 4 мільйонів років, що містить декілька десятків зірок. Найяскравіша зірка скупчення - DH Cephei, змінна зірка спектрального класу O. Туманність простягається на близько 100 світлових років і містить багато темних глобул Бока, де триває активне зореутворення. Характерна форма 'чарівника' особливо яскраво проявляється в випромінюванні іонізованого водню.",
+      "credits": "© Володимир Пурик",
       "license": "CC BY-NC 4.0"
     },
     "session": {
@@ -172,39 +173,35 @@
       "location": "Dnipropetrovska oblast, UA",
       "bortle": 5,
       "camera": "Canon 450D (mod)",
-      "sensor_temp_c": 18,
+      "sensor_temp_c": null,
       "mount": "AZ-EQ5 GT",
-      "telescope": "Arsenal CGO 203/1000 (f/5) + TS GPU CC",
+      "telescope": "Arsenal SGO 203/1000 (f/5)",
+      "coma_corrector": "TS GPU CC",
       "filters": [
-        "Player One Anti-Halo"
+        "UV IR-cut Anti-Halo"
       ],
       "guiding": {
-        "rms_arcsec": 0.9,
+        "camera": "ZWO ASI 120 M",
+        "rms_arcsec": null,
         "software": "PHD2"
       },
       "subs": [
         {
-          "band": "H-alpha",
+          "band": "RGB",
           "iso": 800,
           "exposure_s": 300,
-          "count": 100
-        },
-        {
-          "band": "OIII",
-          "iso": 800,
-          "exposure_s": 300,
-          "count": 50
+          "count": 62
         }
       ],
       "calibration": {
-        "bias": 50,
+        "bias": 0,
         "darks": {
           "exposure_s": 300,
-          "count": 30,
-          "temp_c": 18
+          "count": 16,
+          "temp_c": null
         },
         "flats": {
-          "count": 50,
+          "count": 0,
           "method": "flat panel"
         }
       },
@@ -220,12 +217,12 @@
           "plate_solved": true
         }
       ],
-      "notes": "Narrowband HOO, чудова деталізація структури туманності"
+      "notes": ""
     }
   },
   {
     "id": "2024-10-20_ngc281_pacman",
-    "title": "Туманність Пакман — 2024-10-20",
+    "title": "Туманність Пакман — 2024-07-25",
     "preview": "thumbnails/NGC 281_800.jpg",
     "final": "images/ngc281/final/NGC 281.png",
     "object": {
@@ -239,49 +236,46 @@
         "Sh2-184"
       ],
       "distance_ly": 9500,
-      "description": "Емісійна туманність з розсіяним скупченням IC 1590, отримала назву через схожість з персонажем гри Pac-Man",
-      "credits": "© Володимир",
+      "description": "Емісійна туманність з розсіяним скупченням IC 1590, отримала назву через схожість з персонажем гри Pac-Man. Містить активну область зореутворення з темними глобулами Бока - щільними хмарами газу і пилу, де формуються нові зірки. Характерна 'відкрита пащеку' туманності утворена зоряними вітрами молодих гарячих зірок.",
+      "extended_description": "NGC 281 є HII регіоном, де іонізований водень світиться характерним червоним кольором. Вік скупчення IC 1590 у центрі туманності становить близько 3,5 мільйонів років. Темні глобули всередині туманності мають розміри близько 1 світлового року і містять масу у декілька разів більшу за масу Сонця. Ці структури є колискою майбутніх зоряних систем.",
+      "credits": "© Володимир Пурик",
       "license": "CC BY-NC 4.0"
     },
     "session": {
       "object_id": "ngc281",
-      "date_utc": "2024-10-20",
+      "date_utc": "2024-07-25",
       "location": "Dnipropetrovska oblast, UA",
       "bortle": 5,
       "camera": "Canon 450D (mod)",
-      "sensor_temp_c": 12,
+      "sensor_temp_c": null,
       "mount": "AZ-EQ5 GT",
-      "telescope": "Arsenal CGO 203/1000 (f/5) + TS GPU CC",
+      "telescope": "Arsenal SGO 203/1000 (f/5)",
+      "coma_corrector": "TS GPU CC",
       "filters": [
-        "Player One Anti-Halo"
+        "UV IR-cut Anti-Halo"
       ],
       "guiding": {
+        "camera": "ZWO ASI 120 M",
         "rms_arcsec": 0.85,
         "software": "PHD2"
       },
       "subs": [
         {
-          "band": "H-alpha",
+          "band": "RGB",
           "iso": 800,
-          "exposure_s": 300,
-          "count": 80
-        },
-        {
-          "band": "OIII",
-          "iso": 800,
-          "exposure_s": 300,
-          "count": 40
+          "exposure_s": 180,
+          "count": 22
         }
       ],
       "calibration": {
-        "bias": 50,
+        "bias": 0,
         "darks": {
           "exposure_s": 300,
-          "count": 30,
-          "temp_c": 12
+          "count": 0,
+          "temp_c": null
         },
         "flats": {
-          "count": 50,
+          "count": 0,
           "method": "flat panel"
         }
       },
@@ -297,12 +291,12 @@
           "plate_solved": true
         }
       ],
-      "notes": "Narrowband зйомка з використанням HOO палітри"
+      "notes": ""
     }
   },
   {
     "id": "2024-11-10_m42_orion",
-    "title": "Туманність Оріона — 2024-11-10",
+    "title": "Туманність Оріона — 2025-10-26",
     "preview": "thumbnails/M42___800.jpg",
     "final": "images/m42/final/M42__.png",
     "object": {
@@ -316,21 +310,49 @@
         "NGC 1976"
       ],
       "distance_ly": 1344,
-      "description": "Дифузна туманність в Оріоні, одна з найяскравіших туманностей на небі, видима неозброєним оком",
-      "credits": "© Володимир",
+      "description": "Дифузна туманність в Оріоні, одна з найяскравіших туманностей на небі, видима неозброєним оком. Це найближча до нас область активного зореутворення, де народжуються нові зірки. У центрі туманності розташоване скупчення молодих гарячих зірок Трапеція, які своїм випромінюванням підсвічують оточуючий газ.",
+      "extended_description": "M42 є частиною гігантського молекулярної хмари Оріона, що простягається на сотні світлових років. Туманність містить близько 700 зірок на різних стадіях формування. Характерний зеленувато-червоний колір туманності зумовлений іонізацією водню та кисню. Температура газу в туманності сягає 10 000 K, а щільність речовини в 10 000 разів вища за середню в міжзоряному просторі.",
+      "credits": "© Володимир Пурик",
       "license": "CC BY-NC 4.0"
     },
     "session": {
       "object_id": "m42",
-      "date_utc": "2024-11-10",
+      "date_utc": "2025-10-26",
       "location": "Dnipropetrovska oblast, UA",
       "bortle": 5,
       "camera": "Canon 450D (mod)",
+      "sensor_temp_c": null,
       "mount": "AZ-EQ5 GT",
-      "telescope": "Arsenal CGO 203/1000 (f/5) + TS GPU CC",
+      "telescope": "Arsenal SGO 203/1000 (f/5)",
+      "coma_corrector": "TS GPU CC",
       "filters": [
-        "Player One Anti-Halo"
+        "UV IR-cut Anti-Halo"
       ],
+      "guiding": {
+        "camera": "ZWO ASI 120 M",
+        "rms_arcsec": null,
+        "software": "PHD2"
+      },
+      "subs": [
+        {
+          "band": "RGB",
+          "iso": 800,
+          "exposure_s": 300,
+          "count": 22
+        }
+      ],
+      "calibration": {
+        "bias": 17,
+        "darks": {
+          "exposure_s": 300,
+          "count": 12,
+          "temp_c": null
+        },
+        "flats": {
+          "count": 35,
+          "method": "flat panel"
+        }
+      },
       "stacking_software": "Siril",
       "processing_software": [
         "Siril",
@@ -361,8 +383,9 @@
         "Сім сестер"
       ],
       "distance_ly": 444,
-      "description": "Розсіяне зоряне скупчення, одне з найближчих до Землі та найяскравіших на нічному небі",
-      "credits": "© Володимир",
+      "description": "Розсіяне зоряне скупчення, одне з найближчих до Землі та найяскравіших на нічному небі. Відоме з давніх часів і згадується в міфології багатьох культур як 'Сім сестер'. Найяскравіші зірки скупчення мають блакитний колір і оточені відбивальними туманностями.",
+      "extended_description": "Плеяди налічують понад 1000 підтверджених зірок-членів, проте неозброєним оком видно лише 6-7 найяскравіших. Вік скупчення становить близько 100 мільйонів років, що робить його відносно молодим. Зірки Плеяд оточені синьою відбивальною туманністю - залишками молекулярної хмари, з якої вони утворилися. Скупчення рухається просторм зі швидкістю 43 км/с.",
+      "credits": "© Володимир Пурик",
       "license": "CC BY-NC 4.0"
     },
     "session": {
@@ -371,33 +394,35 @@
       "location": "Dnipropetrovska oblast, UA",
       "bortle": 5,
       "camera": "Canon 450D (mod)",
-      "sensor_temp_c": 10,
+      "sensor_temp_c": null,
       "mount": "AZ-EQ5 GT",
-      "telescope": "Arsenal CGO 203/1000 (f/5) + TS GPU CC",
+      "telescope": "Arsenal SGO 203/1000 (f/5)",
+      "coma_corrector": "TS GPU CC",
       "filters": [
-        "Player One Anti-Halo"
+        "UV IR-cut Anti-Halo"
       ],
       "guiding": {
-        "rms_arcsec": 0.8,
+        "camera": "ZWO ASI 120 M",
+        "rms_arcsec": null,
         "software": "PHD2"
       },
       "subs": [
         {
           "band": "RGB",
           "iso": 800,
-          "exposure_s": 120,
-          "count": 90
+          "exposure_s": 180,
+          "count": 64
         }
       ],
       "calibration": {
-        "bias": 50,
+        "bias": 17,
         "darks": {
-          "exposure_s": 120,
-          "count": 30,
-          "temp_c": 10
+          "exposure_s": 180,
+          "count": 17,
+          "temp_c": null
         },
         "flats": {
-          "count": 50,
+          "count": 17,
           "method": "flat panel"
         }
       },
@@ -413,12 +438,12 @@
           "plate_solved": true
         }
       ],
-      "notes": "Хороші умови спостережень, чітка видимість туманності"
+      "notes": ""
     }
   },
   {
     "id": "2025-10-03_m31_kharkiv",
-    "title": "Галактика Андромеди — 2025-10-03",
+    "title": "Галактика Андромеди — 2025-09-28",
     "preview": "thumbnails/M31_800.jpg",
     "final": "images/m31/final/M31.png",
     "object": {
@@ -432,43 +457,46 @@
         "NGC 224"
       ],
       "distance_ly": 2537000,
-      "description": "Спіральна галактика, найближча велика галактика до Чумацького Шляху",
-      "credits": "© Володимир",
+      "description": "Спіральна галактика, найближча велика галактика до Чумацького Шляху. Містить понад трильйон зірок і видима неозброєним оком як туманна пляма. Галактика Андромеди рухається до нас зі швидкістю близько 110 км/с і через 4-5 мільярдів років зіткнеться з нашою галактикою, утворивши нову еліптичну галактику.",
+      "extended_description": "M31 - одна з найвидатніших галактик північного неба. Вона має діаметр близько 220 000 світлових років, що майже вдвічі більше за Чумацький Шлях. У галактиці Андромеди налічується приблизно 1 трильйон зірок, а її маса становить близько 1,5 × 10¹² мас Сонця. Галактика має дві карликові галактики-супутники - M32 та M110, які також можна побачити на астрофото.",
+      "credits": "© Володимир Пурик",
       "license": "CC BY-NC 4.0"
     },
     "session": {
       "object_id": "m31",
-      "date_utc": "2025-10-03",
+      "date_utc": "2025-09-28",
       "location": "Dnipropetrovska oblast, UA",
       "bortle": 5,
       "camera": "Canon 450D (mod)",
-      "sensor_temp_c": 15,
+      "sensor_temp_c": null,
       "mount": "AZ-EQ5 GT",
-      "telescope": "Arsenal CGO 203/1000 (f/5) + TS GPU CC",
+      "telescope": "Arsenal SGO 203/1000 (f/5)",
+      "coma_corrector": "TS GPU CC",
       "filters": [
-        "Player One Anti-Halo"
+        "UV IR-cut Anti-Halo"
       ],
       "guiding": {
-        "rms_arcsec": 0.9,
+        "camera": "ZWO ASI 120 M",
+        "rms_arcsec": null,
         "software": "PHD2"
       },
       "subs": [
         {
           "band": "Luminance",
           "iso": 800,
-          "exposure_s": 180,
-          "count": 120
+          "exposure_s": 300,
+          "count": 37
         }
       ],
       "calibration": {
-        "bias": 50,
+        "bias": 60,
         "darks": {
-          "exposure_s": 180,
-          "count": 30,
-          "temp_c": 15
+          "exposure_s": 300,
+          "count": 28,
+          "temp_c": null
         },
         "flats": {
-          "count": 50,
+          "count": 60,
           "method": "flat panel"
         }
       },
@@ -484,7 +512,7 @@
           "plate_solved": true
         }
       ],
-      "notes": "Дрібний дізер кожні 2 кадри; легкий градієнт на NE."
+      "notes": ""
     }
   }
 ]

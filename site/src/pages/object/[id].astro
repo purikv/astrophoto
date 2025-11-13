@@ -437,6 +437,12 @@ const session = item.session;
                 <div class="tech-value">{session.telescope}</div>
               </div>
             )}
+            {session?.coma_corrector && (
+              <div class="tech-item">
+                <span class="tech-label">Комакоректор</span>
+                <div class="tech-value">{session.coma_corrector}</div>
+              </div>
+            )}
             {session?.mount && (
               <div class="tech-item">
                 <span class="tech-label">Монтування</span>
@@ -449,10 +455,14 @@ const session = item.session;
                 <div class="tech-value">{session.filters.join(', ')}</div>
               </div>
             )}
-            {session?.guiding?.rms_arcsec && session.guiding.rms_arcsec !== '-' && (
+            {session?.guiding && (
               <div class="tech-item">
                 <span class="tech-label">Гідування</span>
-                <div class="tech-value">RMS {session.guiding.rms_arcsec}" ({session.guiding.software})</div>
+                <div class="tech-value">
+                  {session.guiding.camera && `${session.guiding.camera} / `}
+                  {session.guiding.software}
+                  {session.guiding.rms_arcsec && session.guiding.rms_arcsec !== null && ` (RMS ${session.guiding.rms_arcsec}")`}
+                </div>
               </div>
             )}
             {session?.bortle && (

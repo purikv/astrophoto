@@ -5,9 +5,10 @@ bortle: 5
 camera: "Canon 450D (mod)"
 sensor_temp_c: null
 mount: "AZ-EQ5 GT"
-telescope: "Arsenal CGO 203/1000 (f/5) + TS GPU CC"
+telescope: "Arsenal SGO 203/1000 (f/5)"
+coma_corrector: "TS GPU CC"
 filters: ["UV IR-cut Anti-Halo"]
-guiding: { rms_arcsec: null, software: "PHD2" }
+guiding: { camera: "ZWO ASI 120 M", rms_arcsec: null, software: "PHD2" }
 subs:
   - band: "Luminance"
     iso: 800
