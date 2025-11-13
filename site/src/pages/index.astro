@@ -6,7 +6,8 @@ const base = import.meta.env.BASE_URL;
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Astro Gallery</title>
+    <title>Astro Gallery - Астрофотографія</title>
+    <meta name="description" content="Колекція астрофотографій глибокого космосу - галактики, туманності та зоряні скупчення" />
     <style>
       * {
         box-sizing: border-box;
@@ -20,16 +21,44 @@ const base = import.meta.env.BASE_URL;
         line-height: 1.5;
       }
 
+      /* Header */
+      .header {
+        max-width: 1400px;
+        margin: 0 auto 2rem;
+        padding: 0 1rem;
+      }
+
       h1 {
         color: #fff;
         text-align: center;
-        margin: 0 0 2rem 0;
+        margin: 0 0 0.5rem 0;
         font-size: 1.75rem;
-        font-weight: 400;
-        letter-spacing: 0.1em;
+        font-weight: 500;
+        letter-spacing: 0.05em;
       }
 
-      /* Responsive Grid */
+      .subtitle {
+        text-align: center;
+        color: #666;
+        font-size: 0.9rem;
+        margin: 0;
+      }
+
+      @media (min-width: 768px) {
+        .header {
+          margin-bottom: 3rem;
+        }
+
+        h1 {
+          font-size: 2.5rem;
+        }
+
+        .subtitle {
+          font-size: 1rem;
+        }
+      }
+
+      /* Gallery Grid */
       .gallery {
         display: grid;
         grid-template-columns: 1fr;
@@ -40,7 +69,6 @@ const base = import.meta.env.BASE_URL;
 
       @media (min-width: 640px) {
         body { padding: 1.5rem; }
-        h1 { font-size: 2rem; margin-bottom: 2.5rem; }
         .gallery {
           grid-template-columns: repeat(2, 1fr);
           gap: 2rem;
@@ -49,633 +77,194 @@ const base = import.meta.env.BASE_URL;
 
       @media (min-width: 1024px) {
         body { padding: 2rem; }
-        h1 { font-size: 2.25rem; margin-bottom: 3rem; }
         .gallery {
           grid-template-columns: repeat(3, 1fr);
-          gap: 2.5rem;
+          gap: 2rem;
         }
       }
 
-      /* Card Styles - Minimal */
-      .gallery-item {
-        background: #111;
-        border: 1px solid #222;
+      /* Card Styles - Clean & Minimal */
+      .gallery-card {
+        background: #0a0a0a;
+        border: 1px solid #1a1a1a;
         overflow: hidden;
-        transition: border-color 0.3s;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        color: inherit;
+        display: block;
       }
 
-      .gallery-item:hover {
-        border-color: #444;
+      .gallery-card:hover {
+        border-color: #333;
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
       }
 
-      .gallery-item img {
+      .card-image-wrapper {
+        position: relative;
+        overflow: hidden;
+        aspect-ratio: 4/3;
+        background: #111;
+      }
+
+      .card-image {
         width: 100%;
-        height: 250px;
+        height: 100%;
         object-fit: cover;
         display: block;
-        cursor: pointer;
-        transition: opacity 0.3s;
+        transition: transform 0.3s ease;
       }
 
-      @media (min-width: 640px) {
-        .gallery-item img {
-          height: 280px;
-        }
+      .gallery-card:hover .card-image {
+        transform: scale(1.05);
       }
 
-      @media (min-width: 1024px) {
-        .gallery-item img {
-          height: 320px;
-        }
-      }
-
-      .gallery-item:hover img {
-        opacity: 0.85;
-      }
-
-      .gallery-info {
-        padding: 1rem;
-      }
-
-      @media (min-width: 640px) {
-        .gallery-info {
-          padding: 1.25rem;
-        }
-      }
-
-      @media (min-width: 1024px) {
-        .gallery-info {
-          padding: 1.5rem;
-        }
-      }
-
-      /* Header */
-      .object-header {
-        margin-bottom: 1rem;
-        padding-bottom: 0.75rem;
-        border-bottom: 1px solid #222;
-      }
-
-      .gallery-info h2 {
-        margin: 0 0 0.75rem 0;
-        font-size: 1.25rem;
-        color: #fff;
-        font-weight: 500;
-      }
-
-      @media (min-width: 640px) {
-        .gallery-info h2 {
-          font-size: 1.35rem;
-        }
-      }
-
-      /* Meta Badges - Simplified */
-      .object-meta {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.5rem;
-      }
-
-      .meta-badge {
-        background: #1a1a1a;
-        padding: 0.25rem 0.65rem;
-        font-size: 0.7rem;
-        color: #999;
-        border: 1px solid #222;
-      }
-
-      @media (min-width: 640px) {
-        .meta-badge {
-          font-size: 0.75rem;
-          padding: 0.3rem 0.7rem;
-        }
-      }
-
-      .meta-badge strong {
-        color: #fff;
-        font-weight: 500;
-      }
-
-      /* Description - Minimal */
-      .description {
-        font-style: italic;
-        color: #888;
-        margin: 1rem 0 0 0;
-        font-size: 0.85rem;
-        line-height: 1.6;
-        padding-left: 0.75rem;
-        border-left: 2px solid #333;
-      }
-
-      @media (min-width: 640px) {
-        .description {
-          font-size: 0.9rem;
-        }
-      }
-
-      /* Technical Details */
-      .tech-details {
-        margin-top: 1rem;
-      }
-
-      .tech-summary {
-        cursor: pointer;
-        user-select: none;
-        font-size: 0.85rem;
-        font-weight: 500;
-        color: #aaa;
-        padding: 0.65rem 0.75rem;
-        background: #0a0a0a;
-        border: 1px solid #1a1a1a;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        transition: all 0.2s;
-        margin-bottom: 0.5rem;
-      }
-
-      @media (min-width: 640px) {
-        .tech-summary {
-          font-size: 0.9rem;
-          padding: 0.75rem 1rem;
-        }
-      }
-
-      .tech-summary:hover {
-        background: #151515;
-        color: #fff;
-      }
-
-      .tech-summary::before {
-        content: '▶';
-        transition: transform 0.2s;
-        font-size: 0.6rem;
-      }
-
-      details[open] .tech-summary::before {
-        transform: rotate(90deg);
-      }
-
-      .tech-content {
-        padding: 0.75rem;
-        background: #0a0a0a;
-        border: 1px solid #1a1a1a;
-        border-top: none;
-        margin-bottom: 0.5rem;
-      }
-
-      @media (min-width: 640px) {
-        .tech-content {
-          padding: 1rem;
-        }
-      }
-
-      .tech-grid {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 0.5rem;
-        font-size: 0.8rem;
-      }
-
-      @media (min-width: 640px) {
-        .tech-grid {
-          grid-template-columns: repeat(2, 1fr);
-          gap: 0.65rem;
-          font-size: 0.85rem;
-        }
-      }
-
-      .tech-item {
-        padding: 0.5rem;
-        background: #111;
-        border-left: 1px solid #333;
-      }
-
-      .tech-item-label {
-        display: block;
-        color: #666;
-        font-size: 0.7rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        margin-bottom: 0.25rem;
-      }
-
-      @media (min-width: 640px) {
-        .tech-item-label {
-          font-size: 0.75rem;
-        }
-      }
-
-      .tech-item-value {
-        color: #ccc;
-        font-weight: 400;
-      }
-
-      /* Lightbox - Unchanged */
-      .lightbox {
-        display: none;
-        position: fixed;
-        top: 0;
+      .card-overlay {
+        position: absolute;
+        bottom: 0;
         left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.95);
-        z-index: 9999;
-        overflow: hidden;
-      }
-
-      .lightbox.active {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-
-      .lightbox-content {
-        position: relative;
-        width: 100%;
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        overflow: hidden;
-        touch-action: none;
-      }
-
-      .lightbox-image {
-        max-width: 100%;
-        max-height: 100%;
-        object-fit: contain;
-        transition: transform 0.2s ease-out;
-        cursor: grab;
-      }
-
-      .lightbox-image.dragging {
-        cursor: grabbing;
-        transition: none;
-      }
-
-      .lightbox-close {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: rgba(255, 255, 255, 0.1);
-        border: none;
-        color: white;
-        font-size: 32px;
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: background 0.2s;
-        z-index: 10000;
-      }
-
-      .lightbox-close:hover {
-        background: rgba(255, 255, 255, 0.2);
-      }
-
-      .lightbox-zoom-info {
-        position: fixed;
-        bottom: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: rgba(0, 0, 0, 0.7);
-        color: white;
-        padding: 10px 20px;
-        border-radius: 20px;
-        font-size: 14px;
-        pointer-events: none;
+        right: 0;
+        background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+        padding: 2rem 1rem 1rem;
         opacity: 0;
         transition: opacity 0.3s;
       }
 
-      .lightbox-zoom-info.show {
+      .gallery-card:hover .card-overlay {
         opacity: 1;
+      }
+
+      .overlay-text {
+        color: #fff;
+        font-size: 0.85rem;
+        margin: 0;
+        line-height: 1.4;
+      }
+
+      .card-content {
+        padding: 1.25rem;
+      }
+
+      @media (min-width: 768px) {
+        .card-content {
+          padding: 1.5rem;
+        }
+      }
+
+      .card-title {
+        font-size: 1.25rem;
+        font-weight: 500;
+        margin: 0 0 0.75rem 0;
+        color: #fff;
+      }
+
+      @media (min-width: 768px) {
+        .card-title {
+          font-size: 1.4rem;
+        }
+      }
+
+      .card-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+      }
+
+      .meta-tag {
+        background: #111;
+        padding: 0.3rem 0.75rem;
+        font-size: 0.75rem;
+        color: #888;
+        border: 1px solid #1a1a1a;
+        white-space: nowrap;
+      }
+
+      .meta-tag.primary {
+        color: #fff;
+        border-color: #333;
+      }
+
+      .card-description {
+        font-size: 0.9rem;
+        color: #999;
+        line-height: 1.6;
+        margin: 0;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+
+      .view-more {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: 1rem;
+        padding: 0.5rem 0;
+        color: #666;
+        font-size: 0.85rem;
+        transition: color 0.2s;
+      }
+
+      .gallery-card:hover .view-more {
+        color: #fff;
+      }
+
+      .view-more::after {
+        content: '→';
+        transition: transform 0.2s;
+      }
+
+      .gallery-card:hover .view-more::after {
+        transform: translateX(4px);
       }
     </style>
   </head>
   <body>
-    <h1>🌌 ASTRO GALLERY</h1>
+    <div class="header">
+      <h1>Астрофотографія</h1>
+      <p class="subtitle">Глибокий космос очима любителя</p>
+    </div>
+
     <div class="gallery">
       {galleryData.map((item) => (
-        <div class="gallery-item">
-          {item.preview && <img src={`${base}/${item.preview}`} alt={item.title} loading="lazy" class="gallery-thumbnail" data-full={`${base}/${item.preview.replace('_800', '_2000')}`} />}
-
-          <div class="gallery-info">
-            <div class="object-header">
-              <h2>{item.object?.name || item.title}</h2>
-
-              <div class="object-meta">
-                {item.object?.type && <span class="meta-badge"><strong>{item.object.type}</strong></span>}
-                {item.object?.constellation && <span class="meta-badge">{item.object.constellation}</span>}
-                {item.object?.distance_ly && (
-                  <span class="meta-badge">{item.object.distance_ly.toLocaleString('uk-UA')} св.р.</span>
-                )}
-                {item.session?.date_utc && <span class="meta-badge">{item.session.date_utc}</span>}
+        <a href={`${base}/object/${item.object.id}`} class="gallery-card">
+          {item.preview && (
+            <div class="card-image-wrapper">
+              <img
+                src={`${base}/${item.preview}`}
+                alt={item.object?.name || item.title}
+                loading="lazy"
+                class="card-image"
+              />
+              <div class="card-overlay">
+                <p class="overlay-text">
+                  {item.object?.description && item.object.description.substring(0, 120)}...
+                </p>
               </div>
             </div>
+          )}
 
-            {item.object?.description && (
-              <p class="description">{item.object.description}</p>
-            )}
+          <div class="card-content">
+            <h2 class="card-title">{item.object?.name || item.title}</h2>
 
-            <div class="tech-details">
-              <details>
-                <summary class="tech-summary">Обладнання</summary>
-                <div class="tech-content">
-                  <div class="tech-grid">
-                    {item.session?.camera && (
-                      <div class="tech-item">
-                        <span class="tech-item-label">Камера</span>
-                        <div class="tech-item-value">{item.session.camera}</div>
-                      </div>
-                    )}
-                    {item.session?.telescope && (
-                      <div class="tech-item">
-                        <span class="tech-item-label">Телескоп</span>
-                        <div class="tech-item-value">{item.session.telescope}</div>
-                      </div>
-                    )}
-                    {item.session?.mount && (
-                      <div class="tech-item">
-                        <span class="tech-item-label">Монтування</span>
-                        <div class="tech-item-value">{item.session.mount}</div>
-                      </div>
-                    )}
-                    {item.session?.filters && item.session.filters.length > 0 && (
-                      <div class="tech-item">
-                        <span class="tech-item-label">Фільтри</span>
-                        <div class="tech-item-value">{item.session.filters.join(', ')}</div>
-                      </div>
-                    )}
-                    {item.session?.guiding && item.session.guiding.rms_arcsec && item.session.guiding.rms_arcsec !== '-' && (
-                      <div class="tech-item">
-                        <span class="tech-item-label">Гідування</span>
-                        <div class="tech-item-value">RMS {item.session.guiding.rms_arcsec}" ({item.session.guiding.software})</div>
-                      </div>
-                    )}
-                    {item.session?.bortle && (
-                      <div class="tech-item">
-                        <span class="tech-item-label">Bortle</span>
-                        <div class="tech-item-value">{item.session.bortle}</div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </details>
-
-              {item.session?.subs && item.session.subs.length > 0 && (
-                <details>
-                  <summary class="tech-summary">Експозиції</summary>
-                  <div class="tech-content">
-                    <div class="tech-grid">
-                      {item.session.subs.map((sub, idx) => (
-                        <div class="tech-item" key={idx}>
-                          <span class="tech-item-label">{sub.band}</span>
-                          <div class="tech-item-value">
-                            {sub.count} × {sub.exposure_s}s
-                            {sub.iso && ` (ISO ${sub.iso})`}
-                          </div>
-                        </div>
-                      ))}
-                      <div class="tech-item">
-                        <span class="tech-item-label">Загальний час</span>
-                        <div class="tech-item-value">
-                          {Math.floor(item.session.subs.reduce((acc, sub) => acc + (sub.count * sub.exposure_s), 0) / 60)} хв
-                        </div>
-                      </div>
-                      {item.session.calibration?.bias > 0 && (
-                        <div class="tech-item">
-                          <span class="tech-item-label">Bias</span>
-                          <div class="tech-item-value">{item.session.calibration.bias}</div>
-                        </div>
-                      )}
-                      {item.session.calibration?.darks && item.session.calibration.darks.count > 0 && (
-                        <div class="tech-item">
-                          <span class="tech-item-label">Darks</span>
-                          <div class="tech-item-value">{item.session.calibration.darks.count} × {item.session.calibration.darks.exposure_s}s</div>
-                        </div>
-                      )}
-                      {item.session.calibration?.flats && item.session.calibration.flats.count > 0 && (
-                        <div class="tech-item">
-                          <span class="tech-item-label">Flats</span>
-                          <div class="tech-item-value">{item.session.calibration.flats.count}</div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </details>
-              )}
-
-              {(item.session?.stacking_software || item.session?.processing_software) && (
-                <details>
-                  <summary class="tech-summary">Обробка</summary>
-                  <div class="tech-content">
-                    <div class="tech-grid">
-                      {item.session.stacking_software && (
-                        <div class="tech-item">
-                          <span class="tech-item-label">Стекінг</span>
-                          <div class="tech-item-value">{item.session.stacking_software}</div>
-                        </div>
-                      )}
-                      {item.session.processing_software && item.session.processing_software.length > 0 && (
-                        <div class="tech-item">
-                          <span class="tech-item-label">Обробка</span>
-                          <div class="tech-item-value">{item.session.processing_software.join(', ')}</div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </details>
+            <div class="card-meta">
+              {item.object?.type && <span class="meta-tag primary">{item.object.type}</span>}
+              {item.object?.constellation && <span class="meta-tag">{item.object.constellation}</span>}
+              {item.object?.distance_ly && (
+                <span class="meta-tag">{item.object.distance_ly.toLocaleString('uk-UA')} св.р.</span>
               )}
             </div>
+
+            <p class="card-description">
+              {item.object?.description}
+            </p>
+
+            <div class="view-more">Детальніше</div>
           </div>
-        </div>
+        </a>
       ))}
     </div>
-
-    <!-- Lightbox Modal -->
-    <div class="lightbox" id="lightbox">
-      <button class="lightbox-close" id="lightbox-close">&times;</button>
-      <div class="lightbox-content" id="lightbox-content">
-        <img src="" alt="" class="lightbox-image" id="lightbox-image" />
-      </div>
-      <div class="lightbox-zoom-info" id="zoom-info">Колесико миші для zoom</div>
-    </div>
-
-    <script>
-      // Lightbox functionality with zoom and pan
-      const lightbox = document.getElementById('lightbox');
-      const lightboxImage = document.getElementById('lightbox-image');
-      const lightboxContent = document.getElementById('lightbox-content');
-      const lightboxClose = document.getElementById('lightbox-close');
-      const zoomInfo = document.getElementById('zoom-info');
-      const thumbnails = document.querySelectorAll('.gallery-thumbnail');
-
-      let scale = 1;
-      let translateX = 0;
-      let translateY = 0;
-      let isDragging = false;
-      let startX = 0;
-      let startY = 0;
-      let lastTouchDistance = 0;
-
-      // Open lightbox
-      thumbnails.forEach(thumb => {
-        thumb.addEventListener('click', (e) => {
-          const fullSrc = e.target.dataset.full;
-          const alt = e.target.alt;
-
-          lightboxImage.src = fullSrc;
-          lightboxImage.alt = alt;
-          lightbox.classList.add('active');
-          document.body.style.overflow = 'hidden';
-
-          // Show zoom info briefly
-          zoomInfo.classList.add('show');
-          setTimeout(() => zoomInfo.classList.remove('show'), 2000);
-
-          // Reset transform
-          scale = 1;
-          translateX = 0;
-          translateY = 0;
-          updateTransform();
-        });
-      });
-
-      // Close lightbox
-      const closeLightbox = () => {
-        lightbox.classList.remove('active');
-        document.body.style.overflow = '';
-        scale = 1;
-        translateX = 0;
-        translateY = 0;
-        updateTransform();
-      };
-
-      lightboxClose.addEventListener('click', closeLightbox);
-
-      lightbox.addEventListener('click', (e) => {
-        if (e.target === lightbox) {
-          closeLightbox();
-        }
-      });
-
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && lightbox.classList.contains('active')) {
-          closeLightbox();
-        }
-      });
-
-      // Update transform
-      const updateTransform = () => {
-        lightboxImage.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
-      };
-
-      // Mouse wheel zoom
-      lightboxContent.addEventListener('wheel', (e) => {
-        e.preventDefault();
-
-        const delta = e.deltaY > 0 ? -0.1 : 0.1;
-        const newScale = Math.max(1, Math.min(5, scale + delta));
-
-        if (newScale !== scale) {
-          scale = newScale;
-
-          // Reset position when zooming out to 1
-          if (scale === 1) {
-            translateX = 0;
-            translateY = 0;
-          }
-
-          updateTransform();
-        }
-      });
-
-      // Mouse drag to pan
-      lightboxImage.addEventListener('mousedown', (e) => {
-        if (scale > 1) {
-          isDragging = true;
-          startX = e.clientX - translateX;
-          startY = e.clientY - translateY;
-          lightboxImage.classList.add('dragging');
-        }
-      });
-
-      document.addEventListener('mousemove', (e) => {
-        if (isDragging) {
-          translateX = e.clientX - startX;
-          translateY = e.clientY - startY;
-          updateTransform();
-        }
-      });
-
-      document.addEventListener('mouseup', () => {
-        isDragging = false;
-        lightboxImage.classList.remove('dragging');
-      });
-
-      // Touch pinch-to-zoom
-      lightboxContent.addEventListener('touchstart', (e) => {
-        if (e.touches.length === 2) {
-          e.preventDefault();
-          const touch1 = e.touches[0];
-          const touch2 = e.touches[1];
-          lastTouchDistance = Math.hypot(
-            touch2.clientX - touch1.clientX,
-            touch2.clientY - touch1.clientY
-          );
-        } else if (e.touches.length === 1 && scale > 1) {
-          isDragging = true;
-          startX = e.touches[0].clientX - translateX;
-          startY = e.touches[0].clientY - translateY;
-        }
-      }, { passive: false });
-
-      lightboxContent.addEventListener('touchmove', (e) => {
-        if (e.touches.length === 2) {
-          e.preventDefault();
-          const touch1 = e.touches[0];
-          const touch2 = e.touches[1];
-          const currentDistance = Math.hypot(
-            touch2.clientX - touch1.clientX,
-            touch2.clientY - touch1.clientY
-          );
-
-          if (lastTouchDistance > 0) {
-            const delta = (currentDistance - lastTouchDistance) * 0.01;
-            const newScale = Math.max(1, Math.min(5, scale + delta));
-
-            if (newScale !== scale) {
-              scale = newScale;
-
-              if (scale === 1) {
-                translateX = 0;
-                translateY = 0;
-              }
-
-              updateTransform();
-            }
-          }
-
-          lastTouchDistance = currentDistance;
-        } else if (e.touches.length === 1 && isDragging) {
-          e.preventDefault();
-          translateX = e.touches[0].clientX - startX;
-          translateY = e.touches[0].clientY - startY;
-          updateTransform();
-        }
-      }, { passive: false });
-
-      lightboxContent.addEventListener('touchend', (e) => {
-        if (e.touches.length === 0) {
-          isDragging = false;
-          lastTouchDistance = 0;
-        }
-      });
-    </script>
   </body>
 </html>
