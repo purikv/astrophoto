@@ -72,24 +72,19 @@ const session = item.session;
       .hero {
         position: relative;
         width: 100%;
-        min-height: 50vh;
-        max-height: 85vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: #111;
+        max-height: 70vh;
         overflow: hidden;
+        background: #111;
       }
 
       .hero-image {
-        max-width: 100%;
-        max-height: 85vh;
-        width: auto;
-        height: auto;
+        width: 100%;
+        height: 70vh;
         display: block;
         cursor: pointer;
         transition: opacity 0.3s;
-        object-fit: contain;
+        object-fit: cover;
+        object-position: center;
       }
 
       .hero-image:hover {
