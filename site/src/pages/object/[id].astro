@@ -378,6 +378,29 @@ const session = item.session;
       .lightbox-zoom-info.show {
         opacity: 1;
       }
+
+      /* Preloader */
+      .lightbox-loader {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 60px;
+        height: 60px;
+        border: 4px solid rgba(255, 255, 255, 0.2);
+        border-top-color: #fff;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        display: none;
+      }
+
+      .lightbox-loader.active {
+        display: block;
+      }
+
+      @keyframes spin {
+        to { transform: translate(-50%, -50%) rotate(360deg); }
+      }
     </style>
   </head>
   <body>
@@ -397,7 +420,7 @@ const session = item.session;
           alt={object.name}
           class="hero-image"
           id="hero-image"
-          data-full={`${base}/${item.final}`}
+          data-full={`${base}/${item.preview.replace('_800', '_4000')}`}
         />
       )}
       <div class="hero-overlay">
@@ -592,6 +615,7 @@ const session = item.session;
     <div class="lightbox" id="lightbox">
       <button class="lightbox-close" id="lightbox-close">&times;</button>
       <div class="lightbox-content" id="lightbox-content">
+        <div class="lightbox-loader" id="lightbox-loader"></div>
         <img src="" alt="" class="lightbox-image" id="lightbox-image" />
       </div>
       <div class="lightbox-zoom-info" id="zoom-info">Колесико миші для zoom</div>
@@ -603,6 +627,7 @@ const session = item.session;
       const lightboxImage = document.getElementById('lightbox-image');
       const lightboxContent = document.getElementById('lightbox-content');
       const lightboxClose = document.getElementById('lightbox-close');
+      const lightboxLoader = document.getElementById('lightbox-loader');
       const zoomInfo = document.getElementById('zoom-info');
       const heroImage = document.getElementById('hero-image');
 
@@ -620,14 +645,30 @@ const session = item.session;
           const fullSrc = heroImage.dataset.full;
           const alt = heroImage.alt;
 
-          lightboxImage.src = fullSrc;
-          lightboxImage.alt = alt;
+          // Open lightbox and show loader
           lightbox.classList.add('active');
+          lightboxLoader.classList.add('active');
+          lightboxImage.style.opacity = '0';
           document.body.style.overflow = 'hidden';
 
-          // Show zoom info briefly
-          zoomInfo.classList.add('show');
-          setTimeout(() => zoomInfo.classList.remove('show'), 2000);
+          // Preload the image
+          const img = new Image();
+          img.onload = () => {
+            lightboxImage.src = fullSrc;
+            lightboxImage.alt = alt;
+            lightboxLoader.classList.remove('active');
+            lightboxImage.style.opacity = '1';
+
+            // Show zoom info briefly
+            zoomInfo.classList.add('show');
+            setTimeout(() => zoomInfo.classList.remove('show'), 2000);
+          };
+          img.onerror = () => {
+            lightboxLoader.classList.remove('active');
+            alert('Помилка завантаження зображення');
+            closeLightbox();
+          };
+          img.src = fullSrc;
 
           // Reset transform
           scale = 1;
