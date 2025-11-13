@@ -3,7 +3,7 @@ date_utc: "2024-07-25"
 location: "Dnipropetrovska oblast, UA"
 bortle: 5
 camera: "Canon 450D (mod)"
-sensor_temp_c: -
+sensor_temp_c: null
 mount: "AZ-EQ5 GT"
 telescope: "Arsenal CGO 203/1000 (f/5) + TS GPU CC"
 filters: ["UV IR-cut Anti-Halo"]
@@ -15,7 +15,7 @@ subs:
     count: 22
 calibration:
   bias: 0
-  darks: { exposure_s: 300, count: 0, temp_c: - }
+  darks: { exposure_s: 300, count: 0, temp_c: null }
   flats: { count: 0, method: "flat panel" }
 stacking_software: "Siril 1.4"
 processing_software: ["Siril", "GraXpert"]

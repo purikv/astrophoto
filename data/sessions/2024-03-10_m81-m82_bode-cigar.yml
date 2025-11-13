@@ -3,11 +3,11 @@ date_utc: "2025-09-25"
 location: "Dnipropetrovska oblast, UA"
 bortle: 5
 camera: "Canon 450D (mod)"
-sensor_temp_c: -
+sensor_temp_c: null
 mount: "AZ-EQ5 GT"
 telescope: "Arsenal CGO 203/1000 (f/5) + TS GPU CC"
 filters: ["UV IR-cut Anti-Halo"]
-guiding: { rms_arcsec: -, software: "PHD2" }
+guiding: { rms_arcsec: null, software: "PHD2" }
 subs:
   - band: "RGB"
     iso: 800
@@ -15,7 +15,7 @@ subs:
     count: 55
 calibration:
   bias: 17
-  darks: { exposure_s: 180, count: 17, temp_c: - }
+  darks: { exposure_s: 180, count: 17, temp_c: null }
   flats: { count: 30, method: "flat panel" }
 stacking_software: "Siril 1.4"
 processing_software: ["Siril", "GraXpert"]
