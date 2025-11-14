@@ -21,7 +21,9 @@
       "Bash(cat:*)",
       "Bash(git reset:*)",
       "Bash(git rm:*)",
-      "Bash(npm run dev:*)"
+      "Bash(npm run dev:*)",
+      "Bash(git lfs:*)",
+      "Bash(find:*)"
     ],
     "deny": [],
     "ask": []
