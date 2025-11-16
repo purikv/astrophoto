@@ -1,4 +1,4 @@
-object_id: ic2177
+object_id: ic795
 date_utc: "2025-10-26"
 location: "Dnipropetrovska oblast, UA"
 bortle: 5
@@ -22,5 +22,5 @@ stacking_software: "Siril"
 processing_software: ["Siril", "GraXpert"]
 finals:
   - path: "images/ic795/final/Голова риби.png"
-    preview: "thumbnails/Голова риби_800.jpg"
+    preview: "thumbnails/ic795_800.jpg"
     plate_solved: false
