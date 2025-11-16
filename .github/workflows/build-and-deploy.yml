@@ -25,16 +25,17 @@ jobs:
       - name: Install deps
         working-directory: site
         run: npm ci || npm i
-      - name: Generate thumbnails with ImageMagick
+      - name: Generate thumbnails with ImageMagick (Latin filenames for Telegram)
         run: |
           mkdir -p thumbnails
           find images -type f \( -iname "*.png" -o -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.tif" -o -iname "*.tiff" \) | while read img; do
-            basename=$(basename "$img" | sed 's/\.[^.]*$//')
-            echo "Processing $basename..."
-            convert "$img" -resize 2000x2000\> -quality 90 "thumbnails/${basename}_2000.jpg" 2>&1 || echo "Failed 2000px: $img"
-            convert "$img" -resize 800x800\> -quality 90 "thumbnails/${basename}_800.jpg" 2>&1 || echo "Failed 800px: $img"
+            # Extract object ID from path (e.g., images/m42/final/M42.png -> m42)
+            objectid=$(echo "$img" | cut -d'/' -f2)
+            echo "Processing $img -> $objectid"
+            convert "$img" -resize 2000x2000\> -quality 90 "thumbnails/${objectid}_2000.jpg" 2>&1 || echo "Failed 2000px: $img"
+            convert "$img" -resize 800x800\> -quality 90 "thumbnails/${objectid}_800.jpg" 2>&1 || echo "Failed 800px: $img"
           done
-          echo "Generated thumbnails:"
+          echo "Generated thumbnails (Latin names for Telegram compatibility):"
           ls -lh thumbnails/
       - name: Copy to public (for Astro to process)
         run: |

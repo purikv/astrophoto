@@ -44,13 +44,19 @@ async function processImage(srcPath) {
   try {
     const baseName = path.basename(srcPath, path.extname(srcPath));
 
+    // Extract object ID from path (e.g., images/m42/final/M42.png -> m42)
+    // This gives us Latin-only filenames for Telegram compatibility
+    const pathParts = srcPath.split(path.sep);
+    const objectId = pathParts[pathParts.indexOf('images') + 1] || baseName;
+
     // Read and validate the image first
     const image = sharp(srcPath);
     const metadata = await image.metadata();
-    console.log(`Processing ${baseName}: ${metadata.format} ${metadata.width}x${metadata.height}, channels: ${metadata.channels}, depth: ${metadata.depth}`);
+    console.log(`Processing ${baseName} (${objectId}): ${metadata.format} ${metadata.width}x${metadata.height}, channels: ${metadata.channels}, depth: ${metadata.depth}`);
 
     for (const width of SIZES) {
-      const outPath = path.join(OUT_DIR, `${baseName}_${width}.jpg`);
+      // Use object ID for thumbnail name (Latin only - no Cyrillic)
+      const outPath = path.join(OUT_DIR, `${objectId}_${width}.jpg`);
 
       // Convert to RGB if needed and process
       await sharp(srcPath)
