@@ -1,0 +1,26 @@
+object_id: ic2177
+date_utc: "2024-10-26"
+location: "Dnipropetrovska oblast, UA"
+bortle: 5
+camera: "Canon 450D (mod)"
+sensor_temp_c: null
+mount: "AZ-EQ5 GT"
+telescope: "Arsenal SGO 203/1000 (f/5)"
+coma_corrector: "TS GPU CC"
+filters: ["UV IR-cut Anti-Halo"]
+guiding: { camera: "ZWO ASI 120 M", rms_arcsec: null, software: "PHD2" }
+subs:
+  - band: "RGB"
+    iso: 800
+    exposure_s: 300
+    count: 26
+calibration:
+  bias: 17
+  darks: { exposure_s: 300, count: 12, temp_c: null }
+  flats: { count: 35, method: "flat panel" }
+stacking_software: "Siril"
+processing_software: ["Siril", "GraXpert"]
+finals:
+  - path: "images/ic795/final/Голова риби.png"
+    preview: "thumbnails/Голова риби_800.jpg"
+    plate_solved: false
