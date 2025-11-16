@@ -47,8 +47,14 @@ async function processImage(srcPath) {
     for (const width of SIZES) {
       const outPath = path.join(OUT_DIR, `${baseName}_${width}.jpg`);
 
-      await sharp(srcPath)
-        .resize(width, null, { withoutEnlargement: true })
+      await sharp(srcPath, {
+        unlimited: true,
+        failOnError: false
+      })
+        .resize(width, null, {
+          withoutEnlargement: true,
+          fit: 'inside'
+        })
         .jpeg({ quality: 90, mozjpeg: true })
         .toFile(outPath);
 
