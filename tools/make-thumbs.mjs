@@ -44,24 +44,30 @@ async function processImage(srcPath) {
   try {
     const baseName = path.basename(srcPath, path.extname(srcPath));
 
+    // Read and validate the image first
+    const image = sharp(srcPath);
+    const metadata = await image.metadata();
+    console.log(`Processing ${baseName}: ${metadata.format} ${metadata.width}x${metadata.height}, channels: ${metadata.channels}, depth: ${metadata.depth}`);
+
     for (const width of SIZES) {
       const outPath = path.join(OUT_DIR, `${baseName}_${width}.jpg`);
 
-      await sharp(srcPath, {
-        unlimited: true,
-        failOnError: false
-      })
+      // Convert to RGB if needed and process
+      await sharp(srcPath)
+        .ensureAlpha()
+        .flatten({ background: { r: 0, g: 0, b: 0 } })
         .resize(width, null, {
           withoutEnlargement: true,
           fit: 'inside'
         })
-        .jpeg({ quality: 90, mozjpeg: true })
+        .jpeg({ quality: 90 })
         .toFile(outPath);
 
       console.log(`Saved ${outPath}`);
     }
   } catch (err) {
     console.error(`Error processing ${srcPath}:`, err.message);
+    console.error(`Full error:`, err);
   }
 }
 

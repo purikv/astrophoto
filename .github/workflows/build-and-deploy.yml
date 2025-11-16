@@ -19,14 +19,23 @@ jobs:
       - name: Install system dependencies for image processing
         run: |
           sudo apt-get update
-          sudo apt-get install -y libvips-dev
+          sudo apt-get install -y imagemagick
       - name: Install root dependencies (for tools)
         run: npm ci || npm i
       - name: Install deps
         working-directory: site
         run: npm ci || npm i
-      - name: Generate thumbnails
-        run: node tools/make-thumbs.mjs
+      - name: Generate thumbnails with ImageMagick
+        run: |
+          mkdir -p thumbnails
+          find images -type f \( -iname "*.png" -o -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.tif" -o -iname "*.tiff" \) | while read img; do
+            basename=$(basename "$img" | sed 's/\.[^.]*$//')
+            echo "Processing $basename..."
+            convert "$img" -resize 2000x2000\> -quality 90 "thumbnails/${basename}_2000.jpg" 2>&1 || echo "Failed 2000px: $img"
+            convert "$img" -resize 800x800\> -quality 90 "thumbnails/${basename}_800.jpg" 2>&1 || echo "Failed 800px: $img"
+          done
+          echo "Generated thumbnails:"
+          ls -lh thumbnails/
       - name: Copy thumbnails and images to public
         run: |
           mkdir -p site/public
