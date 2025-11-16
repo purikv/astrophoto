@@ -13,6 +13,13 @@ export function getStaticPaths() {
 const { item } = Astro.props;
 const object = item.object;
 const session = item.session;
+
+// Full URLs for Open Graph
+const siteUrl = 'https://purikv.github.io';
+const pageUrl = `${siteUrl}${base}/object/${object.id}`;
+const imageUrl = item.preview
+  ? `${siteUrl}${base}/${item.preview.replace('_800', '_2000')}`
+  : `${siteUrl}${base}/thumbnails/default_2000.jpg`;
 ---
 
 <html lang="uk">
@@ -21,6 +28,28 @@ const session = item.session;
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{object.name} - Astro Gallery</title>
     <meta name="description" content={object.description} />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={pageUrl} />
+    <meta property="og:title" content={`${object.name} - Астрофотографія`} />
+    <meta property="og:description" content={object.description} />
+    <meta property="og:image" content={imageUrl} />
+    <meta property="og:image:width" content="2000" />
+    <meta property="og:image:height" content="1333" />
+    <meta property="og:locale" content="uk_UA" />
+    <meta property="og:site_name" content="Astro Gallery - Володимир Пурик" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content={pageUrl} />
+    <meta name="twitter:title" content={`${object.name} - Астрофотографія`} />
+    <meta name="twitter:description" content={object.description} />
+    <meta name="twitter:image" content={imageUrl} />
+
+    <!-- Additional meta -->
+    <meta name="author" content="Володимир Пурик" />
+    <link rel="canonical" href={pageUrl} />
     <style>
       * {
         box-sizing: border-box;
