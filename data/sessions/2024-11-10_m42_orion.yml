@@ -22,5 +22,5 @@ stacking_software: "Siril"
 processing_software: ["Siril", "GraXpert"]
 finals:
   - path: "images/m42/final/M42.png"
-    preview: "thumbnails/M42_800.jpg"
+    preview: "thumbnails/m42_800.jpg"
     plate_solved: false
