@@ -12,15 +12,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          lfs: true
-      - name: Verify LFS files downloaded
-        run: |
-          echo "Checking LFS files..."
-          git lfs ls-files | head -5
-          echo "Checking image file sizes..."
-          ls -lh images/m42/final/ || echo "No m42 directory"
-          file images/m42/final/M42.png || echo "No M42.png"
       - name: Setup Node
         uses: actions/setup-node@v4
         with:

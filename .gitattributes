@@ -1,11 +1,6 @@
 *.tif filter=lfs diff=lfs merge=lfs -text
 *.tiff filter=lfs diff=lfs merge=lfs -text
-*.png filter=lfs diff=lfs merge=lfs -text
-*.jpg filter=lfs diff=lfs merge=lfs -text
-*.jpeg filter=lfs diff=lfs merge=lfs -text
-
-# Exclude thumbnails from LFS (small files, can be stored in git)
-thumbnails/*.jpg !filter !diff !merge
+# PNG removed from LFS - stored in regular git to avoid LFS bandwidth limits
 *.fit filter=lfs diff=lfs merge=lfs -text
 *.fits filter=lfs diff=lfs merge=lfs -text
 *.xisf filter=lfs diff=lfs merge=lfs -text
