@@ -36,14 +36,21 @@ jobs:
           done
           echo "Generated thumbnails:"
           ls -lh thumbnails/
-      - name: Copy thumbnails and images to public
+      - name: Copy to public (for Astro to process)
         run: |
-          mkdir -p site/public
-          cp -r thumbnails site/public/
-          cp -r images site/public/
+          mkdir -p site/public/thumbnails
+          mkdir -p site/public/images
+          cp -r thumbnails/* site/public/thumbnails/
+          cp -r images/* site/public/images/
       - name: Build site
         working-directory: site
         run: npm run build
+      - name: Verify thumbnails in dist
+        run: |
+          echo "Checking if thumbnails exist in dist:"
+          ls -lh site/dist/thumbnails/ 2>/dev/null | head -10 || echo "No thumbnails in dist - Astro may have excluded them"
+          echo "Listing dist root:"
+          ls -la site/dist/
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
