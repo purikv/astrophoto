@@ -15,3 +15,5 @@ siril*.seq
 site/dist/
 node_modules/
 run_thumbs.bat
+thumbnails/
+site/src/data/gallery.json

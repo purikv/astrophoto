@@ -21,10 +21,13 @@ jobs:
       - name: Install deps
         working-directory: site
         run: npm ci || npm i
-      - name: Copy thumbnails to public
+      - name: Generate thumbnails
+        run: node tools/make-thumbs.mjs
+      - name: Copy thumbnails and images to public
         run: |
           mkdir -p site/public
           cp -r thumbnails site/public/
+          cp -r images site/public/
       - name: Build site
         working-directory: site
         run: npm run build

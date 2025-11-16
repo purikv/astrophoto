@@ -20,8 +20,8 @@ This is an astrophotography gallery repository that manages final images, metada
 
 3. **Image Processing**:
    - Final images stored in `images/<object>/final/` (TIFF/PNG/JPG)
-   - `tools/make_thumbs.py`: Generates thumbnails at 800px and 2000px widths
-   - Output saved to `thumbnails/` directory
+   - `tools/make-thumbs.mjs`: Generates thumbnails at 800px and 2000px widths
+   - Output saved to `thumbnails/` directory (auto-generated, not in git)
 
 4. **Static Site**:
    - Astro-based static site in `site/` directory
@@ -48,30 +48,29 @@ All commands must be run from the repository root unless otherwise specified:
 
 ### Development
 ```bash
+# Generate thumbnails and gallery data locally (optional for development):
+node tools/make-thumbs.mjs               # Generate thumbnails from images/
 cd site
-npm run dev              # Start Astro dev server (runs generate-gallery-json first via build script)
+npm run dev                              # Start Astro dev server (runs generate-gallery-json first)
 ```
 
 ### Production Build
 ```bash
 # Full build process (what GitHub Actions does):
-python -m pip install pillow              # Install image processing library
-python tools/make_thumbs.py               # Generate thumbnails from images/
-npm ci || npm i                           # Install root dependencies (YAML parser)
-cd site && npm ci || npm i                # Install site dependencies
-npm run generate                          # Generate gallery.json from YAML metadata
-npm run build                             # Build Astro site (also runs generate step)
+npm ci || npm i                          # Install root dependencies (YAML parser, sharp for images)
+node tools/make-thumbs.mjs               # Generate thumbnails from images/
+cd site && npm ci || npm i               # Install site dependencies
+npm run build                            # Build Astro site (runs generate-gallery-json + build)
 ```
 
-### Python Environment
-No virtual environment is used. The only Python dependency is Pillow (PIL).
+**Note**: `thumbnails/` and `site/src/data/gallery.json` are auto-generated and excluded from git. GitHub Actions regenerates them on every deploy.
 
 ## Key File Locations
 
 - Metadata: `data/objects/*.yml` and `data/sessions/*.yml`
-- Images: `images/<object>/final/` (original TIFF/PNG/JPG files)
-- Thumbnails: `thumbnails/` (generated, 800px and 2000px widths)
-- Generated gallery data: `site/src/data/gallery.json`
+- Images: `images/<object>/final/` (original TIFF/PNG/JPG files, tracked in git)
+- Thumbnails: `thumbnails/` (auto-generated, 800px and 2000px widths, **not in git**)
+- Generated gallery data: `site/src/data/gallery.json` (**auto-generated, not in git**)
 - Astro pages: `site/src/pages/`
 - Astro components: `site/src/components/`
 
@@ -81,22 +80,23 @@ When adding new astrophoto content:
 1. Place final images in `images/<object>/final/`
 2. Create/update object YAML in `data/objects/` with astronomical metadata
 3. Create session YAML in `data/sessions/` with imaging session details
-4. Run `python tools/make_thumbs.py` to generate preview thumbnails
+4. (Optional) Run `node tools/make-thumbs.mjs` to preview thumbnails locally
 5. Verify with `cd site && npm run dev`
-6. Push to main branch - GitHub Actions handles build and deployment
+6. Commit only YAML files and images - thumbnails will be auto-generated on deploy
+7. Push to main branch - GitHub Actions handles thumbnail generation and deployment
 
 ## Deployment
 
 GitHub Actions workflow (`.github/workflows/build-and-deploy.yml`):
 - Triggers on push to main branch
-- Checks out repository with Git LFS
-- Generates thumbnails via Python script
-- Runs build process (generate JSON + Astro build)
+- Checks out repository (images are committed to git)
+- Installs Node.js dependencies
+- **Generates thumbnails** via `node tools/make-thumbs.mjs`
+- **Generates gallery.json** during build process
 - Copies `thumbnails/` and `images/` to `site/public/`
+- Builds Astro site
 - Deploys `site/dist/` to GitHub Pages
 
 The site is served from GitHub Pages at `https://purikv.github.io/astrophoto` (configured via `base` in `site/astro.config.mjs`).
 
-## Git LFS
-
-Large files (TIFF/FITS/RAW) are tracked with Git LFS. When cloning or pulling, ensure LFS files are downloaded with `git lfs pull`.
+**Important**: Thumbnails and gallery.json are generated fresh on every deployment. Do not commit these to git.
