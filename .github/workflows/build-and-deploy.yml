@@ -16,34 +16,22 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - name: Install system dependencies for image processing
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y imagemagick
       - name: Install root dependencies (for tools)
         run: npm ci || npm i
-      - name: Install deps
+      - name: Install site dependencies
         working-directory: site
         run: npm ci || npm i
-      - name: Generate thumbnails with ImageMagick (Latin filenames for Telegram)
-        run: |
-          mkdir -p thumbnails
-          find images -type f \( -iname "*.png" -o -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.tif" -o -iname "*.tiff" \) | while read img; do
-            # Extract object ID from path (e.g., images/m42/final/M42.png -> m42)
-            objectid=$(echo "$img" | cut -d'/' -f2)
-            echo "Processing $img -> $objectid"
-            convert "$img" -resize 2000x2000\> -quality 90 "thumbnails/${objectid}_2000.jpg" 2>&1 || echo "Failed 2000px: $img"
-            convert "$img" -resize 800x800\> -quality 90 "thumbnails/${objectid}_800.jpg" 2>&1 || echo "Failed 800px: $img"
-          done
-          echo "Generated thumbnails (Latin names for Telegram compatibility):"
-          ls -lh thumbnails/
+      - name: Validate YAML files
+        run: npm run validate
+      - name: Generate thumbnails
+        run: npm run thumbs
       - name: Copy to public (for Astro to process)
         run: |
           mkdir -p site/public/thumbnails
           mkdir -p site/public/images
           cp -r thumbnails/* site/public/thumbnails/
           cp -r images/* site/public/images/
-      - name: Build site
+      - name: Build site (includes gallery.json generation)
         working-directory: site
         run: npm run build
       - name: Verify thumbnails in dist

@@ -1,0 +1,71 @@
+# Шаблон для опису сесії зйомки
+# Скопіюйте цей файл в data/sessions/ та перейменуйте на YYYY-MM-DD_<object-id>_<optional-name>.yml
+
+# ОБОВ'ЯЗКОВІ ПОЛЯ
+
+# ID об'єкта (повинен існувати в data/objects/)
+object_id: "object-id"
+
+# Дата зйомки у форматі ISO (UTC)
+date_utc: "2024-01-01"
+
+# Місцезнаходження
+location: "Dnipropetrovska oblast, UA"
+
+# Bortle шкала освітлення неба (1-9, де 1 = найтемніше)
+bortle: 5
+
+# ОБЛАДНАННЯ
+
+camera: "Canon 450D (mod)"  # Модель камери
+sensor_temp_c: null  # Температура сенсора (°C) або null
+
+mount: "AZ-EQ5 GT"  # Монтування
+telescope: "Arsenal GSO 203/1000 N (f/5)"  # Телескоп
+
+# Опціональне обладнання
+coma_corrector: "TS GPU CC"  # Кома-коректор або null
+filters: ["UV IR-cut Anti-Halo"]  # Масив фільтрів або []
+
+# Гідування (опціонально, видаліть якщо не використовувалось)
+guiding:
+  camera: "ZWO ASI 120 M"
+  rms_arcsec: null  # RMS помилка у arcsec або null
+  software: "PHD2"
+
+# ЕКСПОЗИЦІЇ (можна додати декілька наборів)
+subs:
+  - band: "Luminance"  # Luminance, RGB, Ha, OIII, SII тощо
+    iso: 800
+    exposure_s: 300  # Експозиція в секундах
+    count: 37  # Кількість кадрів
+
+  # Приклад додаткового набору:
+  # - band: "Ha"
+  #   iso: 800
+  #   exposure_s: 180
+  #   count: 25
+
+# КАЛІБРУВАЛЬНІ КАДРИ
+calibration:
+  bias: 60  # Кількість bias кадрів
+  darks:
+    exposure_s: 300  # Експозиція dark кадрів
+    count: 28
+    temp_c: null  # Температура або null
+  flats:
+    count: 60
+    method: "flat panel"  # Метод отримання flat
+
+# ОБРОБКА
+stacking_software: "Siril 1.4"  # Софт для стекінгу
+processing_software: ["Siril", "GraXpert"]  # Софт для обробки
+
+# ФІНАЛЬНІ ЗОБРАЖЕННЯ
+finals:
+  - path: "images/object-id/final/image.png"  # Шлях до фінального зображення
+    preview: "thumbnails/object-id_800.jpg"  # Шлях до превью (генерується автоматично)
+    plate_solved: true  # Чи виконано plate solving
+
+# Примітки (опціонально)
+notes: ""

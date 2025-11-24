@@ -3,6 +3,12 @@
   "private": true,
   "type": "module",
   "description": "Build tools for astro-gallery",
+  "scripts": {
+    "add": "node tools/add-gallery-item.mjs",
+    "validate": "node tools/validate-yaml.mjs",
+    "thumbs": "node tools/make-thumbs.mjs",
+    "generate": "cd site && node ../tools/generate-gallery-json.mjs"
+  },
   "dependencies": {
     "sharp": "^0.34.5",
     "yaml": "^2.4.2"

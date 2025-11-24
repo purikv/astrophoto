@@ -76,27 +76,64 @@ npm run build                            # Build Astro site (runs generate-galle
 
 ## Development Workflow
 
-When adding new astrophoto content:
+### Adding New Astrophoto Content (Recommended Method)
+
+Use the interactive CLI tool for easy content addition:
+
+```bash
+node tools/add-gallery-item.mjs
+```
+
+This interactive tool will guide you through:
+- Creating new object definitions with all required metadata
+- Setting up imaging session details (equipment, exposures, calibration)
+- Validating input and preventing common mistakes
+- Generating properly formatted YAML files
+
+### Manual Method (Using Templates)
+
+If you prefer to create files manually:
+
+1. Copy templates from `data/templates/`:
+   - `object-template.yml` → `data/objects/<object-id>.yml`
+   - `session-template.yml` → `data/sessions/YYYY-MM-DD_<object-id>.yml`
+
+2. Fill in all required fields following the template comments
+
+### Standard Workflow (Both Methods)
+
 1. Place final images in `images/<object>/final/`
-2. Create/update object YAML in `data/objects/` with astronomical metadata
-3. Create session YAML in `data/sessions/` with imaging session details
-4. (Optional) Run `node tools/make-thumbs.mjs` to preview thumbnails locally
-5. Verify with `cd site && npm run dev`
-6. Commit only YAML files and images - thumbnails will be auto-generated on deploy
-7. Push to main branch - GitHub Actions handles thumbnail generation and deployment
+2. Create metadata files (using CLI tool or templates)
+3. (Optional) Verify locally with `cd site && npm run dev`
+4. Commit YAML files and images: `git add data/ images/ && git commit -m "..."`
+5. Push to main branch: `git push`
+
+**GitHub Actions automatically:**
+- Validates YAML files (`npm run validate`) - deployment fails if invalid
+- Generates thumbnails (`npm run thumbs`)
+- Generates gallery.json (`npm run generate`)
+- Builds and deploys the site to GitHub Pages
+
+**Local testing commands (optional):**
+- `npm run validate` - Check YAML validity before committing
+- `npm run thumbs` - Preview thumbnails locally
+- `cd site && npm run dev` - Run development server
 
 ## Deployment
 
 GitHub Actions workflow (`.github/workflows/build-and-deploy.yml`):
-- Triggers on push to main branch
-- Checks out repository (images are committed to git)
-- Installs Node.js dependencies
-- **Generates thumbnails** via `node tools/make-thumbs.mjs`
-- **Generates gallery.json** during build process
-- Copies `thumbnails/` and `images/` to `site/public/`
-- Builds Astro site
-- Deploys `site/dist/` to GitHub Pages
+1. **Triggers** on push to main branch
+2. **Checks out** repository (images are committed to git)
+3. **Installs** Node.js dependencies (root + site)
+4. **Validates** YAML files (`npm run validate`) - **fails build if invalid**
+5. **Generates thumbnails** via `npm run thumbs` (using sharp library)
+6. **Copies** `thumbnails/` and `images/` to `site/public/`
+7. **Builds** Astro site (includes `npm run generate` for gallery.json)
+8. **Deploys** `site/dist/` to GitHub Pages
 
 The site is served from GitHub Pages at `https://purikv.github.io/astrophoto` (configured via `base` in `site/astro.config.mjs`).
 
-**Important**: Thumbnails and gallery.json are generated fresh on every deployment. Do not commit these to git.
+**Important**:
+- Thumbnails and gallery.json are generated fresh on every deployment - do not commit these to git
+- YAML validation is enforced - invalid metadata will prevent deployment
+- All generation steps are automated - no manual intervention needed
