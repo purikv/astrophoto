@@ -1,11 +1,11 @@
 object_id: ngc7380
-date_utc: "2024-09-15"
+date_utc: "2025-09-15"
 location: "Dnipropetrovska oblast, UA"
 bortle: 5
 camera: "Canon 450D (mod)"
 sensor_temp_c: null
 mount: "AZ-EQ5 GT"
-telescope: "Arsenal SGO 203/1000 (f/5)"
+telescope: "Arsenal GSO 203/1000 N (f/5)"
 coma_corrector: "TS GPU CC"
 filters: ["UV IR-cut Anti-Halo"]
 guiding: { camera: "ZWO ASI 120 M", rms_arcsec: null, software: "PHD2" }

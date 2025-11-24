@@ -51,6 +51,13 @@ for (const f of fs.readdirSync(sessionsDir)) {
   });
 }
 
+// Sort gallery by date (newest first)
+gallery.sort((a, b) => {
+  const dateA = a.session.date_utc || '';
+  const dateB = b.session.date_utc || '';
+  return dateB.localeCompare(dateA);
+});
+
 // Write JSON file
 fs.writeFileSync(outFile, JSON.stringify(gallery, null, 2), 'utf8');
 console.log(`Generated ${outFile} with ${gallery.length} items`);
