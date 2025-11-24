@@ -20,7 +20,7 @@ This is an astrophotography gallery repository that manages final images, metada
 
 3. **Image Processing**:
    - Final images stored in `images/<object>/final/` (TIFF/PNG/JPG)
-   - `tools/make-thumbs.mjs`: Generates thumbnails at 800px and 2000px widths
+   - `tools/make-thumbs.mjs`: Generates thumbnails at 800px (gallery) and full-size (maximum quality, no resize)
    - Output saved to `thumbnails/` directory (auto-generated, not in git)
 
 4. **Static Site**:
@@ -110,7 +110,7 @@ If you prefer to create files manually:
 
 **GitHub Actions automatically:**
 - Validates YAML files (`npm run validate`) - deployment fails if invalid
-- Generates thumbnails (`npm run thumbs`)
+- Generates thumbnails (`npm run thumbs`) - 800px for gallery + full-size high quality
 - Generates gallery.json (`npm run generate`)
 - Builds and deploys the site to GitHub Pages
 
@@ -127,6 +127,8 @@ GitHub Actions workflow (`.github/workflows/build-and-deploy.yml`):
 3. **Installs** Node.js dependencies (root + site)
 4. **Validates** YAML files (`npm run validate`) - **fails build if invalid**
 5. **Generates thumbnails** via `npm run thumbs` (using sharp library)
+   - 800px width for gallery thumbnails
+   - Full-size (no resize) for high-quality viewing with 95% JPEG quality
 6. **Copies** `thumbnails/` and `images/` to `site/public/`
 7. **Builds** Astro site (includes `npm run generate` for gallery.json)
 8. **Deploys** `site/dist/` to GitHub Pages

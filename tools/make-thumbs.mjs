@@ -9,7 +9,10 @@ const rootDir = path.resolve(__dirname, '..');
 
 const SRC_DIRS = [path.join(rootDir, 'images')];
 const OUT_DIR = path.join(rootDir, 'thumbnails');
-const SIZES = [2000, 800];
+const SIZES = [
+  { width: 800, suffix: '800' },    // Gallery thumbnail
+  { width: null, suffix: '2000' }   // Full-size (no resize, max quality)
+];
 const IMAGE_EXTS = ['.tif', '.tiff', '.png', '.jpg', '.jpeg'];
 
 // Ensure output directory exists
@@ -54,22 +57,34 @@ async function processImage(srcPath) {
     const metadata = await image.metadata();
     console.log(`Processing ${baseName} (${objectId}): ${metadata.format} ${metadata.width}x${metadata.height}, channels: ${metadata.channels}, depth: ${metadata.depth}`);
 
-    for (const width of SIZES) {
+    for (const size of SIZES) {
       // Use object ID for thumbnail name (Latin only - no Cyrillic)
-      const outPath = path.join(OUT_DIR, `${objectId}_${width}.jpg`);
+      const outPath = path.join(OUT_DIR, `${objectId}_${size.suffix}.jpg`);
 
-      // Convert to RGB if needed and process
-      await sharp(srcPath)
+      // Start with sharp instance
+      let processor = sharp(srcPath)
         .ensureAlpha()
-        .flatten({ background: { r: 0, g: 0, b: 0 } })
-        .resize(width, null, {
+        .flatten({ background: { r: 0, g: 0, b: 0 } });
+
+      // Apply resize only if width is specified (for 800px version)
+      // For full-size version (width: null), skip resize to preserve original dimensions
+      if (size.width !== null) {
+        processor = processor.resize(size.width, null, {
           withoutEnlargement: true,
           fit: 'inside'
-        })
-        .jpeg({ quality: 90 })
+        });
+        console.log(`Resizing to ${size.width}px width...`);
+      } else {
+        console.log(`Keeping original size (full quality)...`);
+      }
+
+      // Convert to JPEG with high quality
+      await processor
+        .jpeg({ quality: 95, mozjpeg: true })
         .toFile(outPath);
 
-      console.log(`Saved ${outPath}`);
+      const stats = fs.statSync(outPath);
+      console.log(`Saved ${outPath} (${(stats.size / 1024 / 1024).toFixed(2)} MB)`);
     }
   } catch (err) {
     console.error(`Error processing ${srcPath}:`, err.message);

@@ -29,7 +29,7 @@ npm run add
 
 GitHub Actions **автоматично** виконає:
 - ✅ Валідацію YAML файлів (`npm run validate`)
-- ✅ Генерацію thumbnails (`npm run thumbs`)
+- ✅ Генерацію thumbnails (`npm run thumbs`) - 800px для галереї + full-size високої якості
 - ✅ Генерацію gallery.json (`npm run generate`)
 - ✅ Збірку та деплой сайту на Pages
 
