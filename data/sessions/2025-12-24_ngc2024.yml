@@ -1,0 +1,26 @@
+object_id: ngc2024
+date_utc: "2025-12-24"
+location: "Dnipropetrovska oblast, UA"
+bortle: 5
+camera: "Canon 450D (mod)"
+sensor_temp_c: null
+mount: "AZ-EQ5 GT"
+telescope: "Arsenal GSO 203/1000 N (f/5)"
+coma_corrector: "TS GPU CC"
+filters: ["UV IR-cut Anti-Halo"]
+guiding: { camera: "ZWO ASI 120 M", rms_arcsec: null, software: "PHD2" }
+subs:
+  - band: "RGB"
+    iso: 800
+    exposure_s: 180
+    count: 61
+calibration:
+  bias: 50
+  darks: { exposure_s: 180, count: 25, temp_c: null }
+  flats: { count: 40, method: "flat panel" }
+stacking_software: "Siril"
+processing_software: ["Siril", "GraXpert", "VeraLux"]
+finals:
+  - path: "images/ngc2024/final/ngc2024-flame-horsehead.png"
+    preview: "thumbnails/ngc2024_800.jpg"
+    plate_solved: false

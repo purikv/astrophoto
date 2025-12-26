@@ -24,7 +24,14 @@
       "Bash(npm run dev:*)",
       "Bash(git lfs:*)",
       "Bash(find:*)",
-      "WebFetch(domain:purikv.github.io)"
+      "WebFetch(domain:purikv.github.io)",
+      "Bash(node tools/generate-gallery-json.mjs:*)",
+      "Bash(node tools/validate-yaml.mjs:*)",
+      "Bash(gh run:*)",
+      "WebFetch(domain:github.com)",
+      "Bash(npm run thumbs:*)",
+      "Bash(git restore:*)",
+      "Bash(npm run validate:*)"
     ],
     "deny": [],
     "ask": []
