@@ -227,75 +227,266 @@ const imageUrl = item.preview
 
       /* Section Styles */
       .section {
-        margin-bottom: 3rem;
-        padding-bottom: 3rem;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        margin-bottom: 2rem;
       }
 
       .section:last-child {
-        border-bottom: none;
-        padding-bottom: 0;
+        margin-bottom: 0;
       }
 
       .section-title {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
         font-size: 0.7rem;
-        font-weight: 400;
-        margin: 0 0 1.5rem 0;
-        color: #666;
+        font-weight: 500;
+        margin: 0 0 1rem 0;
+        color: #888;
         text-transform: uppercase;
         letter-spacing: 0.1em;
+      }
+
+      .section-title svg {
+        opacity: 0.6;
       }
 
       .section-content {
         font-size: 0.95rem;
         color: #bbb;
-        line-height: 1.8;
+        line-height: 1.7;
         font-weight: 300;
-      }
-
-      /* Info Grid */
-      .info-grid {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
         margin-bottom: 2rem;
       }
 
-      .info-item {
+      /* Data Table - Premium Compact Design */
+      .data-table {
+        background: rgba(255, 255, 255, 0.02);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 8px;
+        overflow: hidden;
+      }
+
+      .data-table.compact {
+        background: transparent;
+        border: none;
+      }
+
+      .data-row {
         display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        transition: all 0.2s ease;
+        min-height: 42px;
+      }
+
+      .data-table.compact .data-row {
+        padding: 0.65rem 0;
+      }
+
+      .data-row:last-child {
+        border-bottom: none;
+      }
+
+      .data-row:hover {
+        background: rgba(168, 85, 247, 0.03);
+      }
+
+      .data-row.aliases-row {
         flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+        padding-top: 0.85rem;
+        padding-bottom: 0.85rem;
+      }
+
+      .data-cell {
+        display: flex;
+        align-items: center;
         gap: 0.5rem;
       }
 
-      .info-label {
-        font-size: 0.65rem;
-        color: #666;
+      .data-cell.label {
+        font-size: 0.7rem;
+        color: #888;
         text-transform: uppercase;
-        letter-spacing: 0.1em;
+        letter-spacing: 0.05em;
         font-weight: 400;
+        min-width: 110px;
+        flex-shrink: 0;
       }
 
-      .info-value {
-        font-size: 0.95rem;
+      .data-cell.label svg {
+        opacity: 0.5;
+        flex-shrink: 0;
+      }
+
+      .data-cell.value {
+        font-size: 0.875rem;
         color: #ddd;
         font-weight: 300;
-        line-height: 1.6;
+        text-align: right;
+        flex: 1;
+        line-height: 1.5;
       }
 
-      /* Aliases */
-      .aliases {
+      /* Aliases Compact */
+      .aliases-compact {
         display: flex;
         flex-wrap: wrap;
-        gap: 0.5rem;
+        gap: 0.4rem;
+        width: 100%;
       }
 
-      .alias-badge {
-        background: transparent;
-        padding: 0.25rem 0.6rem;
+      .alias-tag {
+        background: rgba(168, 85, 247, 0.1);
+        padding: 0.2rem 0.5rem;
+        font-size: 0.7rem;
+        color: #a855f7;
+        border: 1px solid rgba(168, 85, 247, 0.2);
+        border-radius: 4px;
+        font-weight: 400;
+        white-space: nowrap;
+      }
+
+      /* Bortle Indicator */
+      .bortle-indicator {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        width: 100%;
+      }
+
+      .bortle-value {
+        font-weight: 500;
+        color: #fff;
+        min-width: 16px;
+      }
+
+      .bortle-bar {
+        flex: 1;
+        height: 6px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 3px;
+        overflow: hidden;
+      }
+
+      .bortle-fill {
+        height: 100%;
+        border-radius: 3px;
+        transition: width 0.3s ease;
+        box-shadow: 0 0 8px currentColor;
+      }
+
+      /* Exposure Table - Premium Design */
+      .exposure-table {
+        background: rgba(255, 255, 255, 0.02);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 8px;
+        overflow: hidden;
+      }
+
+      .exposure-row {
+        display: grid;
+        grid-template-columns: 100px 1fr auto;
+        gap: 1rem;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        transition: all 0.2s ease;
+      }
+
+      .exposure-row:last-of-type {
+        border-bottom: none;
+      }
+
+      .exposure-row:hover {
+        background: rgba(168, 85, 247, 0.03);
+      }
+
+      .exposure-band {
         font-size: 0.75rem;
-        color: #888;
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        font-weight: 500;
+        color: #a855f7;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        padding: 0.25rem 0.5rem;
+        background: rgba(168, 85, 247, 0.1);
+        border: 1px solid rgba(168, 85, 247, 0.2);
+        border-radius: 4px;
+        text-align: center;
+        width: fit-content;
+      }
+
+      .exposure-details {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+      }
+
+      .exposure-count {
+        font-size: 0.875rem;
+        color: #ddd;
         font-weight: 300;
+      }
+
+      .exposure-iso {
+        font-size: 0.7rem;
+        color: #888;
+      }
+
+      .exposure-time {
+        font-size: 0.875rem;
+        color: #fff;
+        font-weight: 400;
+        text-align: right;
+        min-width: 60px;
+      }
+
+      .exposure-total {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem;
+        background: rgba(168, 85, 247, 0.05);
+        border-top: 1px solid rgba(168, 85, 247, 0.2);
+      }
+
+      .total-label {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.7rem;
+        color: #a855f7;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        font-weight: 500;
+      }
+
+      .total-label svg {
+        opacity: 0.8;
+      }
+
+      .total-value {
+        font-size: 1rem;
+        color: #fff;
+        font-weight: 500;
+      }
+
+      /* Guiding RMS Badge */
+      .guiding-rms {
+        display: inline-block;
+        margin-left: 0.5rem;
+        padding: 0.15rem 0.4rem;
+        background: rgba(16, 185, 129, 0.1);
+        color: #10b981;
+        border: 1px solid rgba(16, 185, 129, 0.2);
+        border-radius: 4px;
+        font-size: 0.7rem;
+        font-weight: 500;
       }
 
       /* Related Items */
@@ -358,6 +549,82 @@ const imageUrl = item.preview
         overflow: hidden;
         text-overflow: ellipsis;
       }
+
+      /* Responsive Adjustments */
+      @media (max-width: 768px) {
+        .data-cell.label {
+          min-width: 90px;
+          font-size: 0.65rem;
+        }
+
+        .data-cell.value {
+          font-size: 0.8rem;
+        }
+
+        .exposure-row {
+          grid-template-columns: 80px 1fr auto;
+          gap: 0.75rem;
+          padding: 0.65rem 0.75rem;
+        }
+
+        .exposure-band {
+          font-size: 0.7rem;
+          padding: 0.2rem 0.4rem;
+        }
+
+        .exposure-count {
+          font-size: 0.8rem;
+        }
+
+        .exposure-time {
+          font-size: 0.8rem;
+          min-width: 50px;
+        }
+
+        .exposure-total {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 0.5rem;
+          padding: 0.75rem;
+        }
+
+        .total-value {
+          font-size: 0.9rem;
+          align-self: flex-end;
+        }
+
+        .sidebar-title {
+          font-size: 1.5rem;
+        }
+
+        .sidebar-subtitle {
+          font-size: 0.85rem;
+        }
+      }
+
+      /* Smooth Animations */
+      @media (prefers-reduced-motion: no-preference) {
+        .data-row {
+          animation: fadeInUp 0.3s ease-out backwards;
+        }
+
+        .data-row:nth-child(1) { animation-delay: 0.05s; }
+        .data-row:nth-child(2) { animation-delay: 0.1s; }
+        .data-row:nth-child(3) { animation-delay: 0.15s; }
+        .data-row:nth-child(4) { animation-delay: 0.2s; }
+        .data-row:nth-child(5) { animation-delay: 0.25s; }
+
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+      }
     </style>
   </head>
   <body>
@@ -391,43 +658,94 @@ const imageUrl = item.preview
         <p class="sidebar-subtitle">{object.type} · {object.constellation}</p>
 
         <div class="section">
-          <h2 class="section-title">About</h2>
           <div class="section-content">
             <p>{object.description}</p>
             {object.extended_description && (
-              <p style="margin-top: 1.5rem;">{object.extended_description}</p>
+              <p style="margin-top: 1rem; opacity: 0.8;">{object.extended_description}</p>
             )}
           </div>
         </div>
 
         <div class="section">
-          <h2 class="section-title">Quick Facts</h2>
-          <div class="info-grid">
+          <h2 class="section-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M12 16v-4M12 8h.01"/>
+            </svg>
+            Quick Facts
+          </h2>
+          <div class="data-table">
             {object.distance_ly && (
-              <div class="info-item">
-                <span class="info-label">Distance</span>
-                <span class="info-value">{object.distance_ly.toLocaleString('uk-UA')} light-years</span>
+              <div class="data-row">
+                <div class="data-cell label">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                    <circle cx="12" cy="10" r="3"/>
+                  </svg>
+                  Distance
+                </div>
+                <div class="data-cell value">{object.distance_ly.toLocaleString('uk-UA')} св.р.</div>
               </div>
             )}
             {session?.date_utc && (
-              <div class="info-item">
-                <span class="info-label">Captured</span>
-                <span class="info-value">{session.date_utc}</span>
+              <div class="data-row">
+                <div class="data-cell label">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                    <line x1="16" y1="2" x2="16" y2="6"/>
+                    <line x1="8" y1="2" x2="8" y2="6"/>
+                    <line x1="3" y1="10" x2="21" y2="10"/>
+                  </svg>
+                  Captured
+                </div>
+                <div class="data-cell value">{session.date_utc}</div>
               </div>
             )}
             {session?.location && (
-              <div class="info-item">
-                <span class="info-label">Location</span>
-                <span class="info-value">{session.location}{session.bortle && ` · Bortle ${session.bortle}`}</span>
+              <div class="data-row">
+                <div class="data-cell label">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="2" y1="12" x2="22" y2="12"/>
+                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                  </svg>
+                  Location
+                </div>
+                <div class="data-cell value">{session.location}</div>
+              </div>
+            )}
+            {session?.bortle && (
+              <div class="data-row">
+                <div class="data-cell label">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                  </svg>
+                  Bortle
+                </div>
+                <div class="data-cell value">
+                  <div class="bortle-indicator">
+                    <span class="bortle-value">{session.bortle}</span>
+                    <div class="bortle-bar">
+                      <div class="bortle-fill" style={`width: ${(session.bortle / 9) * 100}%; background: ${session.bortle <= 3 ? '#10b981' : session.bortle <= 6 ? '#f59e0b' : '#ef4444'}`}></div>
+                    </div>
+                  </div>
+                </div>
               </div>
             )}
             {object.aliases && object.aliases.length > 0 && (
-              <div class="info-item">
-                <span class="info-label">Also known as</span>
-                <div class="aliases">
-                  {object.aliases.map((alias) => (
-                    <span class="alias-badge">{alias}</span>
-                  ))}
+              <div class="data-row aliases-row">
+                <div class="data-cell label">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M4 7h16M4 12h16M4 17h10"/>
+                  </svg>
+                  Also known as
+                </div>
+                <div class="data-cell value">
+                  <div class="aliases-compact">
+                    {object.aliases.map((alias) => (
+                      <span class="alias-tag">{alias}</span>
+                    ))}
+                  </div>
                 </div>
               </div>
             )}
@@ -436,22 +754,34 @@ const imageUrl = item.preview
 
         {session?.subs && session.subs.length > 0 && (
           <div class="section">
-            <h2 class="section-title">Exposure</h2>
-            <div class="info-grid">
+            <h2 class="section-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <polyline points="12 6 12 12 16 14"/>
+              </svg>
+              Exposure
+            </h2>
+            <div class="exposure-table">
               {session.subs.map((sub) => (
-                <div class="info-item">
-                  <span class="info-label">{sub.band}</span>
-                  <span class="info-value">
-                    {sub.count} × {sub.exposure_s}s
-                    {sub.iso && ` · ISO ${sub.iso}`}
-                  </span>
+                <div class="exposure-row">
+                  <div class="exposure-band">{sub.band}</div>
+                  <div class="exposure-details">
+                    <span class="exposure-count">{sub.count} × {sub.exposure_s}s</span>
+                    {sub.iso && <span class="exposure-iso">ISO {sub.iso}</span>}
+                  </div>
+                  <div class="exposure-time">{((sub.count * sub.exposure_s) / 3600).toFixed(2)}h</div>
                 </div>
               ))}
-              <div class="info-item">
-                <span class="info-label">Total integration</span>
-                <span class="info-value">
-                  {(session.subs.reduce((acc, sub) => acc + (sub.count * sub.exposure_s), 0) / 3600).toFixed(1)} hours
-                </span>
+              <div class="exposure-total">
+                <div class="total-label">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="20 6 9 17 4 12"/>
+                  </svg>
+                  Total Integration
+                </div>
+                <div class="total-value">
+                  {(session.subs.reduce((acc, sub) => acc + (sub.count * sub.exposure_s), 0) / 3600).toFixed(2)} години
+                </div>
               </div>
             </div>
           </div>
@@ -459,45 +789,88 @@ const imageUrl = item.preview
 
         {(session?.camera || session?.telescope) && (
           <div class="section">
-            <h2 class="section-title">Equipment</h2>
-            <div class="info-grid">
+            <h2 class="section-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                <circle cx="12" cy="13" r="4"/>
+              </svg>
+              Equipment
+            </h2>
+            <div class="data-table compact">
               {session.camera && (
-                <div class="info-item">
-                  <span class="info-label">Camera</span>
-                  <span class="info-value">{session.camera}</span>
+                <div class="data-row">
+                  <div class="data-cell label">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="2" y="4" width="20" height="16" rx="2"/>
+                      <circle cx="12" cy="12" r="3"/>
+                    </svg>
+                    Camera
+                  </div>
+                  <div class="data-cell value">{session.camera}</div>
                 </div>
               )}
               {session.telescope && (
-                <div class="info-item">
-                  <span class="info-label">Telescope</span>
-                  <span class="info-value">{session.telescope}</span>
+                <div class="data-row">
+                  <div class="data-cell label">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <circle cx="12" cy="12" r="3"/>
+                      <line x1="12" y1="1" x2="12" y2="9"/>
+                      <line x1="12" y1="15" x2="12" y2="23"/>
+                    </svg>
+                    Telescope
+                  </div>
+                  <div class="data-cell value">{session.telescope}</div>
                 </div>
               )}
               {session.mount && (
-                <div class="info-item">
-                  <span class="info-label">Mount</span>
-                  <span class="info-value">{session.mount}</span>
+                <div class="data-row">
+                  <div class="data-cell label">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <polyline points="6 9 12 15 18 9"/>
+                    </svg>
+                    Mount
+                  </div>
+                  <div class="data-cell value">{session.mount}</div>
                 </div>
               )}
               {session.coma_corrector && (
-                <div class="info-item">
-                  <span class="info-label">Corrector</span>
-                  <span class="info-value">{session.coma_corrector}</span>
+                <div class="data-row">
+                  <div class="data-cell label">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <circle cx="12" cy="12" r="10"/>
+                      <circle cx="12" cy="12" r="6"/>
+                      <circle cx="12" cy="12" r="2"/>
+                    </svg>
+                    Corrector
+                  </div>
+                  <div class="data-cell value">{session.coma_corrector}</div>
                 </div>
               )}
               {session.filters && session.filters.length > 0 && (
-                <div class="info-item">
-                  <span class="info-label">Filters</span>
-                  <span class="info-value">{session.filters.join(', ')}</span>
+                <div class="data-row">
+                  <div class="data-cell label">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                    </svg>
+                    Filters
+                  </div>
+                  <div class="data-cell value">{session.filters.join(', ')}</div>
                 </div>
               )}
               {session.guiding && (
-                <div class="info-item">
-                  <span class="info-label">Guiding</span>
-                  <span class="info-value">
+                <div class="data-row">
+                  <div class="data-cell label">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                    </svg>
+                    Guiding
+                  </div>
+                  <div class="data-cell value">
                     {session.guiding.software}
-                    {session.guiding.rms_arcsec && session.guiding.rms_arcsec !== null && ` · RMS ${session.guiding.rms_arcsec}"`}
-                  </span>
+                    {session.guiding.rms_arcsec && session.guiding.rms_arcsec !== null && (
+                      <span class="guiding-rms">RMS {session.guiding.rms_arcsec}"</span>
+                    )}
+                  </div>
                 </div>
               )}
             </div>
@@ -506,18 +879,35 @@ const imageUrl = item.preview
 
         {(session?.stacking_software || session?.processing_software) && (
           <div class="section">
-            <h2 class="section-title">Processing</h2>
-            <div class="info-grid">
+            <h2 class="section-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+              </svg>
+              Processing
+            </h2>
+            <div class="data-table compact">
               {session.stacking_software && (
-                <div class="info-item">
-                  <span class="info-label">Stacking</span>
-                  <span class="info-value">{session.stacking_software}</span>
+                <div class="data-row">
+                  <div class="data-cell label">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                      <line x1="9" y1="9" x2="15" y2="15"/>
+                      <line x1="15" y1="9" x2="9" y2="15"/>
+                    </svg>
+                    Stacking
+                  </div>
+                  <div class="data-cell value">{session.stacking_software}</div>
                 </div>
               )}
               {session.processing_software && session.processing_software.length > 0 && (
-                <div class="info-item">
-                  <span class="info-label">Processing</span>
-                  <span class="info-value">{session.processing_software.join(', ')}</span>
+                <div class="data-row">
+                  <div class="data-cell label">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M20 7h-9M14 17H5M17 3v18M10 7l-3 10"/>
+                    </svg>
+                    Processing
+                  </div>
+                  <div class="data-cell value">{session.processing_software.join(', ')}</div>
                 </div>
               )}
             </div>
@@ -526,18 +916,38 @@ const imageUrl = item.preview
 
         {(object.credits || object.license) && (
           <div class="section">
-            <h2 class="section-title">Copyright</h2>
-            <div class="info-grid">
+            <h2 class="section-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="15" y1="9" x2="9" y2="15"/>
+                <line x1="9" y1="9" x2="15" y2="15"/>
+              </svg>
+              Copyright
+            </h2>
+            <div class="data-table compact">
               {object.credits && (
-                <div class="info-item">
-                  <span class="info-label">Author</span>
-                  <span class="info-value">{object.credits}</span>
+                <div class="data-row">
+                  <div class="data-cell label">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                      <circle cx="12" cy="7" r="4"/>
+                    </svg>
+                    Author
+                  </div>
+                  <div class="data-cell value">{object.credits}</div>
                 </div>
               )}
               {object.license && (
-                <div class="info-item">
-                  <span class="info-label">License</span>
-                  <span class="info-value">{object.license}</span>
+                <div class="data-row">
+                  <div class="data-cell label">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+                      <line x1="12" y1="18" x2="12.01" y2="18"/>
+                      <path d="M12 6v6"/>
+                    </svg>
+                    License
+                  </div>
+                  <div class="data-cell value">{object.license}</div>
                 </div>
               )}
             </div>
