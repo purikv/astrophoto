@@ -65,28 +65,30 @@ const firstImage = galleryData[0]?.preview
         text-align: center;
         margin: 0 0 0.5rem 0;
         font-size: 1.75rem;
-        font-weight: 500;
-        letter-spacing: 0.05em;
+        font-weight: 300;
+        letter-spacing: 0.02em;
       }
 
       .subtitle {
         text-align: center;
         color: #666;
-        font-size: 0.9rem;
+        font-size: 0.85rem;
         margin: 0;
+        font-weight: 300;
+        letter-spacing: 0.03em;
       }
 
       @media (min-width: 768px) {
         .header {
-          margin-bottom: 3rem;
+          margin-bottom: 4rem;
         }
 
         h1 {
-          font-size: 2.5rem;
+          font-size: 2.25rem;
         }
 
         .subtitle {
-          font-size: 1rem;
+          font-size: 0.9rem;
         }
       }
 
@@ -117,26 +119,26 @@ const firstImage = galleryData[0]?.preview
 
       /* Card Styles - Clean & Minimal */
       .gallery-card {
-        background: #0a0a0a;
-        border: 1px solid #1a1a1a;
+        background: #000;
+        border: 1px solid rgba(255, 255, 255, 0.05);
         overflow: hidden;
-        transition: all 0.3s ease;
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         text-decoration: none;
         color: inherit;
         display: block;
       }
 
       .gallery-card:hover {
-        border-color: #333;
-        transform: translateY(-4px);
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+        border-color: rgba(255, 255, 255, 0.15);
+        transform: translateY(-8px);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
       }
 
       .card-image-wrapper {
         position: relative;
         overflow: hidden;
         aspect-ratio: 4/3;
-        background: #111;
+        background: #000;
       }
 
       .card-image {
@@ -144,33 +146,12 @@ const firstImage = galleryData[0]?.preview
         height: 100%;
         object-fit: cover;
         display: block;
-        transition: transform 0.3s ease;
+        transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
       }
 
       .gallery-card:hover .card-image {
-        transform: scale(1.05);
-      }
-
-      .card-overlay {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
-        padding: 2rem 1rem 1rem;
-        opacity: 0;
-        transition: opacity 0.3s;
-      }
-
-      .gallery-card:hover .card-overlay {
-        opacity: 1;
-      }
-
-      .overlay-text {
-        color: #fff;
-        font-size: 0.85rem;
-        margin: 0;
-        line-height: 1.4;
+        transform: scale(1.08);
+        opacity: 0.85;
       }
 
       .card-content {
@@ -185,14 +166,15 @@ const firstImage = galleryData[0]?.preview
 
       .card-title {
         font-size: 1.25rem;
-        font-weight: 500;
+        font-weight: 400;
         margin: 0 0 0.75rem 0;
         color: #fff;
+        letter-spacing: 0.02em;
       }
 
       @media (min-width: 768px) {
         .card-title {
-          font-size: 1.4rem;
+          font-size: 1.3rem;
         }
       }
 
@@ -200,56 +182,22 @@ const firstImage = galleryData[0]?.preview
         display: flex;
         flex-wrap: wrap;
         gap: 0.5rem;
-        margin-bottom: 1rem;
       }
 
       .meta-tag {
-        background: #111;
-        padding: 0.3rem 0.75rem;
-        font-size: 0.75rem;
+        background: transparent;
+        padding: 0.25rem 0.65rem;
+        font-size: 0.7rem;
         color: #888;
-        border: 1px solid #1a1a1a;
+        border: 1px solid #2a2a2a;
         white-space: nowrap;
+        font-weight: 300;
+        letter-spacing: 0.03em;
       }
 
       .meta-tag.primary {
-        color: #fff;
-        border-color: #333;
-      }
-
-      .card-description {
-        font-size: 0.9rem;
-        color: #999;
-        line-height: 1.6;
-        margin: 0;
-        display: -webkit-box;
-        -webkit-line-clamp: 3;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-      }
-
-      .view-more {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        margin-top: 1rem;
-        padding: 0.5rem 0;
-        color: #666;
-        font-size: 0.85rem;
-        transition: color 0.2s;
-      }
-
-      .gallery-card:hover .view-more {
-        color: #fff;
-      }
-
-      .view-more::after {
-        content: '→';
-        transition: transform 0.2s;
-      }
-
-      .gallery-card:hover .view-more::after {
-        transform: translateX(4px);
+        color: #ccc;
+        border-color: #444;
       }
     </style>
   </head>
@@ -270,11 +218,6 @@ const firstImage = galleryData[0]?.preview
                 loading="lazy"
                 class="card-image"
               />
-              <div class="card-overlay">
-                <p class="overlay-text">
-                  {item.object?.description && item.object.description.substring(0, 120)}...
-                </p>
-              </div>
             </div>
           )}
 
@@ -288,12 +231,6 @@ const firstImage = galleryData[0]?.preview
                 <span class="meta-tag">{item.object.distance_ly.toLocaleString('uk-UA')} св.р.</span>
               )}
             </div>
-
-            <p class="card-description">
-              {item.object?.description}
-            </p>
-
-            <div class="view-more">Детальніше</div>
           </div>
         </a>
       ))}
