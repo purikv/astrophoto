@@ -1,0 +1,188 @@
+---
+/**
+ * LazyImage Component
+ * Lazy loads images using IntersectionObserver
+ * Shows skeleton loader while image is loading
+ */
+
+interface Props {
+  src: string;
+  alt: string;
+  width?: number;
+  height?: number;
+  className?: string;
+  eager?: boolean;
+}
+
+const {
+  src,
+  alt,
+  width,
+  height,
+  className = '',
+  eager = false
+} = Astro.props;
+---
+
+<div class={`lazy-image-wrapper ${className}`}>
+  <img
+    data-src={src}
+    alt={alt}
+    width={width}
+    height={height}
+    class="lazy-image"
+    loading={eager ? 'eager' : 'lazy'}
+  />
+  <div class="lazy-image-skeleton"></div>
+</div>
+
+<script>
+  // IntersectionObserver for lazy loading
+  const observerOptions = {
+    root: null,
+    rootMargin: '50px', // Start loading 50px before entering viewport
+    threshold: 0.01
+  };
+
+  const imageObserver = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const img = entry.target as HTMLImageElement;
+        const skeleton = img.nextElementSibling as HTMLElement;
+        const src = img.dataset.src;
+
+        if (src) {
+          // Create a new image to preload
+          const tempImg = new Image();
+
+          tempImg.onload = () => {
+            img.src = src;
+            img.classList.add('loaded');
+            if (skeleton) {
+              skeleton.classList.add('hidden');
+            }
+          };
+
+          tempImg.onerror = () => {
+            img.classList.add('error');
+            if (skeleton) {
+              skeleton.classList.add('hidden');
+            }
+          };
+
+          tempImg.src = src;
+        }
+
+        observer.unobserve(img);
+      }
+    });
+  }, observerOptions);
+
+  // Observe all lazy images
+  const lazyImages = document.querySelectorAll('.lazy-image');
+  lazyImages.forEach(img => {
+    imageObserver.observe(img);
+  });
+</script>
+
+<style>
+  .lazy-image-wrapper {
+    position: relative;
+    overflow: hidden;
+    background: var(--color-bg-secondary);
+  }
+
+  .lazy-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 0.4s ease-out;
+  }
+
+  .lazy-image.loaded {
+    opacity: 1;
+  }
+
+  .lazy-image.error {
+    opacity: 0.3;
+  }
+
+  .lazy-image-skeleton {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      var(--color-bg-secondary) 0%,
+      var(--color-bg-tertiary) 50%,
+      var(--color-bg-secondary) 100%
+    );
+    background-size: 200% 100%;
+    animation: skeleton 1.5s ease-in-out infinite;
+    transition: opacity 0.3s ease-out;
+  }
+
+  .lazy-image-skeleton.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .lazy-image-skeleton::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.1) 50%,
+      transparent 100%
+    );
+    animation: shimmer 2s linear infinite;
+  }
+
+  html.light .lazy-image-skeleton::before {
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(0, 0, 0, 0.05) 50%,
+      transparent 100%
+    );
+  }
+
+  @keyframes skeleton {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
+  }
+
+  @keyframes shimmer {
+    0% {
+      left: -100%;
+    }
+    100% {
+      left: 100%;
+    }
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .lazy-image {
+      transition: none;
+    }
+    .lazy-image-skeleton {
+      animation: none;
+    }
+    .lazy-image-skeleton::before {
+      animation: none;
+    }
+  }
+</style>

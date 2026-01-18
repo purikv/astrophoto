@@ -1,0 +1,102 @@
+---
+/**
+ * SortOptions Component
+ * Dropdown for sorting gallery items
+ */
+---
+
+<div class="sort-options">
+  <label for="sort-select" class="sort-label">Сортування</label>
+  <div class="sort-select-wrapper">
+    <select id="sort-select" class="sort-select">
+      <option value="date-desc">Дата (новіші)</option>
+      <option value="date-asc">Дата (старіші)</option>
+      <option value="name-asc">Назва (А-Я)</option>
+      <option value="name-desc">Назва (Я-А)</option>
+      <option value="distance-asc">Відстань (близько)</option>
+      <option value="distance-desc">Відстань (далеко)</option>
+    </select>
+    <div class="sort-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="6 9 12 15 18 9"></polyline>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<style>
+  .sort-options {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .sort-label {
+    font-size: 0.75rem;
+    font-weight: var(--font-weight-medium);
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-wider);
+    color: var(--color-text-tertiary);
+    white-space: nowrap;
+  }
+
+  .sort-select-wrapper {
+    position: relative;
+    min-width: 200px;
+  }
+
+  .sort-select {
+    width: 100%;
+    padding: 0.5rem 2.5rem 0.5rem 1rem;
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+    color: var(--color-text-primary);
+    font-size: 0.85rem;
+    font-family: var(--font-family);
+    cursor: pointer;
+    appearance: none;
+    transition: all var(--transition-base);
+  }
+
+  .sort-select:hover {
+    border-color: var(--color-border-hover);
+    background: var(--color-bg-tertiary);
+  }
+
+  .sort-select:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.1);
+  }
+
+  .sort-icon {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-text-tertiary);
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    transition: color var(--transition-fast);
+  }
+
+  .sort-select:focus + .sort-icon {
+    color: var(--color-primary);
+  }
+
+  /* Mobile adjustments */
+  @media (max-width: 640px) {
+    .sort-options {
+      flex-direction: column;
+      align-items: flex-start;
+      width: 100%;
+    }
+
+    .sort-select-wrapper {
+      width: 100%;
+      min-width: auto;
+    }
+  }
+</style>

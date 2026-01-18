@@ -1,0 +1,373 @@
+/* Cosmic Visual Effects for Astrophoto Gallery */
+
+/* ============================================
+   STAR FIELD BACKGROUND
+   ============================================ */
+
+.star-field {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.star-field-dark {
+  background: radial-gradient(
+    ellipse at 50% 50%,
+    #1a1f3a 0%,
+    #0a0e27 50%,
+    #000000 100%
+  );
+}
+
+.star-field-light {
+  background: radial-gradient(
+    ellipse at 50% 50%,
+    #ffffff 0%,
+    #f8fafc 50%,
+    #e2e8f0 100%
+  );
+}
+
+/* Individual stars */
+.star {
+  position: absolute;
+  background: white;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* Star sizes */
+.star-sm {
+  width: 1px;
+  height: 1px;
+  box-shadow: 0 0 2px rgba(255, 255, 255, 0.8);
+}
+
+.star-md {
+  width: 2px;
+  height: 2px;
+  box-shadow: 0 0 4px rgba(255, 255, 255, 0.9);
+}
+
+.star-lg {
+  width: 3px;
+  height: 3px;
+  box-shadow: 0 0 6px rgba(255, 255, 255, 1);
+}
+
+/* Twinkle animations with varying speeds */
+.star-twinkle-slow {
+  animation: twinkle 4s ease-in-out infinite;
+}
+
+.star-twinkle-medium {
+  animation: twinkle 3s ease-in-out infinite;
+}
+
+.star-twinkle-fast {
+  animation: twinkle 2s ease-in-out infinite;
+}
+
+/* Light theme stars */
+html.light .star {
+  background: #6366f1;
+  opacity: 0.15;
+}
+
+html.light .star-sm {
+  box-shadow: 0 0 2px rgba(99, 102, 241, 0.3);
+}
+
+html.light .star-md {
+  box-shadow: 0 0 4px rgba(99, 102, 241, 0.4);
+}
+
+html.light .star-lg {
+  box-shadow: 0 0 6px rgba(99, 102, 241, 0.5);
+}
+
+/* ============================================
+   COSMIC GRADIENTS
+   ============================================ */
+
+.cosmic-gradient {
+  background: linear-gradient(
+    135deg,
+    var(--cosmic-dark) 0%,
+    var(--cosmic-purple) 50%,
+    var(--cosmic-blue) 100%
+  );
+}
+
+.cosmic-gradient-radial {
+  background: radial-gradient(
+    circle at 50% 50%,
+    var(--cosmic-purple) 0%,
+    var(--cosmic-dark) 100%
+  );
+}
+
+.cosmic-gradient-text {
+  background: linear-gradient(
+    135deg,
+    var(--glow-purple) 0%,
+    var(--glow-blue) 50%,
+    var(--glow-gold) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ============================================
+   PARTICLES
+   ============================================ */
+
+.particle {
+  position: fixed;
+  width: 4px;
+  height: 4px;
+  background: radial-gradient(
+    circle,
+    rgba(168, 85, 247, 0.6) 0%,
+    rgba(168, 85, 247, 0) 70%
+  );
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.particle-float {
+  animation: floatSlow linear infinite;
+}
+
+/* Particle colors */
+.particle-purple {
+  background: radial-gradient(
+    circle,
+    rgba(168, 85, 247, 0.6) 0%,
+    rgba(168, 85, 247, 0) 70%
+  );
+}
+
+.particle-blue {
+  background: radial-gradient(
+    circle,
+    rgba(59, 130, 246, 0.6) 0%,
+    rgba(59, 130, 246, 0) 70%
+  );
+}
+
+.particle-gold {
+  background: radial-gradient(
+    circle,
+    rgba(251, 191, 36, 0.6) 0%,
+    rgba(251, 191, 36, 0) 70%
+  );
+}
+
+/* Light theme particles */
+html.light .particle {
+  opacity: 0.3;
+}
+
+/* ============================================
+   GLOW EFFECTS
+   ============================================ */
+
+.glow-purple {
+  box-shadow: 0 0 20px rgba(168, 85, 247, 0.5);
+}
+
+.glow-blue {
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+}
+
+.glow-gold {
+  box-shadow: 0 0 20px rgba(251, 191, 36, 0.5);
+}
+
+.glow-pulse {
+  animation: glow 2s ease-in-out infinite;
+}
+
+/* Text glow */
+.text-glow-purple {
+  text-shadow: 0 0 10px rgba(168, 85, 247, 0.7);
+}
+
+.text-glow-blue {
+  text-shadow: 0 0 10px rgba(59, 130, 246, 0.7);
+}
+
+.text-glow-gold {
+  text-shadow: 0 0 10px rgba(251, 191, 36, 0.7);
+}
+
+/* ============================================
+   SHIMMER EFFECT
+   ============================================ */
+
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s linear infinite;
+}
+
+html.light .shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(0, 0, 0, 0.05) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+}
+
+/* ============================================
+   BACKDROP BLUR
+   ============================================ */
+
+.backdrop-blur-sm {
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.backdrop-blur-md {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.backdrop-blur-lg {
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+/* ============================================
+   GLASS MORPHISM
+   ============================================ */
+
+.glass {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+html.light .glass {
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.glass-hover {
+  transition: all 0.3s ease;
+}
+
+.glass-hover:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+html.light .glass-hover:hover {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(0, 0, 0, 0.15);
+}
+
+/* ============================================
+   NEBULA EFFECT
+   ============================================ */
+
+.nebula {
+  position: relative;
+  overflow: hidden;
+}
+
+.nebula::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle at 30% 50%,
+    rgba(168, 85, 247, 0.3) 0%,
+    transparent 50%
+  ),
+  radial-gradient(
+    circle at 70% 50%,
+    rgba(59, 130, 246, 0.3) 0%,
+    transparent 50%
+  );
+  animation: rotate 30s linear infinite;
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+html.light .nebula::before {
+  opacity: 0.2;
+}
+
+/* ============================================
+   AURORA EFFECT
+   ============================================ */
+
+.aurora {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(168, 85, 247, 0.1) 25%,
+    rgba(59, 130, 246, 0.1) 50%,
+    rgba(251, 191, 36, 0.1) 75%,
+    transparent 100%
+  );
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.3;
+  animation: float 20s ease-in-out infinite;
+}
+
+html.light .aurora {
+  opacity: 0.1;
+}
+
+/* ============================================
+   CONSTELLATION LINES
+   ============================================ */
+
+.constellation-line {
+  position: absolute;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(168, 85, 247, 0.3) 50%,
+    transparent 100%
+  );
+  transform-origin: left center;
+  pointer-events: none;
+}
+
+html.light .constellation-line {
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(99, 102, 241, 0.2) 50%,
+    transparent 100%
+  );
+}

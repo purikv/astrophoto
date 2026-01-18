@@ -1,0 +1,98 @@
+---
+/**
+ * StarField Component
+ * Generates an animated starfield background with twinkling stars
+ * Adapts to theme (dark/light)
+ */
+
+interface Props {
+  starCount?: number;
+  parallax?: boolean;
+}
+
+const { starCount = 150, parallax = true } = Astro.props;
+
+// Generate random stars
+const stars = Array.from({ length: starCount }, () => ({
+  x: Math.random() * 100,
+  y: Math.random() * 100,
+  size: Math.random() < 0.7 ? 'sm' : Math.random() < 0.9 ? 'md' : 'lg',
+  twinkle: Math.random() < 0.3 ? 'slow' : Math.random() < 0.6 ? 'medium' : 'fast',
+  delay: Math.random() * 4
+}));
+---
+
+<div class="star-field star-field-dark" id="star-field">
+  {stars.map((star) => (
+    <div
+      class={`star star-${star.size} star-twinkle-${star.twinkle}`}
+      style={`left: ${star.x}%; top: ${star.y}%; animation-delay: ${star.delay}s;`}
+    />
+  ))}
+</div>
+
+<script define:vars={{ parallax }}>
+  // Update starfield theme based on html class
+  const updateStarFieldTheme = () => {
+    const starField = document.getElementById('star-field');
+    const isDark = document.documentElement.classList.contains('dark');
+    const isLight = document.documentElement.classList.contains('light');
+
+    if (starField) {
+      if (isLight) {
+        starField.classList.remove('star-field-dark');
+        starField.classList.add('star-field-light');
+      } else {
+        starField.classList.remove('star-field-light');
+        starField.classList.add('star-field-dark');
+      }
+    }
+  };
+
+  // Initial theme update
+  updateStarFieldTheme();
+
+  // Watch for theme changes
+  const observer = new MutationObserver(updateStarFieldTheme);
+  observer.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ['class']
+  });
+
+  // Parallax effect on scroll (if enabled)
+  if (parallax) {
+    let ticking = false;
+
+    const updateParallax = () => {
+      const starField = document.getElementById('star-field');
+      if (starField) {
+        const scrollY = window.scrollY;
+        const translateY = scrollY * 0.3; // Parallax factor
+        starField.style.transform = `translateY(${translateY}px)`;
+      }
+      ticking = false;
+    };
+
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        requestAnimationFrame(updateParallax);
+        ticking = true;
+      }
+    });
+  }
+</script>
+
+<style>
+  /* Import effects styles */
+  .star-field {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+    transition: background 0.3s ease;
+  }
+</style>

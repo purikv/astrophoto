@@ -1,0 +1,115 @@
+---
+/**
+ * ParticleEffect Component
+ * Generates floating cosmic particles in the background
+ */
+
+interface Props {
+  count?: number;
+}
+
+const { count = 20 } = Astro.props;
+
+// Generate random particles
+const particles = Array.from({ length: count }, () => ({
+  x: Math.random() * 100,
+  y: Math.random() * 100,
+  size: 2 + Math.random() * 4,
+  duration: 20 + Math.random() * 40,
+  delay: Math.random() * 20,
+  color: Math.random() < 0.33 ? 'purple' : Math.random() < 0.5 ? 'blue' : 'gold'
+}));
+---
+
+<div class="particle-field" aria-hidden="true">
+  {particles.map((particle) => (
+    <div
+      class={`particle particle-${particle.color}`}
+      style={`
+        left: ${particle.x}%;
+        top: ${particle.y}%;
+        width: ${particle.size}px;
+        height: ${particle.size}px;
+        animation-duration: ${particle.duration}s;
+        animation-delay: ${particle.delay}s;
+      `}
+    />
+  ))}
+</div>
+
+<style>
+  .particle-field {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+    overflow: hidden;
+  }
+
+  .particle {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.4;
+    animation: floatParticle linear infinite;
+  }
+
+  .particle-purple {
+    background: radial-gradient(
+      circle,
+      rgba(168, 85, 247, 0.8) 0%,
+      rgba(168, 85, 247, 0) 70%
+    );
+    box-shadow: 0 0 10px rgba(168, 85, 247, 0.6);
+  }
+
+  .particle-blue {
+    background: radial-gradient(
+      circle,
+      rgba(59, 130, 246, 0.8) 0%,
+      rgba(59, 130, 246, 0) 70%
+    );
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.6);
+  }
+
+  .particle-gold {
+    background: radial-gradient(
+      circle,
+      rgba(251, 191, 36, 0.8) 0%,
+      rgba(251, 191, 36, 0) 70%
+    );
+    box-shadow: 0 0 10px rgba(251, 191, 36, 0.6);
+  }
+
+  @keyframes floatParticle {
+    0% {
+      transform: translateY(0) translateX(0);
+      opacity: 0;
+    }
+    10% {
+      opacity: 0.4;
+    }
+    90% {
+      opacity: 0.4;
+    }
+    100% {
+      transform: translateY(-100vh) translateX(20px);
+      opacity: 0;
+    }
+  }
+
+  /* Light theme adjustments */
+  html.light .particle {
+    opacity: 0.2;
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .particle {
+      animation: none;
+      display: none;
+    }
+  }
+</style>

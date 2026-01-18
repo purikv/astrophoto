@@ -1,0 +1,100 @@
+---
+/**
+ * ThemeProvider Component
+ * Provides theme switching functionality with localStorage persistence
+ * Detects system preference and applies theme class to html element
+ */
+---
+
+<script is:inline>
+  // This script runs inline to prevent flash of unstyled content (FOUC)
+  (function() {
+    const THEME_KEY = 'astrophoto-theme';
+
+    // Get theme from localStorage or system preference
+    function getInitialTheme() {
+      // Check localStorage first
+      const savedTheme = localStorage.getItem(THEME_KEY);
+      if (savedTheme === 'light' || savedTheme === 'dark') {
+        return savedTheme;
+      }
+
+      // Fall back to system preference
+      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+        return 'light';
+      }
+
+      // Default to dark
+      return 'dark';
+    }
+
+    // Apply theme to html element
+    function applyTheme(theme) {
+      const html = document.documentElement;
+      html.classList.remove('light', 'dark');
+      html.classList.add(theme);
+
+      // Store in localStorage
+      localStorage.setItem(THEME_KEY, theme);
+
+      // Dispatch custom event for other components
+      window.dispatchEvent(new CustomEvent('themechange', { detail: { theme } }));
+    }
+
+    // Initialize theme
+    const initialTheme = getInitialTheme();
+    applyTheme(initialTheme);
+
+    // Listen for system preference changes
+    if (window.matchMedia) {
+      const darkModeQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      darkModeQuery.addEventListener('change', (e) => {
+        // Only update if user hasn't manually set a preference
+        const savedTheme = localStorage.getItem(THEME_KEY);
+        if (!savedTheme) {
+          applyTheme(e.matches ? 'dark' : 'light');
+        }
+      });
+    }
+  })();
+</script>
+
+<script>
+  // Client-side theme toggle function
+  export function toggleTheme() {
+    const html = document.documentElement;
+    const currentTheme = html.classList.contains('dark') ? 'dark' : 'light';
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+    html.classList.remove('light', 'dark');
+    html.classList.add(newTheme);
+    localStorage.setItem('astrophoto-theme', newTheme);
+
+    // Dispatch custom event
+    window.dispatchEvent(new CustomEvent('themechange', { detail: { theme: newTheme } }));
+
+    return newTheme;
+  }
+
+  // Get current theme
+  export function getCurrentTheme() {
+    return document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+  }
+
+  // Set specific theme
+  export function setTheme(theme: 'light' | 'dark') {
+    const html = document.documentElement;
+    html.classList.remove('light', 'dark');
+    html.classList.add(theme);
+    localStorage.setItem('astrophoto-theme', theme);
+
+    window.dispatchEvent(new CustomEvent('themechange', { detail: { theme } }));
+  }
+
+  // Make functions globally available
+  if (typeof window !== 'undefined') {
+    (window as any).toggleTheme = toggleTheme;
+    (window as any).getCurrentTheme = getCurrentTheme;
+    (window as any).setTheme = setTheme;
+  }
+</script>

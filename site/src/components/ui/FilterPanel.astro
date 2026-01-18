@@ -1,0 +1,129 @@
+---
+/**
+ * FilterPanel Component
+ * Filters for object type and constellation
+ */
+
+import galleryData from '../../data/gallery.json';
+
+// Extract unique values
+const types = [...new Set(galleryData.map(item => item.object?.type).filter(Boolean))];
+const constellations = [...new Set(galleryData.map(item => item.object?.constellation).filter(Boolean))];
+---
+
+<div class="filter-panel">
+  <div class="filter-group">
+    <label class="filter-label">Тип об'єкта</label>
+    <div class="filter-options" id="type-filters">
+      <button class="filter-chip active" data-type="all">
+        Всі
+      </button>
+      {types.map((type) => (
+        <button class="filter-chip" data-type={type}>
+          {type}
+        </button>
+      ))}
+    </div>
+  </div>
+
+  <div class="filter-group">
+    <label class="filter-label">Сузір'я</label>
+    <div class="filter-options" id="constellation-filters">
+      <button class="filter-chip active" data-constellation="all">
+        Всі
+      </button>
+      {constellations.map((constellation) => (
+        <button class="filter-chip" data-constellation={constellation}>
+          {constellation}
+        </button>
+      ))}
+    </div>
+  </div>
+</div>
+
+<style>
+  .filter-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 1rem 0;
+  }
+
+  @media (min-width: 768px) {
+    .filter-panel {
+      flex-direction: row;
+      gap: 2rem;
+    }
+  }
+
+  .filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    flex: 1;
+  }
+
+  .filter-label {
+    font-size: 0.75rem;
+    font-weight: var(--font-weight-medium);
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-wider);
+    color: var(--color-text-tertiary);
+  }
+
+  .filter-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .filter-chip {
+    padding: 0.5rem 1rem;
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+    color: var(--color-text-secondary);
+    font-size: 0.85rem;
+    font-weight: var(--font-weight-light);
+    letter-spacing: var(--letter-spacing-normal);
+    cursor: pointer;
+    transition: all var(--transition-base);
+    white-space: nowrap;
+  }
+
+  .filter-chip:hover {
+    background: var(--color-bg-tertiary);
+    border-color: var(--color-border-hover);
+    transform: translateY(-2px);
+  }
+
+  .filter-chip.active {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: white;
+    box-shadow: var(--glow-sm);
+  }
+
+  .filter-chip:active {
+    transform: translateY(0);
+  }
+
+  .filter-chip:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  /* Mobile scrolling for many options */
+  @media (max-width: 640px) {
+    .filter-options {
+      overflow-x: auto;
+      flex-wrap: nowrap;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+
+    .filter-options::-webkit-scrollbar {
+      display: none;
+    }
+  }
+</style>
