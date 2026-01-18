@@ -79,6 +79,7 @@ class SingleImageViewer {
           </div>
         </div>
         <div class="single-viewer-image-container">
+          <div class="loading-spinner"></div>
           <img src="${this.imageSrc}" alt="${this.imageAlt}" class="single-viewer-image" />
         </div>
         <div class="viewer-hint">
@@ -236,6 +237,10 @@ class SingleImageViewer {
         align-items: center;
         justify-content: center;
         overflow: hidden;
+        cursor: default;
+      }
+
+      .single-viewer-image-container.loaded {
         cursor: grab;
       }
 
@@ -247,6 +252,25 @@ class SingleImageViewer {
         cursor: grabbing;
       }
 
+      .loading-spinner {
+        position: absolute;
+        width: 60px;
+        height: 60px;
+        border: 3px solid rgba(255, 255, 255, 0.1);
+        border-top-color: rgba(168, 85, 247, 0.8);
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+        z-index: 1;
+      }
+
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+
+      .loading-spinner.hidden {
+        display: none;
+      }
+
       .single-viewer-image {
         max-width: 100%;
         max-height: 100%;
@@ -256,7 +280,12 @@ class SingleImageViewer {
         transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         transform-origin: center center;
         opacity: 0;
-        animation: zoomIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards;
+        position: relative;
+        z-index: 2;
+      }
+
+      .single-viewer-image.loaded {
+        animation: zoomIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
       }
 
       @keyframes zoomIn {
@@ -354,6 +383,22 @@ class SingleImageViewer {
     this.zoomInBtn = this.container.querySelector('.zoom-in');
     this.zoomOutBtn = this.container.querySelector('.zoom-out');
     this.zoomResetBtn = this.container.querySelector('.zoom-reset');
+
+    // Handle image loading
+    if (this.image) {
+      const spinner = this.container.querySelector('.loading-spinner');
+
+      this.image.addEventListener('load', () => {
+        this.image?.classList.add('loaded');
+        this.imageContainer?.classList.add('loaded');
+        if (spinner) spinner.classList.add('hidden');
+      });
+
+      this.image.addEventListener('error', () => {
+        if (spinner) spinner.classList.add('hidden');
+        console.error('Failed to load image:', this.imageSrc);
+      });
+    }
 
     this.setupEventListeners();
     this.open();
@@ -471,6 +516,7 @@ class SingleImageViewer {
   // Mouse pan
   private handleMouseDown(e: MouseEvent) {
     if (this.scale <= this.minScale) return;
+    e.preventDefault();
     this.isPanning = true;
     this.startX = e.clientX - this.translateX;
     this.startY = e.clientY - this.translateY;
@@ -486,8 +532,10 @@ class SingleImageViewer {
   }
 
   private handleMouseUp() {
-    this.isPanning = false;
-    this.imageContainer?.classList.remove('dragging');
+    if (this.isPanning) {
+      this.isPanning = false;
+      this.imageContainer?.classList.remove('dragging');
+    }
   }
 
   // Touch gestures

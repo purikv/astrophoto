@@ -1,7 +1,11 @@
 {
   "permissions": {
     "allow": [
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push)",
+      "Bash(ls \"C:\\\\Users\\\\purik\\\\astrophoto\\\\images\\\\m31\\\\final\"\" 2>/dev/null || echo \"Директорія не існує \")",
+      "Bash(node tools/generate-gallery-json.mjs:*)"
     ]
   }
 }
