@@ -127,6 +127,7 @@ class SingleImageViewer {
         backdrop-filter: blur(40px) saturate(180%);
         -webkit-backdrop-filter: blur(40px) saturate(180%);
         pointer-events: none;
+        z-index: 1;
       }
 
       .single-viewer-content {
@@ -138,6 +139,8 @@ class SingleImageViewer {
         align-items: center;
         justify-content: center;
         padding: 2rem;
+        pointer-events: none;
+        z-index: 2;
       }
 
       @media (min-width: 768px) {
@@ -160,6 +163,7 @@ class SingleImageViewer {
         transform: translateY(-10px);
         animation: fadeInDown 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
         transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        pointer-events: auto;
       }
 
       @media (min-width: 768px) {
@@ -239,6 +243,7 @@ class SingleImageViewer {
         justify-content: center;
         overflow: hidden;
         cursor: default;
+        pointer-events: auto;
       }
 
       .single-viewer-image-container.loaded {
@@ -580,8 +585,10 @@ class SingleImageViewer {
 
   private handleWheel(e: WheelEvent) {
     e.preventDefault();
+    console.log('Wheel event detected:', e.deltaY, 'Current scale:', this.scale);
     const delta = e.deltaY > 0 ? -this.zoomStep : this.zoomStep;
     this.zoom(delta);
+    console.log('New scale:', this.scale);
   }
 
   private getDistance(touch1: Touch, touch2: Touch): number {
