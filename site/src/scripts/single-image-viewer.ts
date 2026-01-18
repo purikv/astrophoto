@@ -434,8 +434,12 @@ class SingleImageViewer {
     this.imageContainer?.addEventListener('touchmove', (e) => this.handleTouchMove(e), { passive: false });
     this.imageContainer?.addEventListener('touchend', () => this.handleTouchEnd());
 
-    // Mouse wheel
-    this.imageContainer?.addEventListener('wheel', (e) => this.handleWheel(e), { passive: false });
+    // Mouse wheel - attach to container to work everywhere
+    this.container?.addEventListener('wheel', (e) => {
+      this.handleWheel(e);
+      this.showControls();
+      this.resetHideControlsTimer();
+    }, { passive: false });
 
     // Click background to close
     this.container?.addEventListener('click', (e) => {
