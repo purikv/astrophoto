@@ -126,6 +126,7 @@ class SingleImageViewer {
         background: rgba(0, 0, 0, 0.97);
         backdrop-filter: blur(40px) saturate(180%);
         -webkit-backdrop-filter: blur(40px) saturate(180%);
+        pointer-events: none;
       }
 
       .single-viewer-content {
