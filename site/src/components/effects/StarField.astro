@@ -2,7 +2,6 @@
 /**
  * StarField Component
  * Generates an animated starfield background with twinkling stars
- * Adapts to theme (dark/light)
  */
 
 interface Props {
@@ -32,33 +31,6 @@ const stars = Array.from({ length: starCount }, () => ({
 </div>
 
 <script define:vars={{ parallax }}>
-  // Update starfield theme based on html class
-  const updateStarFieldTheme = () => {
-    const starField = document.getElementById('star-field');
-    const isDark = document.documentElement.classList.contains('dark');
-    const isLight = document.documentElement.classList.contains('light');
-
-    if (starField) {
-      if (isLight) {
-        starField.classList.remove('star-field-dark');
-        starField.classList.add('star-field-light');
-      } else {
-        starField.classList.remove('star-field-light');
-        starField.classList.add('star-field-dark');
-      }
-    }
-  };
-
-  // Initial theme update
-  updateStarFieldTheme();
-
-  // Watch for theme changes
-  const observer = new MutationObserver(updateStarFieldTheme);
-  observer.observe(document.documentElement, {
-    attributes: true,
-    attributeFilter: ['class']
-  });
-
   // Parallax effect on scroll (if enabled)
   if (parallax) {
     let ticking = false;

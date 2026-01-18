@@ -237,6 +237,11 @@ class GalleryFilter {
     if (sorted.length === 0) {
       this.showEmptyState();
     }
+
+    // Re-initialize lazy loading for cloned images
+    if (typeof (window as any).reinitLazyLoading === 'function') {
+      (window as any).reinitLazyLoading();
+    }
   }
 
   private showEmptyState() {

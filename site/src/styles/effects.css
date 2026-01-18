@@ -24,15 +24,6 @@
   );
 }
 
-.star-field-light {
-  background: radial-gradient(
-    ellipse at 50% 50%,
-    #ffffff 0%,
-    #f8fafc 50%,
-    #e2e8f0 100%
-  );
-}
-
 /* Individual stars */
 .star {
   position: absolute;
@@ -71,24 +62,6 @@
 
 .star-twinkle-fast {
   animation: twinkle 2s ease-in-out infinite;
-}
-
-/* Light theme stars */
-html.light .star {
-  background: #6366f1;
-  opacity: 0.15;
-}
-
-html.light .star-sm {
-  box-shadow: 0 0 2px rgba(99, 102, 241, 0.3);
-}
-
-html.light .star-md {
-  box-shadow: 0 0 4px rgba(99, 102, 241, 0.4);
-}
-
-html.light .star-lg {
-  box-shadow: 0 0 6px rgba(99, 102, 241, 0.5);
 }
 
 /* ============================================
@@ -171,11 +144,6 @@ html.light .star-lg {
   );
 }
 
-/* Light theme particles */
-html.light .particle {
-  opacity: 0.3;
-}
-
 /* ============================================
    GLOW EFFECTS
    ============================================ */
@@ -224,16 +192,6 @@ html.light .particle {
   animation: shimmer 2s linear infinite;
 }
 
-html.light .shimmer {
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(0, 0, 0, 0.05) 50%,
-    transparent 100%
-  );
-  background-size: 200% 100%;
-}
-
 /* ============================================
    BACKDROP BLUR
    ============================================ */
@@ -264,11 +222,6 @@ html.light .shimmer {
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-html.light .glass {
-  background: rgba(255, 255, 255, 0.7);
-  border: 1px solid rgba(0, 0, 0, 0.1);
-}
-
 .glass-hover {
   transition: all 0.3s ease;
 }
@@ -276,11 +229,6 @@ html.light .glass {
 .glass-hover:hover {
   background: rgba(255, 255, 255, 0.1);
   border-color: rgba(255, 255, 255, 0.2);
-}
-
-html.light .glass-hover:hover {
-  background: rgba(255, 255, 255, 0.9);
-  border-color: rgba(0, 0, 0, 0.15);
 }
 
 /* ============================================
@@ -314,10 +262,6 @@ html.light .glass-hover:hover {
   opacity: 0.5;
 }
 
-html.light .nebula::before {
-  opacity: 0.2;
-}
-
 /* ============================================
    AURORA EFFECT
    ============================================ */
@@ -342,10 +286,6 @@ html.light .nebula::before {
   animation: float 20s ease-in-out infinite;
 }
 
-html.light .aurora {
-  opacity: 0.1;
-}
-
 /* ============================================
    CONSTELLATION LINES
    ============================================ */
@@ -361,13 +301,4 @@ html.light .aurora {
   );
   transform-origin: left center;
   pointer-events: none;
-}
-
-html.light .constellation-line {
-  background: linear-gradient(
-    to right,
-    transparent 0%,
-    rgba(99, 102, 241, 0.2) 50%,
-    transparent 100%
-  );
 }

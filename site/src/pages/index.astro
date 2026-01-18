@@ -2,8 +2,6 @@
 import galleryData from '../data/gallery.json';
 import StarField from '../components/effects/StarField.astro';
 import ParticleEffect from '../components/effects/ParticleEffect.astro';
-import ThemeProvider from '../components/theme/ThemeProvider.astro';
-import ThemeSwitcher from '../components/theme/ThemeSwitcher.astro';
 import GalleryCard from '../components/gallery/GalleryCard.astro';
 import SearchBar from '../components/ui/SearchBar.astro';
 import FilterPanel from '../components/ui/FilterPanel.astro';
@@ -203,7 +201,6 @@ const firstImage = galleryData[0]?.preview
     </style>
   </head>
   <body>
-    <ThemeProvider />
     <StarField />
     <ParticleEffect count={15} />
 
@@ -213,7 +210,6 @@ const firstImage = galleryData[0]?.preview
           <h1>Астрофотографія</h1>
           <p class="subtitle">Глибокий космос очима любителя</p>
         </div>
-        <ThemeSwitcher />
       </div>
     </div>
 

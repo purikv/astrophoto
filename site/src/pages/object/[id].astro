@@ -1,6 +1,5 @@
 ---
 import galleryData from '../../data/gallery.json';
-import FullscreenGallery from '../../components/fullscreen/FullscreenGallery.astro';
 
 const base = import.meta.env.BASE_URL;
 
@@ -14,9 +13,6 @@ export function getStaticPaths() {
 const { item } = Astro.props;
 const object = item.object;
 const session = item.session;
-
-// Find current index in gallery for fullscreen navigation
-const currentIndex = galleryData.findIndex((i) => i.object.id === object.id);
 
 // Find related items (same constellation or same type, exclude current)
 const relatedItems = galleryData
@@ -648,7 +644,7 @@ const imageUrl = item.preview
               id="main-image"
               data-full={`${base}/${item.preview.replace('_800', '_2000')}`}
             />
-            <div class="zoom-hint">Клік для fullscreen галереї</div>
+            <div class="zoom-hint">Клік для перегляду у повному розмірі</div>
           </div>
         )}
       </div>
@@ -980,9 +976,6 @@ const imageUrl = item.preview
         )}
       </aside>
     </div>
-
-    <!-- Fullscreen Gallery -->
-    <FullscreenGallery items={galleryData} currentIndex={currentIndex} base={base} />
 
     <script src="../../scripts/init-fullscreen.ts"></script>
   </body>

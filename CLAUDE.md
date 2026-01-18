@@ -27,6 +27,12 @@ This is an astrophotography gallery repository that manages final images, metada
    - Astro-based static site in `site/` directory
    - Base path configured as `/astrophoto` for GitHub Pages subdirectory deployment
    - Gallery data consumed from generated JSON file
+   - Client-side interactivity via TypeScript modules in `site/src/scripts/`:
+     - `gallery-filter.ts`: Gallery filtering functionality
+     - `fullscreen-gallery.ts`: Full-screen image viewer
+     - `scroll-animations.ts`: Scroll-based animations
+     - `single-image-viewer.ts`: Single image detail viewer
+     - `init-fullscreen.ts`: Fullscreen initialization
 
 ### YAML Schema Structure
 
@@ -42,23 +48,33 @@ Session YAML includes:
 - Processing software chain
 - Finals array with `path` and `preview` for images
 
+**Important**: Preview paths use `object_id` (Latin characters) instead of Cyrillic filenames to ensure compatibility with Telegram and other platforms that don't reliably support Cyrillic URLs.
+
 ## Build Commands
 
-All commands must be run from the repository root unless otherwise specified:
+The repository has a two-package structure:
+- **Root package** (`package.json`): Build tools (YAML validation, thumbnail generation, gallery JSON generator)
+- **Site package** (`site/package.json`): Astro site and its dependencies
+
+All commands below should be run from the repository root unless otherwise specified:
 
 ### Development
 ```bash
+# Install dependencies (first time only):
+npm install           # Install root dependencies (YAML, sharp)
+cd site && npm install   # Install Astro dependencies
+
 # Generate thumbnails and gallery data locally (optional for development):
-node tools/make-thumbs.mjs               # Generate thumbnails from images/
-cd site
-npm run dev                              # Start Astro dev server (runs generate-gallery-json first)
+npm run thumbs        # Generate thumbnails from images/
+cd site && npm run dev   # Start Astro dev server (runs generate-gallery-json first)
 ```
 
 ### Production Build
 ```bash
 # Full build process (what GitHub Actions does):
 npm ci || npm i                          # Install root dependencies (YAML parser, sharp for images)
-node tools/make-thumbs.mjs               # Generate thumbnails from images/
+npm run validate                         # Validate YAML files
+npm run thumbs                           # Generate thumbnails from images/
 cd site && npm ci || npm i               # Install site dependencies
 npm run build                            # Build Astro site (runs generate-gallery-json + build)
 ```

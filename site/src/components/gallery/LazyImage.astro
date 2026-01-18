@@ -44,45 +44,61 @@ const {
     threshold: 0.01
   };
 
-  const imageObserver = new IntersectionObserver((entries, observer) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const img = entry.target as HTMLImageElement;
-        const skeleton = img.nextElementSibling as HTMLElement;
-        const src = img.dataset.src;
+  let imageObserver: IntersectionObserver;
 
-        if (src) {
-          // Create a new image to preload
-          const tempImg = new Image();
+  function initLazyLoading() {
+    // Disconnect existing observer if any
+    if (imageObserver) {
+      imageObserver.disconnect();
+    }
 
-          tempImg.onload = () => {
-            img.src = src;
-            img.classList.add('loaded');
-            if (skeleton) {
-              skeleton.classList.add('hidden');
-            }
-          };
+    // Create new observer
+    imageObserver = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const img = entry.target as HTMLImageElement;
+          const skeleton = img.nextElementSibling as HTMLElement;
+          const src = img.dataset.src;
 
-          tempImg.onerror = () => {
-            img.classList.add('error');
-            if (skeleton) {
-              skeleton.classList.add('hidden');
-            }
-          };
+          if (src && !img.src) {
+            // Create a new image to preload
+            const tempImg = new Image();
 
-          tempImg.src = src;
+            tempImg.onload = () => {
+              img.src = src;
+              img.classList.add('loaded');
+              if (skeleton) {
+                skeleton.classList.add('hidden');
+              }
+            };
+
+            tempImg.onerror = () => {
+              img.classList.add('error');
+              if (skeleton) {
+                skeleton.classList.add('hidden');
+              }
+            };
+
+            tempImg.src = src;
+          }
+
+          observer.unobserve(img);
         }
+      });
+    }, observerOptions);
 
-        observer.unobserve(img);
-      }
+    // Observe all lazy images
+    const lazyImages = document.querySelectorAll('.lazy-image');
+    lazyImages.forEach(img => {
+      imageObserver.observe(img);
     });
-  }, observerOptions);
+  }
 
-  // Observe all lazy images
-  const lazyImages = document.querySelectorAll('.lazy-image');
-  lazyImages.forEach(img => {
-    imageObserver.observe(img);
-  });
+  // Initial load
+  initLazyLoading();
+
+  // Expose globally for re-initialization after gallery updates
+  (window as any).reinitLazyLoading = initLazyLoading;
 </script>
 
 <style>
@@ -149,15 +165,6 @@ const {
       transparent 100%
     );
     animation: shimmer 2s linear infinite;
-  }
-
-  html.light .lazy-image-skeleton::before {
-    background: linear-gradient(
-      90deg,
-      transparent 0%,
-      rgba(0, 0, 0, 0.05) 50%,
-      transparent 100%
-    );
   }
 
   @keyframes skeleton {

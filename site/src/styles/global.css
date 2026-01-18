@@ -72,46 +72,7 @@
   --radius-full: 9999px;
 }
 
-/* ============================================
-   LIGHT THEME
-   ============================================ */
-
-html.light {
-  --color-bg-primary: #f8fafc;
-  --color-bg-secondary: #ffffff;
-  --color-bg-tertiary: #e2e8f0;
-  --color-text-primary: #1e293b;
-  --color-text-secondary: #475569;
-  --color-text-tertiary: #94a3b8;
-  --color-border: rgba(0, 0, 0, 0.08);
-  --color-border-hover: rgba(0, 0, 0, 0.2);
-
-  /* Light theme shadows */
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
-  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
-  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.12);
-  --shadow-xl: 0 20px 60px rgba(0, 0, 0, 0.15);
-
-  /* Lighter glows for light theme */
-  --glow-sm: 0 0 10px rgba(168, 85, 247, 0.15);
-  --glow-md: 0 0 20px rgba(168, 85, 247, 0.25);
-  --glow-lg: 0 0 40px rgba(168, 85, 247, 0.35);
-}
-
-/* ============================================
-   DARK THEME (explicit)
-   ============================================ */
-
-html.dark {
-  --color-bg-primary: #0a0e27;
-  --color-bg-secondary: #111827;
-  --color-bg-tertiary: #1a1f3a;
-  --color-text-primary: #e0e0e0;
-  --color-text-secondary: #a0a0a0;
-  --color-text-tertiary: #666666;
-  --color-border: rgba(255, 255, 255, 0.05);
-  --color-border-hover: rgba(255, 255, 255, 0.15);
-}
+/* Dark theme is the only theme - variables are defined in :root above */
 
 /* ============================================
    BASE STYLES
