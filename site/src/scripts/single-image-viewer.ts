@@ -139,7 +139,7 @@ class SingleImageViewer {
         align-items: center;
         justify-content: center;
         padding: 2rem;
-        pointer-events: none;
+        pointer-events: auto;
         z-index: 2;
       }
 
@@ -585,10 +585,8 @@ class SingleImageViewer {
 
   private handleWheel(e: WheelEvent) {
     e.preventDefault();
-    console.log('Wheel event detected:', e.deltaY, 'Current scale:', this.scale);
     const delta = e.deltaY > 0 ? -this.zoomStep : this.zoomStep;
     this.zoom(delta);
-    console.log('New scale:', this.scale);
   }
 
   private getDistance(touch1: Touch, touch2: Touch): number {
