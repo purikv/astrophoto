@@ -291,17 +291,15 @@ class SingleImageViewer {
       }
 
       .single-viewer-image.loaded {
-        animation: zoomIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        animation: fadeInImage 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
       }
 
-      @keyframes zoomIn {
+      @keyframes fadeInImage {
         from {
           opacity: 0;
-          transform: scale(0.95);
         }
         to {
           opacity: 1;
-          transform: scale(1);
         }
       }
 
