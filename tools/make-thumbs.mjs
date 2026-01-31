@@ -1,81 +1,54 @@
 // tools/make-thumbs.mjs - Generate thumbnails using sharp
+// Reads YAML session files to generate thumbnails for all finals
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import sharp from 'sharp';
+import YAML from 'yaml';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(__dirname, '..');
 
-const SRC_DIRS = [path.join(rootDir, 'images')];
+const SESSIONS_DIR = path.join(rootDir, 'data/sessions');
 const OUT_DIR = path.join(rootDir, 'thumbnails');
 const SIZES = [
   { width: 800, suffix: '800' },    // Gallery thumbnail
   { width: null, suffix: '2000' }   // Full-size (no resize, max quality)
 ];
-const IMAGE_EXTS = ['.tif', '.tiff', '.png', '.jpg', '.jpeg'];
 
 // Ensure output directory exists
 if (!fs.existsSync(OUT_DIR)) {
   fs.mkdirSync(OUT_DIR, { recursive: true });
 }
 
-function isImage(filePath) {
-  const ext = path.extname(filePath).toLowerCase();
-  return IMAGE_EXTS.includes(ext);
-}
-
-function walkDir(dir) {
-  const results = [];
-  const files = fs.readdirSync(dir);
-
-  for (const file of files) {
-    const filePath = path.join(dir, file);
-    const stat = fs.statSync(filePath);
-
-    if (stat.isDirectory()) {
-      results.push(...walkDir(filePath));
-    } else if (stat.isFile() && isImage(filePath)) {
-      results.push(filePath);
-    }
-  }
-
-  return results;
-}
-
-async function processImage(srcPath) {
+async function processImage(srcPath, outputBaseName) {
   try {
-    const baseName = path.basename(srcPath, path.extname(srcPath));
+    const fullSrcPath = path.join(rootDir, srcPath);
 
-    // Extract object ID from path (e.g., images/m42/final/M42.png -> m42)
-    // This gives us Latin-only filenames for Telegram compatibility
-    const pathParts = srcPath.split(path.sep);
-    const objectId = pathParts[pathParts.indexOf('images') + 1] || baseName;
+    if (!fs.existsSync(fullSrcPath)) {
+      console.warn(`Warning: Image not found: ${fullSrcPath}`);
+      return false;
+    }
 
     // Read and validate the image first
-    const image = sharp(srcPath);
+    const image = sharp(fullSrcPath);
     const metadata = await image.metadata();
-    console.log(`Processing ${baseName} (${objectId}): ${metadata.format} ${metadata.width}x${metadata.height}, channels: ${metadata.channels}, depth: ${metadata.depth}`);
+    console.log(`Processing ${outputBaseName}: ${metadata.format} ${metadata.width}x${metadata.height}`);
 
     for (const size of SIZES) {
-      // Use object ID for thumbnail name (Latin only - no Cyrillic)
-      const outPath = path.join(OUT_DIR, `${objectId}_${size.suffix}.jpg`);
+      const outPath = path.join(OUT_DIR, `${outputBaseName}_${size.suffix}.jpg`);
 
       // Start with sharp instance
-      let processor = sharp(srcPath)
+      let processor = sharp(fullSrcPath)
         .ensureAlpha()
         .flatten({ background: { r: 0, g: 0, b: 0 } });
 
       // Apply resize only if width is specified (for 800px version)
-      // For full-size version (width: null), skip resize to preserve original dimensions
       if (size.width !== null) {
         processor = processor.resize(size.width, null, {
           withoutEnlargement: true,
           fit: 'inside'
         });
-        console.log(`Resizing to ${size.width}px width...`);
-      } else {
-        console.log(`Keeping original size (full quality)...`);
       }
 
       // Convert to JPEG with high quality
@@ -84,34 +57,59 @@ async function processImage(srcPath) {
         .toFile(outPath);
 
       const stats = fs.statSync(outPath);
-      console.log(`Saved ${outPath} (${(stats.size / 1024 / 1024).toFixed(2)} MB)`);
+      console.log(`  -> ${path.basename(outPath)} (${(stats.size / 1024 / 1024).toFixed(2)} MB)`);
     }
+    return true;
   } catch (err) {
     console.error(`Error processing ${srcPath}:`, err.message);
-    console.error(`Full error:`, err);
+    return false;
   }
 }
 
 async function main() {
-  console.log('Searching for images...');
-  const images = [];
+  console.log('Reading session YAML files...\n');
 
-  for (const srcDir of SRC_DIRS) {
-    if (!fs.existsSync(srcDir)) {
-      console.log(`Directory ${srcDir} does not exist, skipping...`);
+  const sessionFiles = fs.readdirSync(SESSIONS_DIR)
+    .filter(f => f.endsWith('.yml'));
+
+  let totalImages = 0;
+  let processedImages = 0;
+
+  for (const sessionFile of sessionFiles) {
+    const sessionPath = path.join(SESSIONS_DIR, sessionFile);
+    const session = YAML.parse(fs.readFileSync(sessionPath, 'utf8'));
+
+    if (!session.finals || session.finals.length === 0) {
+      console.log(`Skipping ${sessionFile}: no finals`);
       continue;
     }
 
-    images.push(...walkDir(srcDir));
+    console.log(`\n=== ${session.object_id} (${sessionFile}) ===`);
+
+    for (let i = 0; i < session.finals.length; i++) {
+      const final = session.finals[i];
+      totalImages++;
+
+      // Extract output base name from preview path
+      // e.g., "thumbnails/m31_800.jpg" -> "m31"
+      // e.g., "thumbnails/m31_1_800.jpg" -> "m31_1"
+      let outputBaseName;
+      if (final.preview) {
+        const previewFileName = path.basename(final.preview, path.extname(final.preview));
+        // Remove size suffix (e.g., "_800" or "_2000")
+        outputBaseName = previewFileName.replace(/_\d+$/, '');
+      } else {
+        // Fallback: use object_id + index
+        outputBaseName = i === 0 ? session.object_id : `${session.object_id}_${i}`;
+      }
+
+      const success = await processImage(final.path, outputBaseName);
+      if (success) processedImages++;
+    }
   }
 
-  console.log(`Found ${images.length} images`);
-
-  for (const imagePath of images) {
-    await processImage(imagePath);
-  }
-
-  console.log(`\nDone! Processed ${images.length} images`);
+  console.log(`\n=== Summary ===`);
+  console.log(`Processed ${processedImages}/${totalImages} images`);
 }
 
 main().catch(console.error);

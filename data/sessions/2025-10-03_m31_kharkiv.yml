@@ -24,4 +24,9 @@ finals:
   - path: "images/m31/final/M31.jpeg"
     preview: "thumbnails/m31_800.jpg"
     plate_solved: true
+    title: "Андромеда (основна обробка)"
+  - path: "images/m31/final/1.png"
+    preview: "thumbnails/m31_1_800.jpg"
+    plate_solved: true
+    title: "Андромеда (альтернативна обробка)"
 notes: ""

@@ -24,4 +24,9 @@ finals:
   - path: "images/ngc2237/final/RosetteV2.png"
     preview: "thumbnails/ngc2237_800.jpg"
     plate_solved: true
+    title: "Rosette Nebula (v2)"
+  - path: "images/ngc2237/final/Rosette.png"
+    preview: "thumbnails/ngc2237_1_800.jpg"
+    plate_solved: true
+    title: "Rosette Nebula (v1)"
 notes: ""

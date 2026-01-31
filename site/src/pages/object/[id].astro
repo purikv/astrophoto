@@ -16,6 +16,18 @@ const { item } = Astro.props;
 const object = item.object;
 const session = item.session;
 
+// Get all final images for this object
+const finals = session?.finals || [];
+const hasMultipleImages = finals.length > 1;
+
+// Prepare images data for client-side gallery
+const imagesData = finals.map((f: any, i: number) => ({
+  path: f.path,
+  preview: f.preview || `thumbnails/${session.object_id}${i > 0 ? `_${i}` : ''}_800.jpg`,
+  title: f.title || '',
+  plate_solved: f.plate_solved
+}));
+
 // Find related items (same constellation or same type, exclude current)
 const relatedItems = galleryData
   .filter((i) =>
@@ -645,7 +657,11 @@ const imageUrl = item.preview
     <div class="content">
       <div class="main-content">
         {item.preview && (
-          <div class="image-container" id="image-container">
+          <div
+            class="image-container"
+            id="image-container"
+            data-gallery={JSON.stringify(imagesData)}
+          >
             <img
               src={`${base}/${item.preview.replace('_800', '_2000')}`}
               alt={object.name}
@@ -653,7 +669,9 @@ const imageUrl = item.preview
               id="main-image"
               data-full={`${base}/${item.preview.replace('_800', '_2000')}`}
             />
-            <div class="zoom-hint">Клік для перегляду у повному розмірі</div>
+            <div class="zoom-hint">
+              {hasMultipleImages ? 'Клік для перегляду • ← → для навігації' : 'Клік для перегляду у повному розмірі'}
+            </div>
           </div>
         )}
       </div>
@@ -986,6 +1004,6 @@ const imageUrl = item.preview
       </aside>
     </div>
 
-    <script src="../../scripts/init-fullscreen.ts"></script>
+    <script src="../../scripts/detail-gallery.ts"></script>
   </body>
 </html>

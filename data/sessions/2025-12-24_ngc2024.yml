@@ -24,3 +24,8 @@ finals:
   - path: "images/ngc2024/final/ngc2024-flame-horsehead.png"
     preview: "thumbnails/ngc2024_800.jpg"
     plate_solved: false
+    title: "Flame та Horsehead (широке поле)"
+  - path: "images/ngc2024/final/NGC2024.png"
+    preview: "thumbnails/ngc2024_2_800.jpg"
+    plate_solved: false
+    title: "Flame Nebula (кроп)"
