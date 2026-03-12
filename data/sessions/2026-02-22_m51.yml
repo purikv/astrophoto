@@ -13,7 +13,7 @@ subs:
   - band: "RGB"
     iso: 800
     exposure_s: 180
-    count: 103
+    count: 304
 calibration:
   bias: 30
   darks: { exposure_s: 180, count: 20, temp_c: null }
@@ -23,6 +23,10 @@ processing_software: ["PixInsight", "BlurXTerminator", "GraXpert Denoise"]
 finals:
   - path: "images/m51/final/m51.png"
     preview: "thumbnails/m51_800.jpg"
+    plate_solved: true
+    title: "Галактика Водоворот (M51)"
+  - path: "images/m51/final/M51_v10.png"
+    preview: "thumbnails/m51_v10_800.jpg"
     plate_solved: true
     title: "Галактика Водоворот (M51)"
 notes: ""
