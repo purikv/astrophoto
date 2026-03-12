@@ -35,11 +35,7 @@ for (const f of fs.readdirSync(sessionsDir)) {
   const finals = (ses.finals || []);
   const first = finals[0] || {};
 
-  // Generate Latin-named preview path based on object_id to avoid Cyrillic in URLs
-  // Telegram doesn't reliably support Cyrillic filenames even with URL encoding
-  const preview = first.preview
-    ? `thumbnails/${ses.object_id}_800.jpg`  // Use object_id instead of Cyrillic filename
-    : '';
+  const preview = first.preview || '';
 
   gallery.push({
     id: f.replace(/\.yml$/, ''),
