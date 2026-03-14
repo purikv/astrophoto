@@ -1,0 +1,28 @@
+object_id: abell1656
+date_utc: "2026-03-11"
+location: "Dnipropetrovska oblast, UA"
+bortle: 5
+camera: "Canon 450D (mod)"
+sensor_temp_c: null
+mount: "AZ-EQ5 GT"
+telescope: "Arsenal GSO 203/1000 N (f/5)"
+coma_corrector: "TS GPU CC"
+filters: ["UV IR-cut Anti-Halo"]
+guiding: { camera: "ZWO ASI 120 M", rms_arcsec: null, software: "PHD2" }
+subs:
+  - band: "RGB"
+    iso: 800
+    exposure_s: 180
+    count: 109
+calibration:
+  bias: 30
+  darks: { exposure_s: 180, count: 20, temp_c: null }
+  flats: { count: 30, method: "flat panel" }
+stacking_software: "PixInsight"
+processing_software: ["PixInsight", "BlurXTerminator", "GraXpert Denoise"]
+finals:
+  - path: "images/Abel 1656/final/Abell 1656_v3.png"
+    preview: "thumbnails/abell1656_v3_800.jpg"
+    plate_solved: true
+    title: "Скупчення галактик у Волоссі Вероніки (Abell 1656)"
+notes: ""
