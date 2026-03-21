@@ -21,8 +21,12 @@ calibration:
 stacking_software: "PixInsight"
 processing_software: ["PixInsight", "BlurXTerminator", "GraXpert Denoise"]
 finals:
+  - path: "images/NGC4565/final/NGC 4565 v6.png"
+    preview: "thumbnails/ngc4565_v6_800.jpg"
+    plate_solved: true
+    title: "Галактика Голка (NGC 4565)"
   - path: "images/NGC4565/final/NGC 4565 v3.png"
     preview: "thumbnails/ngc4565_v3_800.jpg"
     plate_solved: true
-    title: "Галактика Голка (NGC 4565)"
+    title: "Галактика Голка (NGC 4565) v3"
 notes: ""
