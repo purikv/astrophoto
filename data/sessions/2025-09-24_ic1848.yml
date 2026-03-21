@@ -1,0 +1,28 @@
+object_id: ic1848
+date_utc: "2025-09-24"
+location: "Dnipropetrovska oblast, UA"
+bortle: 5
+camera: "Canon 450D (mod)"
+sensor_temp_c: null
+mount: "AZ-EQ5 GT"
+telescope: "Arsenal GSO 203/1000 N (f/5)"
+coma_corrector: "TS GPU CC"
+filters: ["UV IR-cut Anti-Halo"]
+guiding: { camera: "ZWO ASI 120 M", rms_arcsec: null, software: "PHD2" }
+subs:
+  - band: "RGB"
+    iso: 800
+    exposure_s: 180
+    count: 60
+calibration:
+  bias: 15
+  darks: { exposure_s: 180, count: 12, temp_c: null }
+  flats: { count: 15, method: "flat panel" }
+stacking_software: "PixInsight"
+processing_software: ["PixInsight", "BlurXTerminator", "GraXpert Denoise"]
+finals:
+  - path: "images/IC1848/final/IC1848.png"
+    preview: "thumbnails/ic1848_800.jpg"
+    plate_solved: true
+    title: "Туманність Душа (IC 1848)"
+notes: ""
