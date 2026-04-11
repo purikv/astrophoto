@@ -6,10 +6,9 @@
 
 interface Props {
   starCount?: number;
-  parallax?: boolean;
 }
 
-const { starCount = 150, parallax = true } = Astro.props;
+const { starCount = 150 } = Astro.props;
 
 // Generate random stars
 const stars = Array.from({ length: starCount }, () => ({
@@ -30,28 +29,8 @@ const stars = Array.from({ length: starCount }, () => ({
   ))}
 </div>
 
-<script define:vars={{ parallax }}>
-  // Parallax effect on scroll (if enabled)
-  if (parallax) {
-    let ticking = false;
-
-    const updateParallax = () => {
-      const starField = document.getElementById('star-field');
-      if (starField) {
-        const scrollY = window.scrollY;
-        const translateY = scrollY * 0.3; // Parallax factor
-        starField.style.transform = `translateY(${translateY}px)`;
-      }
-      ticking = false;
-    };
-
-    window.addEventListener('scroll', () => {
-      if (!ticking) {
-        requestAnimationFrame(updateParallax);
-        ticking = true;
-      }
-    });
-  }
+<script>
+  // No parallax - starfield stays fixed behind all content
 </script>
 
 <style>
