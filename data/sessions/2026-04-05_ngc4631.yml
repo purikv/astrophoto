@@ -13,7 +13,7 @@ subs:
   - band: "RGB"
     iso: 800
     exposure_s: 120
-    count: 113
+    count: 82
 calibration:
   bias: 30
   darks: { exposure_s: 120, count: 20, temp_c: null }
