@@ -74,7 +74,6 @@ const fallback = hasResponsive ? `${dir}${name}_800.jpg` : src;
       const img = entry.target as HTMLImageElement;
       const picture = img.parentElement;
 
-      // Swap <source> data-srcset → srcset
       picture?.querySelectorAll<HTMLSourceElement>('source[data-srcset]').forEach(source => {
         if (source.dataset.srcset) source.srcset = source.dataset.srcset;
       });
@@ -82,35 +81,53 @@ const fallback = hasResponsive ? `${dir}${name}_800.jpg` : src;
       if (img.dataset.srcset) img.srcset = img.dataset.srcset;
       if (img.dataset.src && !img.src) img.src = img.dataset.src;
 
-      img.addEventListener('load', () => {
-        img.classList.add('loaded');
-        picture?.querySelector('.lazy-image-skeleton')?.classList.add('hidden');
-      }, { once: true });
-
-      img.addEventListener('error', () => {
-        img.classList.add('error');
-        picture?.querySelector('.lazy-image-skeleton')?.classList.add('hidden');
-      }, { once: true });
-
+      attachLoadHandlers(img);
       obs.unobserve(img);
     });
   }, { root: null, rootMargin: '50px', threshold: 0.01 });
 
+  function attachLoadHandlers(img: HTMLImageElement) {
+    const picture = img.parentElement;
+    const onLoad = () => {
+      img.classList.add('loaded');
+      picture?.querySelector('.lazy-image-skeleton')?.classList.add('hidden');
+    };
+    if (img.complete && img.naturalWidth > 0) {
+      onLoad();
+      return;
+    }
+    img.addEventListener('load', onLoad, { once: true });
+    img.addEventListener('error', () => {
+      img.classList.add('error');
+      picture?.querySelector('.lazy-image-skeleton')?.classList.add('hidden');
+    }, { once: true });
+  }
+
   const observed = new WeakSet<Element>();
   function observeAll() {
     document.querySelectorAll<HTMLImageElement>('.lazy-image').forEach(img => {
-      if (img.src || observed.has(img)) return;
-      // Eager images: swap immediately so browser preloads them.
+      if (observed.has(img)) return;
+
+      // Eager images: swap data-src → src immediately so the browser starts loading now.
       if (img.loading === 'eager') {
         const picture = img.parentElement;
         picture?.querySelectorAll<HTMLSourceElement>('source[data-srcset]').forEach(s => {
           if (s.dataset.srcset) s.srcset = s.dataset.srcset;
         });
         if (img.dataset.srcset) img.srcset = img.dataset.srcset;
-        if (img.dataset.src) img.src = img.dataset.src;
+        if (img.dataset.src && !img.src) img.src = img.dataset.src;
+        attachLoadHandlers(img);
         observed.add(img);
         return;
       }
+
+      if (img.src) {
+        // Already loaded from a previous cycle — ensure it's marked loaded.
+        attachLoadHandlers(img);
+        observed.add(img);
+        return;
+      }
+
       observer.observe(img);
       observed.add(img);
     });
