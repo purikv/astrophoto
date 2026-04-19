@@ -1,6 +1,6 @@
 /**
- * Scroll Animations
- * Reveal elements on scroll with Intersection Observer
+ * Scroll Animations — reveal elements via IntersectionObserver.
+ * Disconnects observers on pagehide to prevent leaks across navigations.
  */
 
 interface AnimationConfig {
@@ -17,6 +17,8 @@ const defaultConfig: AnimationConfig = {
 
 class ScrollAnimations {
   private observer: IntersectionObserver | null = null;
+  private mutationObserver: MutationObserver | null = null;
+  private pendingTimers: Set<number> = new Set();
   private config: AnimationConfig;
 
   constructor(config: Partial<AnimationConfig> = {}) {
@@ -25,79 +27,71 @@ class ScrollAnimations {
   }
 
   private init() {
-    // Check for reduced motion preference
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReducedMotion) {
-      return; // Don't animate if user prefers reduced motion
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      // Show elements without animation so layout isn't stuck invisible.
+      document.querySelectorAll<HTMLElement>('[data-animate]').forEach(el => {
+        el.style.opacity = '1';
+        el.style.transform = 'none';
+      });
+      return;
     }
 
-    // Create Intersection Observer
     this.observer = new IntersectionObserver(
       (entries) => this.handleIntersection(entries),
-      {
-        threshold: this.config.threshold,
-        rootMargin: this.config.rootMargin
-      }
+      { threshold: this.config.threshold, rootMargin: this.config.rootMargin }
     );
 
-    // Observe all elements with data-animate attribute
     this.observeElements();
-
-    // Re-observe on dynamic content changes
     this.setupMutationObserver();
+    window.addEventListener('pagehide', () => this.destroy(), { once: true });
   }
 
   private observeElements() {
-    const elements = document.querySelectorAll('[data-animate]');
-    elements.forEach((element) => {
-      this.observer?.observe(element);
-    });
+    document.querySelectorAll('[data-animate]').forEach(el => this.observer?.observe(el));
   }
 
   private handleIntersection(entries: IntersectionObserverEntry[]) {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        const element = entry.target as HTMLElement;
-        const animationType = element.dataset.animate || 'fade-in';
-        const delay = element.dataset.animateDelay || '0';
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      const element = entry.target as HTMLElement;
+      const animationType = element.dataset.animate || 'fade-in';
+      const delayRaw = element.dataset.animateDelay;
+      const delay = delayRaw ? Number(delayRaw) : 0;
+      const safeDelay = Number.isFinite(delay) && delay >= 0 ? delay : 0;
 
-        // Apply animation with delay
-        setTimeout(() => {
-          element.classList.add(this.config.animationClass);
-          element.classList.add(`animate-${animationType}`);
-          element.style.opacity = '1';
-          element.style.transform = 'none';
-        }, parseInt(delay));
+      const timerId = window.setTimeout(() => {
+        this.pendingTimers.delete(timerId);
+        element.classList.add(this.config.animationClass, `animate-${animationType}`);
+        element.style.opacity = '1';
+        element.style.transform = 'none';
+      }, safeDelay);
+      this.pendingTimers.add(timerId);
 
-        // Unobserve after animation
-        this.observer?.unobserve(element);
-      }
+      this.observer?.unobserve(element);
     });
   }
 
   private setupMutationObserver() {
-    const mutationObserver = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        mutation.addedNodes.forEach((node) => {
+    this.mutationObserver = new MutationObserver((mutations) => {
+      mutations.forEach(mutation => {
+        mutation.addedNodes.forEach(node => {
           if (node instanceof HTMLElement && node.hasAttribute('data-animate')) {
             this.observer?.observe(node);
           }
         });
       });
     });
-
-    mutationObserver.observe(document.body, {
-      childList: true,
-      subtree: true
-    });
+    this.mutationObserver.observe(document.body, { childList: true, subtree: true });
   }
 
   public destroy() {
     this.observer?.disconnect();
+    this.mutationObserver?.disconnect();
+    this.pendingTimers.forEach(id => window.clearTimeout(id));
+    this.pendingTimers.clear();
   }
 }
 
-// Initialize on DOM ready
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', () => new ScrollAnimations());
 } else {

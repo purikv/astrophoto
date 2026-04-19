@@ -33,7 +33,20 @@ class SingleImageViewer {
   private hideControlsTimer: number | null = null;
   private controlsVisible: boolean = true;
 
+  private rafId: number | null = null;
+  private previouslyFocused: HTMLElement | null = null;
+
+  // Bound handlers (stable refs for add/removeEventListener)
+  private readonly onKeyDown = (e: KeyboardEvent) => this.handleKeyboard(e);
+  private readonly onMouseMove = (e: MouseEvent) => {
+    this.handleMouseMove(e);
+    this.showControls();
+    this.resetHideControlsTimer();
+  };
+  private readonly onMouseUp = () => this.handleMouseUp();
+
   constructor(private imageSrc: string, private imageAlt: string) {
+    this.previouslyFocused = document.activeElement as HTMLElement;
     this.createViewer();
     this.init();
   }
@@ -418,16 +431,12 @@ class SingleImageViewer {
     this.zoomResetBtn?.addEventListener('click', () => this.resetZoom());
 
     // Keyboard
-    document.addEventListener('keydown', (e) => this.handleKeyboard(e));
+    document.addEventListener('keydown', this.onKeyDown);
 
     // Mouse events
     this.imageContainer?.addEventListener('mousedown', (e) => this.handleMouseDown(e));
-    document.addEventListener('mousemove', (e) => {
-      this.handleMouseMove(e);
-      this.showControls();
-      this.resetHideControlsTimer();
-    });
-    document.addEventListener('mouseup', () => this.handleMouseUp());
+    document.addEventListener('mousemove', this.onMouseMove);
+    document.addEventListener('mouseup', this.onMouseUp);
 
     // Touch events
     this.imageContainer?.addEventListener('touchstart', (e) => {
@@ -459,11 +468,27 @@ class SingleImageViewer {
   private open() {
     this.container?.classList.add('active');
     document.body.style.overflow = 'hidden';
+    (this.closeBtn as HTMLButtonElement | null)?.focus?.();
   }
 
   private close() {
     this.container?.classList.remove('active');
     document.body.style.overflow = '';
+
+    document.removeEventListener('keydown', this.onKeyDown);
+    document.removeEventListener('mousemove', this.onMouseMove);
+    document.removeEventListener('mouseup', this.onMouseUp);
+
+    if (this.hideControlsTimer !== null) {
+      window.clearTimeout(this.hideControlsTimer);
+      this.hideControlsTimer = null;
+    }
+    if (this.rafId !== null) {
+      cancelAnimationFrame(this.rafId);
+      this.rafId = null;
+    }
+
+    this.previouslyFocused?.focus?.();
 
     // Remove after animation
     setTimeout(() => {
@@ -475,20 +500,30 @@ class SingleImageViewer {
     if (!this.container?.classList.contains('active')) return;
 
     switch (e.key) {
-      case 'Escape':
-        this.close();
-        break;
-      case '+':
-      case '=':
-        this.zoom(this.zoomStep);
-        break;
-      case '-':
-      case '_':
-        this.zoom(-this.zoomStep);
-        break;
-      case '0':
-        this.resetZoom();
-        break;
+      case 'Escape': this.close(); break;
+      case '+': case '=': this.zoom(this.zoomStep); break;
+      case '-': case '_': this.zoom(-this.zoomStep); break;
+      case '0': this.resetZoom(); break;
+      case 'Tab': this.trapFocus(e); break;
+    }
+  }
+
+  private trapFocus(e: KeyboardEvent) {
+    if (!this.container) return;
+    const focusable = this.container.querySelectorAll<HTMLElement>(
+      'button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+    );
+    if (focusable.length === 0) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    const active = document.activeElement as HTMLElement;
+
+    if (e.shiftKey && active === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && active === last) {
+      e.preventDefault();
+      first.focus();
     }
   }
 
@@ -517,8 +552,12 @@ class SingleImageViewer {
   }
 
   private applyTransform() {
-    if (!this.image) return;
-    this.image.style.transform = `translate(${this.translateX}px, ${this.translateY}px) scale(${this.scale})`;
+    if (this.rafId !== null) return;
+    this.rafId = requestAnimationFrame(() => {
+      this.rafId = null;
+      if (!this.image) return;
+      this.image.style.transform = `translate(${this.translateX}px, ${this.translateY}px) scale(${this.scale})`;
+    });
   }
 
   // Mouse pan

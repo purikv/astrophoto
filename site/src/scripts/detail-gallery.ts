@@ -23,6 +23,8 @@ class DetailGallery {
   private currentIndex: number = 0;
   private base: string = '';
 
+  private readonly onKeyDown = (e: KeyboardEvent) => this.handleKeyboard(e);
+
   constructor(container: HTMLElement, images: FinalImage[], base: string) {
     this.container = container;
     this.images = images;
@@ -33,6 +35,11 @@ class DetailGallery {
     this.mainImage = img;
 
     this.init();
+    window.addEventListener('pagehide', () => this.destroy(), { once: true });
+  }
+
+  public destroy() {
+    document.removeEventListener('keydown', this.onKeyDown);
   }
 
   private init() {
@@ -333,7 +340,7 @@ class DetailGallery {
     });
 
     // Keyboard navigation
-    document.addEventListener('keydown', (e) => this.handleKeyboard(e));
+    document.addEventListener('keydown', this.onKeyDown);
 
     // Click on image for fullscreen
     this.container.addEventListener('click', (e) => {

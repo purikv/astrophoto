@@ -2,6 +2,8 @@
 import galleryData from '../../data/gallery.json';
 import StarField from '../../components/effects/StarField.astro';
 import ParticleEffect from '../../components/effects/ParticleEffect.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import type { FinalImage, GalleryItem } from '../../types/gallery';
 
 const base = import.meta.env.BASE_URL;
 
@@ -12,73 +14,58 @@ export function getStaticPaths() {
   }));
 }
 
-const { item } = Astro.props;
+const { item } = Astro.props as { item: GalleryItem };
 const object = item.object;
 const session = item.session;
 
-// Get all final images for this object
-const finals = session?.finals || [];
+const finals: FinalImage[] = session?.finals || [];
 const hasMultipleImages = finals.length > 1;
 
-// Prepare images data for client-side gallery
-const imagesData = finals.map((f: any, i: number) => ({
+const imagesData = finals.map((f, i) => ({
   path: f.path,
   preview: f.preview || `thumbnails/${session.object_id}${i > 0 ? `_${i}` : ''}_800.jpg`,
   title: f.title || '',
   plate_solved: f.plate_solved
 }));
 
-// Find related items (same constellation or same type, exclude current)
 const relatedItems = galleryData
   .filter((i) =>
     i.object.id !== object.id &&
     (i.object.constellation === object.constellation || i.object.type === object.type)
   )
-  .slice(0, 3); // Show max 3 related items
+  .slice(0, 3);
 
-// Full URLs for Open Graph
+// Previous / next in gallery order (newest → oldest).
+const currentIndex = galleryData.findIndex(i => i.object.id === object.id);
+const prevItem = currentIndex > 0 ? galleryData[currentIndex - 1] : null;
+const nextItem = currentIndex !== -1 && currentIndex < galleryData.length - 1
+  ? galleryData[currentIndex + 1]
+  : null;
+
 const siteUrl = 'https://purikv.github.io';
 const pageUrl = `${siteUrl}${base}/object/${object.id}`;
-// Use 800px version for faster loading in messengers (50-200 KB vs 200-900 KB)
-// URL-encode the image path to handle Cyrillic characters
 const imageUrl = item.preview
   ? `${siteUrl}${base}/${item.preview.split('/').map(encodeURIComponent).join('/')}`
   : `${siteUrl}${base}/thumbnails/default_800.jpg`;
+
+// Map Bortle scale (1–9) to a color band — passed to CSS as a custom property.
+const bortleColor = session?.bortle
+  ? session.bortle <= 3 ? '#10b981'
+    : session.bortle <= 6 ? '#f59e0b'
+    : '#ef4444'
+  : '#888';
+const bortleFillStyle = session?.bortle
+  ? `--bortle-fill-width: ${(session.bortle / 9) * 100}%; --bortle-fill-color: ${bortleColor};`
+  : '';
 ---
 
-<html lang="uk">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="base-url" content={base} />
-    <title>{object.name} - Astro Gallery</title>
-    <meta name="description" content={object.description} />
-
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content={pageUrl} />
-    <meta property="og:title" content={`${object.name} - Астрофотографія`} />
-    <meta property="og:description" content={object.description} />
-    <meta property="og:image" content={imageUrl} />
-    <meta property="og:image:width" content="800" />
-    <meta property="og:image:height" content="533" />
-    <meta property="og:locale" content="uk_UA" />
-    <meta property="og:site_name" content="Astro Gallery - Володимир Пурик" />
-
-    <!-- Twitter -->
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:url" content={pageUrl} />
-    <meta name="twitter:title" content={`${object.name} - Астрофотографія`} />
-    <meta name="twitter:description" content={object.description} />
-    <meta name="twitter:image" content={imageUrl} />
-
-    <!-- Additional meta -->
-    <meta name="author" content="Володимир Пурик" />
-    <link rel="canonical" href={pageUrl} />
-    <style is:global>
-      @import '../../styles/global.css';
-      @import '../../styles/effects.css';
-    </style>
+<BaseLayout
+  title={`${object.name} — Астрофотографія`}
+  description={object.description || ''}
+  canonicalUrl={pageUrl}
+  ogImage={imageUrl}
+  ogType="article"
+>
     <style>
       * {
         box-sizing: border-box;
@@ -129,6 +116,129 @@ const imageUrl = item.preview
       .back-link:hover {
         color: #fff;
         transform: translateX(-2px);
+      }
+
+      /* Breadcrumbs */
+      .breadcrumbs {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .breadcrumbs ol {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+        align-items: center;
+        font-size: 0.8rem;
+        color: #555;
+      }
+
+      .breadcrumbs li {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        min-width: 0;
+      }
+
+      .breadcrumbs li + li::before {
+        content: '›';
+        color: #444;
+        font-size: 0.9rem;
+      }
+
+      .breadcrumbs a {
+        color: #888;
+        text-decoration: none;
+        transition: color 0.2s ease;
+      }
+
+      .breadcrumbs a:hover,
+      .breadcrumbs a:focus-visible {
+        color: #fff;
+        outline: none;
+      }
+
+      .breadcrumbs a:focus-visible {
+        text-decoration: underline;
+        text-underline-offset: 3px;
+      }
+
+      .breadcrumbs [aria-current="page"] {
+        color: #bbb;
+        font-weight: 400;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      @media (max-width: 640px) {
+        .breadcrumbs {
+          display: none;
+        }
+      }
+
+      /* Prev/Next navigation */
+      .prev-next-nav {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+      }
+
+      .prev-next-link {
+        display: flex;
+        flex-direction: column;
+        gap: 0.35rem;
+        padding: 0.9rem 1rem;
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 8px;
+        text-decoration: none;
+        color: inherit;
+        transition: all 0.25s ease;
+        min-width: 0;
+      }
+
+      .prev-next-link.next {
+        text-align: right;
+      }
+
+      .prev-next-link:hover,
+      .prev-next-link:focus-visible {
+        background: rgba(168, 85, 247, 0.06);
+        border-color: rgba(168, 85, 247, 0.3);
+        outline: none;
+      }
+
+      .prev-next-link:hover.prev {
+        transform: translateX(-3px);
+      }
+
+      .prev-next-link:hover.next {
+        transform: translateX(3px);
+      }
+
+      .prev-next-direction {
+        font-size: 0.7rem;
+        color: #888;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        font-weight: 500;
+      }
+
+      .prev-next-name {
+        font-size: 0.9rem;
+        color: #fff;
+        font-weight: 400;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .prev-next-placeholder {
+        display: block;
       }
 
       /* Hero Section - Removed, image now in main content */
@@ -194,16 +304,55 @@ const imageUrl = item.preview
         position: absolute;
         bottom: 2rem;
         right: 2rem;
-        color: rgba(255, 255, 255, 0.3);
-        font-size: 0.75rem;
-        font-weight: 300;
-        letter-spacing: 0.05em;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 0.85rem;
+        background: rgba(0, 0, 0, 0.55);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 100px;
+        color: rgba(255, 255, 255, 0.75);
+        font-size: 0.72rem;
+        font-weight: 400;
+        letter-spacing: 0.03em;
         pointer-events: none;
-        transition: opacity 0.3s;
+        transition: opacity 0.3s ease, transform 0.3s ease;
       }
 
-      .image-container:hover .zoom-hint {
-        opacity: 0;
+      .zoom-hint svg {
+        opacity: 0.8;
+        flex-shrink: 0;
+      }
+
+      /* On hover (desktop): gently fade out so it doesn't cover the image */
+      @media (hover: hover) and (pointer: fine) {
+        .image-container:hover .zoom-hint {
+          opacity: 0;
+          transform: translateY(4px);
+        }
+      }
+
+      /* On touch devices: pulse gently so the badge is discoverable */
+      @media (hover: none) and (pointer: coarse) {
+        .zoom-hint {
+          bottom: 1rem;
+          right: 1rem;
+          animation: hintPulse 2.5s ease-in-out 1s infinite;
+        }
+
+        @keyframes hintPulse {
+          0%, 100% { opacity: 0.6; }
+          50% { opacity: 1; }
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .zoom-hint {
+          animation: none;
+          transition: none;
+        }
       }
 
       /* Sidebar - 1/3 width */
@@ -272,13 +421,19 @@ const imageUrl = item.preview
         margin-bottom: 2rem;
       }
 
-      /* Data Table - Premium Compact Design */
+      /* Data Table - Premium Compact Design (<dl> with <dt>/<dd>) */
       .data-table {
         background: rgba(255, 255, 255, 0.02);
         backdrop-filter: blur(10px);
         border: 1px solid rgba(255, 255, 255, 0.05);
         border-radius: 8px;
         overflow: hidden;
+        margin: 0;
+      }
+
+      .data-table dt,
+      .data-table dd {
+        margin: 0;
       }
 
       .data-table.compact {
@@ -389,6 +544,9 @@ const imageUrl = item.preview
 
       .bortle-fill {
         height: 100%;
+        width: var(--bortle-fill-width, 0%);
+        background: var(--bortle-fill-color, #888);
+        color: var(--bortle-fill-color, #888);
         border-radius: 3px;
         transition: width 0.3s ease;
         box-shadow: 0 0 8px currentColor;
@@ -640,21 +798,32 @@ const imageUrl = item.preview
         }
       }
     </style>
-  </head>
-  <body>
     <StarField />
     <ParticleEffect count={15} />
 
     <nav class="nav">
       <div class="nav-content">
-        <a href={`${base}/`} class="back-link">
-          <span>←</span>
+        <a href={`${base}/`} class="back-link" aria-label="Назад до галереї">
+          <span aria-hidden="true">←</span>
           <span>Галерея</span>
         </a>
+        <nav class="breadcrumbs" aria-label="Навігаційний шлях">
+          <ol>
+            <li>
+              <a href={`${base}/`}>Галерея</a>
+            </li>
+            {object.constellation && (
+              <li>
+                <a href={`${base}/?constellation=${encodeURIComponent(object.constellation)}`}>{object.constellation}</a>
+              </li>
+            )}
+            <li aria-current="page">{object.name}</li>
+          </ol>
+        </nav>
       </div>
     </nav>
 
-    <div class="content">
+    <div class="content" id="main-content">
       <div class="main-content">
         {item.preview && (
           <div
@@ -669,8 +838,14 @@ const imageUrl = item.preview
               id="main-image"
               data-full={`${base}/${item.preview.replace('_800', '_2000')}`}
             />
-            <div class="zoom-hint">
-              {hasMultipleImages ? 'Клік для перегляду • ← → для навігації' : 'Клік для перегляду у повному розмірі'}
+            <div class="zoom-hint" aria-hidden="true">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"/>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                <line x1="11" y1="8" x2="11" y2="14"/>
+                <line x1="8" y1="11" x2="14" y2="11"/>
+              </svg>
+              <span>{hasMultipleImages ? 'Клік для перегляду • ← → навігація' : 'Клік для перегляду у повному розмірі'}</span>
             </div>
           </div>
         )}
@@ -695,61 +870,61 @@ const imageUrl = item.preview
               <circle cx="12" cy="12" r="10"/>
               <path d="M12 16v-4M12 8h.01"/>
             </svg>
-            Quick Facts
+            Коротко
           </h2>
-          <div class="data-table">
+          <dl class="data-table">
             {object.distance_ly && (
               <div class="data-row">
-                <div class="data-cell label">
+                <dt class="data-cell label">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
                     <circle cx="12" cy="10" r="3"/>
                   </svg>
-                  Distance
-                </div>
-                <div class="data-cell value">{object.distance_ly.toLocaleString('uk-UA')} св.р.</div>
+                  Відстань
+                </dt>
+                <dd class="data-cell value">{object.distance_ly.toLocaleString('uk-UA')} св.р.</dd>
               </div>
             )}
             {session?.date_utc && (
               <div class="data-row">
-                <div class="data-cell label">
+                <dt class="data-cell label">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
                     <line x1="16" y1="2" x2="16" y2="6"/>
                     <line x1="8" y1="2" x2="8" y2="6"/>
                     <line x1="3" y1="10" x2="21" y2="10"/>
                   </svg>
-                  Captured
-                </div>
-                <div class="data-cell value">{session.date_utc}</div>
+                  Дата зйомки
+                </dt>
+                <dd class="data-cell value">{session.date_utc}</dd>
               </div>
             )}
             {session?.location && (
               <div class="data-row">
-                <div class="data-cell label">
+                <dt class="data-cell label">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <circle cx="12" cy="12" r="10"/>
                     <line x1="2" y1="12" x2="22" y2="12"/>
                     <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
                   </svg>
-                  Location
-                </div>
-                <div class="data-cell value">{session.location}</div>
+                  Локація
+                </dt>
+                <dd class="data-cell value">{session.location}</dd>
               </div>
             )}
             {session?.bortle && (
               <div class="data-row">
-                <div class="data-cell label">
+                <dt class="data-cell label">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
                   </svg>
                   Bortle
-                </div>
-                <div class="data-cell value">
+                </dt>
+                <dd class="data-cell value">
                   <div class="bortle-indicator">
                     <span class="bortle-value">{session.bortle}</span>
                     <div class="bortle-bar">
-                      <div class="bortle-fill" style={`width: ${(session.bortle / 9) * 100}%; background: ${session.bortle <= 3 ? '#10b981' : session.bortle <= 6 ? '#f59e0b' : '#ef4444'}`}></div>
+                      <div class="bortle-fill" style={bortleFillStyle}></dd>
                     </div>
                   </div>
                 </div>
@@ -757,22 +932,22 @@ const imageUrl = item.preview
             )}
             {object.aliases && object.aliases.length > 0 && (
               <div class="data-row aliases-row">
-                <div class="data-cell label">
+                <dt class="data-cell label">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M4 7h16M4 12h16M4 17h10"/>
                   </svg>
-                  Also known as
-                </div>
-                <div class="data-cell value">
+                  Також відомо як
+                </dt>
+                <dd class="data-cell value">
                   <div class="aliases-compact">
                     {object.aliases.map((alias) => (
                       <span class="alias-tag">{alias}</span>
                     ))}
-                  </div>
+                  </dd>
                 </div>
               </div>
             )}
-          </div>
+          </dl>
         </div>
 
         {session?.subs && session.subs.length > 0 && (
@@ -782,7 +957,7 @@ const imageUrl = item.preview
                 <circle cx="12" cy="12" r="10"/>
                 <polyline points="12 6 12 12 16 14"/>
               </svg>
-              Exposure
+              Експозиція
             </h2>
             <div class="exposure-table">
               {session.subs.map((sub) => (
@@ -817,86 +992,86 @@ const imageUrl = item.preview
                 <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
                 <circle cx="12" cy="13" r="4"/>
               </svg>
-              Equipment
+              Обладнання
             </h2>
-            <div class="data-table compact">
+            <dl class="data-table compact">
               {session.camera && (
                 <div class="data-row">
-                  <div class="data-cell label">
+                  <dt class="data-cell label">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                       <rect x="2" y="4" width="20" height="16" rx="2"/>
                       <circle cx="12" cy="12" r="3"/>
                     </svg>
-                    Camera
-                  </div>
-                  <div class="data-cell value">{session.camera}</div>
+                    Камера
+                  </dt>
+                  <dd class="data-cell value">{session.camera}</dd>
                 </div>
               )}
               {session.telescope && (
                 <div class="data-row">
-                  <div class="data-cell label">
+                  <dt class="data-cell label">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                       <circle cx="12" cy="12" r="3"/>
                       <line x1="12" y1="1" x2="12" y2="9"/>
                       <line x1="12" y1="15" x2="12" y2="23"/>
                     </svg>
-                    Telescope
-                  </div>
-                  <div class="data-cell value">{session.telescope}</div>
+                    Телескоп
+                  </dt>
+                  <dd class="data-cell value">{session.telescope}</dd>
                 </div>
               )}
               {session.mount && (
                 <div class="data-row">
-                  <div class="data-cell label">
+                  <dt class="data-cell label">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                       <polyline points="6 9 12 15 18 9"/>
                     </svg>
-                    Mount
-                  </div>
-                  <div class="data-cell value">{session.mount}</div>
+                    Монтування
+                  </dt>
+                  <dd class="data-cell value">{session.mount}</dd>
                 </div>
               )}
               {session.coma_corrector && (
                 <div class="data-row">
-                  <div class="data-cell label">
+                  <dt class="data-cell label">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                       <circle cx="12" cy="12" r="10"/>
                       <circle cx="12" cy="12" r="6"/>
                       <circle cx="12" cy="12" r="2"/>
                     </svg>
-                    Corrector
-                  </div>
-                  <div class="data-cell value">{session.coma_corrector}</div>
+                    Коректор
+                  </dt>
+                  <dd class="data-cell value">{session.coma_corrector}</dd>
                 </div>
               )}
               {session.filters && session.filters.length > 0 && (
                 <div class="data-row">
-                  <div class="data-cell label">
+                  <dt class="data-cell label">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                       <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
                     </svg>
-                    Filters
-                  </div>
-                  <div class="data-cell value">{session.filters.join(', ')}</div>
+                    Фільтри
+                  </dt>
+                  <dd class="data-cell value">{session.filters.join(', ')}</dd>
                 </div>
               )}
               {session.guiding && (
                 <div class="data-row">
-                  <div class="data-cell label">
+                  <dt class="data-cell label">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                       <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
                     </svg>
-                    Guiding
-                  </div>
-                  <div class="data-cell value">
+                    Гідування
+                  </dt>
+                  <dd class="data-cell value">
                     {session.guiding.software}
                     {session.guiding.rms_arcsec && session.guiding.rms_arcsec !== null && (
                       <span class="guiding-rms">RMS {session.guiding.rms_arcsec}"</span>
                     )}
-                  </div>
+                  </dd>
                 </div>
               )}
-            </div>
+            </dl>
           </div>
         )}
 
@@ -906,34 +1081,34 @@ const imageUrl = item.preview
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
               </svg>
-              Processing
+              Обробка
             </h2>
-            <div class="data-table compact">
+            <dl class="data-table compact">
               {session.stacking_software && (
                 <div class="data-row">
-                  <div class="data-cell label">
+                  <dt class="data-cell label">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                       <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
                       <line x1="9" y1="9" x2="15" y2="15"/>
                       <line x1="15" y1="9" x2="9" y2="15"/>
                     </svg>
-                    Stacking
-                  </div>
-                  <div class="data-cell value">{session.stacking_software}</div>
+                    Стекування
+                  </dt>
+                  <dd class="data-cell value">{session.stacking_software}</dd>
                 </div>
               )}
               {session.processing_software && session.processing_software.length > 0 && (
                 <div class="data-row">
-                  <div class="data-cell label">
+                  <dt class="data-cell label">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                       <path d="M20 7h-9M14 17H5M17 3v18M10 7l-3 10"/>
                     </svg>
-                    Processing
-                  </div>
-                  <div class="data-cell value">{session.processing_software.join(', ')}</div>
+                    Обробка
+                  </dt>
+                  <dd class="data-cell value">{session.processing_software.join(', ')}</dd>
                 </div>
               )}
-            </div>
+            </dl>
           </div>
         )}
 
@@ -945,35 +1120,55 @@ const imageUrl = item.preview
                 <line x1="15" y1="9" x2="9" y2="15"/>
                 <line x1="9" y1="9" x2="15" y2="15"/>
               </svg>
-              Copyright
+              Авторські права
             </h2>
-            <div class="data-table compact">
+            <dl class="data-table compact">
               {object.credits && (
                 <div class="data-row">
-                  <div class="data-cell label">
+                  <dt class="data-cell label">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                       <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
                       <circle cx="12" cy="7" r="4"/>
                     </svg>
-                    Author
-                  </div>
-                  <div class="data-cell value">{object.credits}</div>
+                    Автор
+                  </dt>
+                  <dd class="data-cell value">{object.credits}</dd>
                 </div>
               )}
               {object.license && (
                 <div class="data-row">
-                  <div class="data-cell label">
+                  <dt class="data-cell label">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                       <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
                       <line x1="12" y1="18" x2="12.01" y2="18"/>
                       <path d="M12 6v6"/>
                     </svg>
-                    License
-                  </div>
-                  <div class="data-cell value">{object.license}</div>
+                    Ліцензія
+                  </dt>
+                  <dd class="data-cell value">{object.license}</dd>
                 </div>
               )}
-            </div>
+            </dl>
+          </div>
+        )}
+
+        {(prevItem || nextItem) && (
+          <div class="section">
+            <h2 class="section-title">Інші зйомки</h2>
+            <nav class="prev-next-nav" aria-label="Навігація між об'єктами">
+              {prevItem ? (
+                <a href={`${base}/object/${prevItem.object.id}`} class="prev-next-link prev">
+                  <span class="prev-next-direction" aria-hidden="true">← Попереднє</span>
+                  <span class="prev-next-name">{prevItem.object.name}</span>
+                </a>
+              ) : <span class="prev-next-placeholder" aria-hidden="true"></span>}
+              {nextItem ? (
+                <a href={`${base}/object/${nextItem.object.id}`} class="prev-next-link next">
+                  <span class="prev-next-direction" aria-hidden="true">Наступне →</span>
+                  <span class="prev-next-name">{nextItem.object.name}</span>
+                </a>
+              ) : <span class="prev-next-placeholder" aria-hidden="true"></span>}
+            </nav>
           </div>
         )}
 
@@ -1005,5 +1200,4 @@ const imageUrl = item.preview
     </div>
 
     <script src="../../scripts/detail-gallery.ts"></script>
-  </body>
-</html>
+</BaseLayout>

@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is an astrophotography gallery repository that manages final images, metadata, and deploys a static website to GitHub Pages. The project is bilingual (Ukrainian/English) with Ukrainian as the primary language for UI text.
+This is an astrophotography gallery repository that manages final images, metadata, and deploys a static website to GitHub Pages. UI text and object descriptions are in Ukrainian only.
 
 ## Architecture
 

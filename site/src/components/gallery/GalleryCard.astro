@@ -5,15 +5,18 @@
  */
 
 import LazyImage from './LazyImage.astro';
+import type { GalleryItem } from '../../types/gallery';
 
 interface Props {
-  item: any;
+  item: GalleryItem;
   base: string;
   index?: number;
 }
 
 const { item, base, index = 0 } = Astro.props;
 const delay = Math.min(index * 30, 270); // Cap at 270ms
+// Eager-load the first 6 cards so LCP doesn't wait for IntersectionObserver.
+const eager = index < 6;
 ---
 
 <a
@@ -31,8 +34,10 @@ const delay = Math.min(index * 30, 270); // Cap at 270ms
     <div class="card-image-wrapper">
       <LazyImage
         src={`${base}/${item.preview}`}
-        alt={item.object?.name || item.title}
+        alt={item.object?.name || item.title || ''}
         className="card-image"
+        eager={eager}
+        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
       />
       <div class="card-glow"></div>
     </div>
@@ -72,13 +77,13 @@ const delay = Math.min(index * 30, 270); // Cap at 270ms
 
   .gallery-card:hover {
     border-color: var(--color-border-hover);
-    transform: translateY(-12px) scale(1.02);
-    box-shadow: 0 0 30px rgba(168, 85, 247, 0.3),
-                0 20px 40px rgba(0, 0, 0, 0.5);
+    transform: translateY(-4px);
+    box-shadow: 0 0 24px rgba(168, 85, 247, 0.18),
+                0 12px 28px rgba(0, 0, 0, 0.45);
   }
 
   .gallery-card:active {
-    transform: translateY(-10px) scale(1.01);
+    transform: translateY(-2px);
   }
 
   /* Card Image */

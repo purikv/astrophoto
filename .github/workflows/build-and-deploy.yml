@@ -12,34 +12,60 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: |
+            package-lock.json
+            site/package-lock.json
+
       - name: Install root dependencies (for tools)
-        run: npm ci || npm i
+        run: npm ci
+
       - name: Install site dependencies
         working-directory: site
-        run: npm ci || npm i
+        run: npm ci
+
       - name: Validate YAML files
         run: npm run validate
-      - name: Generate thumbnails
+
+      - name: Cache thumbnails
+        uses: actions/cache@v4
+        with:
+          path: thumbnails
+          key: thumbnails-${{ hashFiles('images/**/*', 'data/sessions/*.yml', 'tools/make-thumbs.mjs') }}
+          restore-keys: |
+            thumbnails-
+
+      - name: Generate thumbnails (incremental)
         run: npm run thumbs
+
+      - name: Type-check site
+        working-directory: site
+        run: npm run check
+
       - name: Copy to public (for Astro to process)
         run: |
           mkdir -p site/public/thumbnails
           mkdir -p site/public/images
           cp -r thumbnails/* site/public/thumbnails/
           cp -r images/* site/public/images/
+
       - name: Build site (includes gallery.json generation)
         working-directory: site
         run: npm run build
+
       - name: Verify thumbnails in dist
         run: |
-          echo "Checking if thumbnails exist in dist:"
-          ls -lh site/dist/thumbnails/ 2>/dev/null | head -10 || echo "No thumbnails in dist - Astro may have excluded them"
-          echo "Listing dist root:"
-          ls -la site/dist/
+          if [ ! -d site/dist/thumbnails ] || [ -z "$(ls -A site/dist/thumbnails)" ]; then
+            echo "::error::No thumbnails in site/dist/thumbnails — build is broken"
+            exit 1
+          fi
+          echo "Thumbnails OK ($(ls site/dist/thumbnails | wc -l) files)"
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:

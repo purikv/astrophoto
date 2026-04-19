@@ -6,227 +6,271 @@ import GalleryCard from '../components/gallery/GalleryCard.astro';
 import SearchBar from '../components/ui/SearchBar.astro';
 import FilterPanel from '../components/ui/FilterPanel.astro';
 import SortOptions from '../components/ui/SortOptions.astro';
-import '../styles/global.css';
-import '../styles/animations.css';
-import '../styles/effects.css';
+import BaseLayout from '../layouts/BaseLayout.astro';
 
 const base = import.meta.env.BASE_URL;
 
-// Full URLs for Open Graph
 const siteUrl = 'https://purikv.github.io';
 const pageUrl = `${siteUrl}${base}/`;
 const description = "Колекція астрофотографій глибокого космосу - галактики, туманності та зоряні скупчення";
-// Use first image from gallery as preview (800px for faster loading)
-// URL-encode the image path to handle Cyrillic characters
-const firstImage = galleryData[0]?.preview
-  ? `${siteUrl}${base}/${galleryData[0].preview.split('/').map(encodeURIComponent).join('/')}`
+
+// Encode path segments (not slashes) so Cyrillic/parenthesized filenames survive OG scrapers.
+const firstPreview = galleryData[0]?.preview;
+const firstImage = firstPreview
+  ? `${siteUrl}${base}/${firstPreview.split('/').map(encodeURIComponent).join('/')}`
   : `${siteUrl}${base}/thumbnails/default_800.jpg`;
 ---
-<html lang="uk">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Astro Gallery - Астрофотографія</title>
-    <meta name="description" content={description} />
 
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content={pageUrl} />
-    <meta property="og:title" content="Astro Gallery - Астрофотографія" />
-    <meta property="og:description" content={description} />
-    <meta property="og:image" content={firstImage} />
-    <meta property="og:image:width" content="800" />
-    <meta property="og:image:height" content="533" />
-    <meta property="og:locale" content="uk_UA" />
-    <meta property="og:site_name" content="Astro Gallery - Володимир Пурик" />
+<BaseLayout
+  title="Astro Gallery - Астрофотографія"
+  description={description}
+  canonicalUrl={pageUrl}
+  ogImage={firstImage}
+>
+  <StarField />
+  <ParticleEffect count={15} />
 
-    <!-- Twitter -->
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:url" content={pageUrl} />
-    <meta name="twitter:title" content="Astro Gallery - Астрофотографія" />
-    <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={firstImage} />
-
-    <!-- Additional meta -->
-    <meta name="author" content="Володимир Пурик" />
-    <link rel="canonical" href={pageUrl} />
-    <style>
-      * {
-        box-sizing: border-box;
-      }
-      body {
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-        margin: 0;
-        padding: 1rem;
-        background: #000;
-        color: #e0e0e0;
-        line-height: 1.5;
-      }
-
-      /* Header */
-      .header {
-        max-width: 1400px;
-        margin: 0 auto 2rem;
-        padding: 0 1rem;
-      }
-
-      .header-content {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 2rem;
-      }
-
-      /* Controls Container */
-      .controls-container {
-        max-width: 1400px;
-        margin: 0 auto 2rem;
-        padding: 0 1rem;
-      }
-
-      .controls-row {
-        display: flex;
-        gap: 1rem;
-        margin-bottom: 1.5rem;
-        flex-wrap: wrap;
-        align-items: center;
-      }
-
-      @media (max-width: 768px) {
-        .controls-row {
-          flex-direction: column;
-          align-items: stretch;
-        }
-      }
-
-      /* Empty State */
-      .empty-state {
-        grid-column: 1 / -1;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        min-height: 400px;
-        padding: 4rem 2rem;
-      }
-
-      .empty-state-content {
-        text-align: center;
-        color: var(--color-text-tertiary);
-      }
-
-      .empty-state-content svg {
-        margin-bottom: 1.5rem;
-        opacity: 0.5;
-      }
-
-      .empty-state-content p {
-        font-size: 1.25rem;
-        margin-bottom: 1.5rem;
-      }
-
-      .reset-button {
-        padding: 0.75rem 1.5rem;
-        background: var(--color-primary);
-        color: white;
-        border: none;
-        border-radius: var(--radius-full);
-        font-size: 0.9rem;
-        cursor: pointer;
-        transition: all var(--transition-base);
-      }
-
-      .reset-button:hover {
-        transform: translateY(-2px);
-        box-shadow: var(--glow-md);
-      }
-
-      h1 {
-        color: #fff;
-        text-align: center;
-        margin: 0 0 0.5rem 0;
-        font-size: 1.75rem;
-        font-weight: 300;
-        letter-spacing: 0.02em;
-      }
-
-      .subtitle {
-        text-align: center;
-        color: #666;
-        font-size: 0.85rem;
-        margin: 0;
-        font-weight: 300;
-        letter-spacing: 0.03em;
-      }
-
-      @media (min-width: 768px) {
-        .header {
-          margin-bottom: 4rem;
-        }
-
-        h1 {
-          font-size: 2.25rem;
-        }
-
-        .subtitle {
-          font-size: 0.9rem;
-        }
-      }
-
-      /* Gallery Grid */
-      .gallery {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
-        max-width: 1400px;
-        margin: 0 auto;
-      }
-
-      @media (min-width: 640px) {
-        body { padding: 1.5rem; }
-        .gallery {
-          grid-template-columns: repeat(2, 1fr);
-          gap: 2rem;
-        }
-      }
-
-      @media (min-width: 1024px) {
-        body { padding: 2rem; }
-        .gallery {
-          grid-template-columns: repeat(3, 1fr);
-          gap: 2rem;
-        }
-      }
-
-      /* Gallery-specific styles */
-    </style>
-  </head>
-  <body>
-    <StarField />
-    <ParticleEffect count={15} />
-
-    <div class="header">
-      <div class="header-content">
-        <div>
-          <h1>Астрофотографія</h1>
-          <p class="subtitle">Глибокий космос очима любителя</p>
-        </div>
+  <header class="header">
+    <div class="header-content">
+      <div>
+        <h1>Астрофотографія</h1>
+        <p class="subtitle">Глибокий космос очима любителя</p>
       </div>
     </div>
+  </header>
 
-    <div class="controls-container">
-      <div class="controls-row">
-        <SearchBar />
-        <SortOptions />
-      </div>
-      <FilterPanel />
+  <div class="controls-container">
+    <div class="controls-row">
+      <SearchBar />
+      <SortOptions />
     </div>
+    <FilterPanel />
+  </div>
 
-    <div class="gallery">
-      {galleryData.map((item, index) => (
-        <GalleryCard item={item} base={base} index={index} />
-      ))}
-    </div>
+  <main id="main-content" class="gallery" aria-label="Галерея астрофотографій">
+    {galleryData.map((item, index) => (
+      <GalleryCard item={item} base={base} index={index} />
+    ))}
+  </main>
 
-    <script src="../scripts/gallery-filter.ts"></script>
-  </body>
-</html>
+  <script src="../scripts/gallery-filter.ts"></script>
+</BaseLayout>
+
+<style>
+  :global(body) {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    margin: 0;
+    padding: 1rem;
+    background: #000;
+    color: #e0e0e0;
+    line-height: 1.5;
+  }
+
+  .header {
+    max-width: 1400px;
+    margin: 0 auto 2rem;
+    padding: 0 1rem;
+  }
+
+  .header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .controls-container {
+    max-width: 1400px;
+    margin: 0 auto 2rem;
+    padding: 0 1rem;
+  }
+
+  .controls-row {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  @media (max-width: 768px) {
+    .controls-row {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  }
+
+  /* Results bar (active filters + count + reset) */
+  :global(.results-bar) {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 1rem;
+    padding: 0.75rem 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+  }
+
+  :global(.results-count) {
+    font-weight: 400;
+    letter-spacing: 0.01em;
+    min-width: fit-content;
+  }
+
+  :global(.active-chips) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    flex: 1;
+    min-width: 0;
+  }
+
+  :global(.active-chip) {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.3rem 0.75rem;
+    background: rgba(168, 85, 247, 0.12);
+    border: 1px solid rgba(168, 85, 247, 0.35);
+    border-radius: 100px;
+    color: #e0c9ff;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: inherit;
+  }
+
+  :global(.active-chip:hover),
+  :global(.active-chip:focus-visible) {
+    background: rgba(239, 68, 68, 0.15);
+    border-color: rgba(239, 68, 68, 0.4);
+    color: #ffb4b4;
+    outline: none;
+  }
+
+  :global(.results-reset) {
+    padding: 0.3rem 0.85rem;
+    background: transparent;
+    border: 1px solid var(--color-border);
+    border-radius: 100px;
+    color: var(--color-text-secondary);
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: inherit;
+  }
+
+  :global(.results-reset:hover),
+  :global(.results-reset:focus-visible) {
+    background: var(--color-bg-tertiary);
+    color: #fff;
+    outline: none;
+  }
+
+  /* Gallery card reveal/hide animations */
+  :global(.gallery-card) {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+
+  :global(.gallery-card.is-hidden) {
+    display: none;
+  }
+
+  :global(.empty-state) {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+    padding: 4rem 2rem;
+  }
+
+  :global(.empty-state-content) {
+    text-align: center;
+    color: var(--color-text-tertiary);
+  }
+
+  :global(.empty-state-content svg) {
+    margin-bottom: 1.5rem;
+    opacity: 0.5;
+  }
+
+  :global(.empty-state-content p) {
+    font-size: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+
+  :global(.reset-button) {
+    padding: 0.75rem 1.5rem;
+    background: var(--color-primary);
+    color: white;
+    border: none;
+    border-radius: var(--radius-full);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all var(--transition-base);
+  }
+
+  :global(.reset-button:hover) {
+    transform: translateY(-2px);
+    box-shadow: var(--glow-md);
+  }
+
+  h1 {
+    color: #fff;
+    text-align: center;
+    margin: 0 0 0.5rem 0;
+    font-size: 1.75rem;
+    font-weight: 300;
+    letter-spacing: 0.02em;
+  }
+
+  .subtitle {
+    text-align: center;
+    color: #666;
+    font-size: 0.85rem;
+    margin: 0;
+    font-weight: 300;
+    letter-spacing: 0.03em;
+  }
+
+  @media (min-width: 768px) {
+    .header {
+      margin-bottom: 4rem;
+    }
+
+    h1 {
+      font-size: 2.25rem;
+    }
+
+    .subtitle {
+      font-size: 0.9rem;
+    }
+  }
+
+  .gallery {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  @media (min-width: 640px) {
+    :global(body) { padding: 1.5rem; }
+    .gallery {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    :global(body) { padding: 2rem; }
+    .gallery {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+    }
+  }
+</style>

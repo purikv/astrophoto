@@ -4,13 +4,17 @@
  * Modal fullscreen viewer with navigation, zoom, and gestures
  */
 
+import type { GalleryItem } from '../../types/gallery';
+
 interface Props {
-  items: any[];
-  currentIndex: number;
-  base: string;
+  items: GalleryItem[];
+  currentIndex?: number;
+  base?: string;
 }
 
-const { items, currentIndex, base } = Astro.props;
+// currentIndex and base are consumed by the client-side script;
+// only `items` is needed at SSR time (for the counter total).
+const { items } = Astro.props;
 ---
 
 <div id="fullscreen-gallery" class="fullscreen-gallery" role="dialog" aria-modal="true" aria-label="Fullscreen gallery">

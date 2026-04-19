@@ -1,0 +1,87 @@
+---
+/**
+ * BaseLayout — shared shell with meta, OG, canonical, skip link.
+ * Page-specific <style> blocks go in the page itself (can use is:inline or scoped).
+ */
+
+import '../styles/global.css';
+import '../styles/animations.css';
+import '../styles/effects.css';
+
+interface Props {
+  title: string;
+  description: string;
+  canonicalUrl: string;
+  ogImage: string;
+  ogType?: 'website' | 'article';
+  bodyClass?: string;
+}
+
+const {
+  title,
+  description,
+  canonicalUrl,
+  ogImage,
+  ogType = 'website',
+  bodyClass = ''
+} = Astro.props;
+
+const base = import.meta.env.BASE_URL;
+---
+
+<!doctype html>
+<html lang="uk">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="base-url" content={base} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content="Володимир Пурик" />
+    <link rel="canonical" href={canonicalUrl} />
+
+    <meta property="og:type" content={ogType} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="800" />
+    <meta property="og:image:height" content="533" />
+    <meta property="og:locale" content="uk_UA" />
+    <meta property="og:site_name" content="Astro Gallery - Володимир Пурик" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content={canonicalUrl} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <slot name="head" />
+  </head>
+  <body class={bodyClass}>
+    <a href="#main-content" class="skip-link">Перейти до контенту</a>
+    <slot />
+  </body>
+</html>
+
+<style is:global>
+  .skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: var(--color-primary, #a855f7);
+    color: #fff;
+    padding: 0.5rem 1rem;
+    z-index: 1000;
+    text-decoration: none;
+    border-radius: 0 0 4px 0;
+    font-size: 0.9rem;
+    transition: top 0.2s ease;
+  }
+
+  .skip-link:focus {
+    top: 0;
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+  }
+</style>

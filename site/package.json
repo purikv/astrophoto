@@ -5,11 +5,15 @@
     "generate": "node ../tools/generate-gallery-json.mjs",
     "dev": "astro dev",
     "build": "npm run generate && astro build",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "check": "npm run generate && astro check"
   },
   "dependencies": {
-    "astro": "^4.0.0",
+    "@astrojs/check": "^0.9.4",
+    "@astrojs/sitemap": "3.2.1",
+    "astro": "^4.16.19",
     "gray-matter": "^4.0.3",
+    "typescript": "^5.6.3",
     "yaml": "^2.4.2"
   }
 }

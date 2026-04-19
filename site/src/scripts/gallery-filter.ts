@@ -1,22 +1,20 @@
 /**
  * Gallery Filter & Sort Script
- * Handles filtering, sorting, and searching of gallery items
+ * Filters/sorts gallery items in-place without cloning DOM nodes (preserves listeners).
+ * Emits `gallery:changed` so LazyImage can re-observe.
+ * Renders active-filter chips, live results count, and reset-all shortcut.
+ * Keyboard: "/" focuses search, Esc blurs it.
  */
 
-interface GalleryItem {
-  object: {
-    id: string;
-    name: string;
-    type: string;
-    constellation: string;
-    distance_ly?: number;
-    description?: string;
-    aliases?: string[];
-  };
-  session: {
-    date_utc: string;
-  };
-  preview: string;
+interface GalleryItemData {
+  element: HTMLElement;
+  id: string;
+  name: string;
+  type: string;
+  constellation: string;
+  distance_ly: number;
+  description: string;
+  date_utc: string;
 }
 
 interface FilterState {
@@ -26,15 +24,19 @@ interface FilterState {
   searchQuery: string;
 }
 
+const DEFAULT_STATE: FilterState = {
+  type: 'all',
+  constellation: 'all',
+  sortBy: 'date-desc',
+  searchQuery: ''
+};
+
 class GalleryFilter {
-  private allItems: GalleryItem[] = [];
+  private allItems: GalleryItemData[] = [];
   private galleryContainer: HTMLElement | null = null;
-  private state: FilterState = {
-    type: 'all',
-    constellation: 'all',
-    sortBy: 'date-desc',
-    searchQuery: ''
-  };
+  private emptyState: HTMLElement | null = null;
+  private resultsBar: HTMLElement | null = null;
+  private state: FilterState = { ...DEFAULT_STATE };
 
   constructor() {
     this.init();
@@ -44,56 +46,95 @@ class GalleryFilter {
     this.galleryContainer = document.querySelector('.gallery');
     if (!this.galleryContainer) return;
 
-    // Store all gallery items
     this.storeAllItems();
-
-    // Setup event listeners
+    this.buildResultsBar();
     this.setupTypeFilters();
     this.setupConstellationFilters();
     this.setupSortOptions();
     this.setupSearch();
-
-    // Read URL parameters
+    this.setupKeyboardShortcuts();
     this.readURLParams();
-
-    // Initial filter/sort
-    this.applyFiltersAndSort();
+    this.applyFiltersAndSort({ scrollToTop: false });
   }
 
   private storeAllItems() {
     const cards = Array.from(this.galleryContainer?.querySelectorAll('.gallery-card') || []);
     this.allItems = cards.map(card => {
       const element = card as HTMLElement;
+      const distanceRaw = element.dataset.objectDistance;
+      const distance = distanceRaw ? Number(distanceRaw) : NaN;
       return {
         element,
-        object: {
-          id: element.dataset.objectId || '',
-          name: element.querySelector('.card-title')?.textContent || '',
-          type: element.dataset.objectType || '',
-          constellation: element.dataset.objectConstellation || '',
-          distance_ly: parseFloat(element.dataset.objectDistance || '0'),
-          description: element.dataset.objectDescription || ''
-        },
-        session: {
-          date_utc: element.dataset.sessionDate || ''
-        }
-      } as any;
+        id: element.dataset.objectId || '',
+        name: element.querySelector('.card-title')?.textContent || '',
+        type: element.dataset.objectType || '',
+        constellation: element.dataset.objectConstellation || '',
+        distance_ly: Number.isFinite(distance) ? distance : 0,
+        description: element.dataset.objectDescription || '',
+        date_utc: element.dataset.sessionDate || ''
+      };
     });
   }
 
+  private buildResultsBar() {
+    const controls = document.querySelector('.controls-container');
+    if (!controls) return;
+
+    const bar = document.createElement('div');
+    bar.className = 'results-bar';
+    bar.setAttribute('role', 'status');
+    bar.setAttribute('aria-live', 'polite');
+    bar.hidden = true;
+    bar.innerHTML = `
+      <span class="results-count"></span>
+      <div class="active-chips"></div>
+      <button type="button" class="results-reset" hidden>Скинути</button>
+    `;
+    controls.appendChild(bar);
+    this.resultsBar = bar;
+
+    bar.querySelector<HTMLButtonElement>('.results-reset')?.addEventListener('click', () => {
+      this.resetFilters();
+    });
+    bar.querySelector<HTMLElement>('.active-chips')?.addEventListener('click', (e) => {
+      const target = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-remove-chip]');
+      if (!target) return;
+      const kind = target.dataset.removeChip;
+      if (kind === 'type') this.state.type = 'all';
+      if (kind === 'constellation') this.state.constellation = 'all';
+      if (kind === 'search') {
+        this.state.searchQuery = '';
+        const input = document.getElementById('search-input') as HTMLInputElement | null;
+        if (input) input.value = '';
+        const clear = document.getElementById('search-clear');
+        if (clear) (clear as HTMLElement).style.display = 'none';
+      }
+      this.syncFilterButtons();
+      this.updateURL();
+      this.applyFiltersAndSort();
+    });
+  }
+
+  private syncFilterButtons() {
+    document.querySelectorAll('[data-type]').forEach(btn => {
+      const t = (btn as HTMLElement).dataset.type || 'all';
+      btn.classList.toggle('active', t === this.state.type);
+    });
+    document.querySelectorAll('[data-constellation]').forEach(btn => {
+      const c = (btn as HTMLElement).dataset.constellation || 'all';
+      btn.classList.toggle('active', c === this.state.constellation);
+    });
+    const sortSelect = document.getElementById('sort-select') as HTMLSelectElement | null;
+    if (sortSelect) sortSelect.value = this.state.sortBy;
+  }
+
   private setupTypeFilters() {
-    const typeButtons = document.querySelectorAll('[data-type]');
+    const typeButtons = document.querySelectorAll<HTMLElement>('[data-type]');
     typeButtons.forEach(button => {
       button.addEventListener('click', (e) => {
         const target = e.currentTarget as HTMLElement;
-        const type = target.dataset.type || 'all';
-
-        // Update active state
-        typeButtons.forEach(btn => btn.classList.remove('active'));
-        target.classList.add('active');
-
-        // Update state and filter
-        this.state.type = type;
+        this.state.type = target.dataset.type || 'all';
+        this.syncFilterButtons();
         this.updateURL();
         this.applyFiltersAndSort();
       });
@@ -101,18 +142,12 @@ class GalleryFilter {
   }
 
   private setupConstellationFilters() {
-    const constellationButtons = document.querySelectorAll('[data-constellation]');
+    const constellationButtons = document.querySelectorAll<HTMLElement>('[data-constellation]');
     constellationButtons.forEach(button => {
       button.addEventListener('click', (e) => {
         const target = e.currentTarget as HTMLElement;
-        const constellation = target.dataset.constellation || 'all';
-
-        // Update active state
-        constellationButtons.forEach(btn => btn.classList.remove('active'));
-        target.classList.add('active');
-
-        // Update state and filter
-        this.state.constellation = constellation;
+        this.state.constellation = target.dataset.constellation || 'all';
+        this.syncFilterButtons();
         this.updateURL();
         this.applyFiltersAndSort();
       });
@@ -120,32 +155,31 @@ class GalleryFilter {
   }
 
   private setupSortOptions() {
-    const sortSelect = document.getElementById('sort-select') as HTMLSelectElement;
+    const sortSelect = document.getElementById('sort-select') as HTMLSelectElement | null;
     if (!sortSelect) return;
 
     sortSelect.addEventListener('change', (e) => {
-      const target = e.target as HTMLSelectElement;
-      this.state.sortBy = target.value;
+      this.state.sortBy = (e.target as HTMLSelectElement).value;
       this.updateURL();
       this.applyFiltersAndSort();
     });
   }
 
   private setupSearch() {
-    const searchInput = document.getElementById('search-input') as HTMLInputElement;
-    const searchClear = document.getElementById('search-clear') as HTMLElement;
+    const searchInput = document.getElementById('search-input') as HTMLInputElement | null;
+    const searchClear = document.getElementById('search-clear') as HTMLElement | null;
     if (!searchInput) return;
 
+    let debounceTimer: number | null = null;
     searchInput.addEventListener('input', (e) => {
-      const target = e.target as HTMLInputElement;
-      this.state.searchQuery = target.value.toLowerCase();
+      const value = (e.target as HTMLInputElement).value;
+      if (searchClear) searchClear.style.display = value ? 'flex' : 'none';
 
-      // Show/hide clear button
-      if (searchClear) {
-        searchClear.style.display = this.state.searchQuery ? 'flex' : 'none';
-      }
-
-      this.applyFiltersAndSort();
+      if (debounceTimer !== null) window.clearTimeout(debounceTimer);
+      debounceTimer = window.setTimeout(() => {
+        this.state.searchQuery = value.toLowerCase();
+        this.applyFiltersAndSort();
+      }, 80);
     });
 
     if (searchClear) {
@@ -153,113 +187,196 @@ class GalleryFilter {
         searchInput.value = '';
         this.state.searchQuery = '';
         searchClear.style.display = 'none';
+        searchInput.focus();
         this.applyFiltersAndSort();
       });
     }
   }
 
-  private filterItems(items: any[]): any[] {
-    return items.filter(item => {
-      // Type filter
-      if (this.state.type !== 'all' && item.object.type !== this.state.type) {
-        return false;
+  private setupKeyboardShortcuts() {
+    document.addEventListener('keydown', (e) => {
+      const target = e.target as HTMLElement | null;
+      const isTyping = target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable);
+
+      if (e.key === '/' && !isTyping) {
+        const input = document.getElementById('search-input') as HTMLInputElement | null;
+        if (input) {
+          e.preventDefault();
+          input.focus();
+          input.select();
+        }
+        return;
       }
 
-      // Constellation filter
-      if (this.state.constellation !== 'all' && item.object.constellation !== this.state.constellation) {
-        return false;
-      }
-
-      // Search filter
-      if (this.state.searchQuery) {
-        const searchableText = [
-          item.object.name,
-          item.object.type,
-          item.object.constellation,
-          item.object.description
-        ].join(' ').toLowerCase();
-
-        if (!searchableText.includes(this.state.searchQuery)) {
-          return false;
+      if (e.key === 'Escape' && document.activeElement?.id === 'search-input') {
+        const input = document.activeElement as HTMLInputElement;
+        if (input.value) {
+          input.value = '';
+          this.state.searchQuery = '';
+          const clear = document.getElementById('search-clear');
+          if (clear) (clear as HTMLElement).style.display = 'none';
+          this.applyFiltersAndSort();
+        } else {
+          input.blur();
         }
       }
+    });
+  }
 
+  private filterItems(items: GalleryItemData[]): GalleryItemData[] {
+    return items.filter(item => {
+      if (this.state.type !== 'all' && item.type !== this.state.type) return false;
+      if (this.state.constellation !== 'all' && item.constellation !== this.state.constellation) return false;
+
+      if (this.state.searchQuery) {
+        const hay = [item.name, item.type, item.constellation, item.description].join(' ').toLowerCase();
+        if (!hay.includes(this.state.searchQuery)) return false;
+      }
       return true;
     });
   }
 
-  private sortItems(items: any[]): any[] {
+  private sortItems(items: GalleryItemData[]): GalleryItemData[] {
     const sorted = [...items];
-
     switch (this.state.sortBy) {
-      case 'date-desc':
-        sorted.sort((a, b) => b.session.date_utc.localeCompare(a.session.date_utc));
-        break;
-      case 'date-asc':
-        sorted.sort((a, b) => a.session.date_utc.localeCompare(b.session.date_utc));
-        break;
-      case 'name-asc':
-        sorted.sort((a, b) => a.object.name.localeCompare(b.object.name, 'uk'));
-        break;
-      case 'name-desc':
-        sorted.sort((a, b) => b.object.name.localeCompare(a.object.name, 'uk'));
-        break;
-      case 'distance-asc':
-        sorted.sort((a, b) => (a.object.distance_ly || 0) - (b.object.distance_ly || 0));
-        break;
-      case 'distance-desc':
-        sorted.sort((a, b) => (b.object.distance_ly || 0) - (a.object.distance_ly || 0));
-        break;
+      case 'date-desc': sorted.sort((a, b) => b.date_utc.localeCompare(a.date_utc)); break;
+      case 'date-asc': sorted.sort((a, b) => a.date_utc.localeCompare(b.date_utc)); break;
+      case 'name-asc': sorted.sort((a, b) => a.name.localeCompare(b.name, 'uk')); break;
+      case 'name-desc': sorted.sort((a, b) => b.name.localeCompare(a.name, 'uk')); break;
+      case 'distance-asc': sorted.sort((a, b) => a.distance_ly - b.distance_ly); break;
+      case 'distance-desc': sorted.sort((a, b) => b.distance_ly - a.distance_ly); break;
     }
-
     return sorted;
   }
 
-  private applyFiltersAndSort() {
+  private applyFiltersAndSort({ scrollToTop = true }: { scrollToTop?: boolean } = {}) {
     if (!this.galleryContainer) return;
 
-    // Filter and sort
-    let filtered = this.filterItems(this.allItems);
-    let sorted = this.sortItems(filtered);
+    const filtered = this.filterItems(this.allItems);
+    const sorted = this.sortItems(filtered);
+    const visibleIds = new Set(sorted.map(i => i.id));
 
-    // Clear container
-    this.galleryContainer.innerHTML = '';
-
-    // Add items back with stagger animation
-    sorted.forEach((item, index) => {
-      const element = item.element.cloneNode(true) as HTMLElement;
-      element.style.animationDelay = `${Math.min(index * 30, 270)}ms`;
-      element.classList.add('stagger-item');
-      this.galleryContainer?.appendChild(element);
+    // Hide non-matching
+    this.allItems.forEach(item => {
+      if (!visibleIds.has(item.id)) {
+        item.element.classList.add('is-hidden');
+        item.element.classList.remove('stagger-item');
+      } else {
+        item.element.classList.remove('is-hidden');
+      }
     });
 
-    // Show empty state if no results
-    if (sorted.length === 0) {
-      this.showEmptyState();
-    }
+    // Reorder visible in-place (no clone)
+    const fragment = document.createDocumentFragment();
+    sorted.forEach((item, index) => {
+      item.element.style.animationDelay = `${Math.min(index * 25, 240)}ms`;
+      item.element.classList.add('stagger-item');
+      fragment.appendChild(item.element);
+    });
+    this.galleryContainer.appendChild(fragment);
 
-    // Re-initialize lazy loading for cloned images
-    if (typeof (window as any).reinitLazyLoading === 'function') {
-      (window as any).reinitLazyLoading();
+    this.renderResultsBar(sorted.length);
+    this.updateEmptyState(sorted.length === 0);
+    window.dispatchEvent(new CustomEvent('gallery:changed'));
+
+    if (scrollToTop && this.hasActiveFilters() && this.galleryContainer.getBoundingClientRect().top < -40) {
+      this.galleryContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   }
 
-  private showEmptyState() {
+  private hasActiveFilters(): boolean {
+    return this.state.type !== DEFAULT_STATE.type
+      || this.state.constellation !== DEFAULT_STATE.constellation
+      || this.state.searchQuery !== DEFAULT_STATE.searchQuery
+      || this.state.sortBy !== DEFAULT_STATE.sortBy;
+  }
+
+  private renderResultsBar(visibleCount: number) {
+    if (!this.resultsBar) return;
+    const total = this.allItems.length;
+    const hasFilters = this.hasActiveFilters();
+
+    this.resultsBar.hidden = !hasFilters;
+    if (!hasFilters) {
+      this.resultsBar.querySelector('.active-chips')!.innerHTML = '';
+      this.resultsBar.querySelector('.results-count')!.textContent = '';
+      return;
+    }
+
+    const countEl = this.resultsBar.querySelector('.results-count')!;
+    countEl.textContent = visibleCount === total
+      ? `Знайдено ${visibleCount}`
+      : `Показано ${visibleCount} з ${total}`;
+
+    const chipsHtml: string[] = [];
+    if (this.state.type !== 'all') {
+      chipsHtml.push(this.chip('type', this.state.type));
+    }
+    if (this.state.constellation !== 'all') {
+      chipsHtml.push(this.chip('constellation', this.state.constellation));
+    }
+    if (this.state.searchQuery) {
+      chipsHtml.push(this.chip('search', `"${this.state.searchQuery}"`));
+    }
+    this.resultsBar.querySelector('.active-chips')!.innerHTML = chipsHtml.join('');
+
+    const resetBtn = this.resultsBar.querySelector<HTMLButtonElement>('.results-reset')!;
+    resetBtn.hidden = false;
+  }
+
+  private chip(kind: 'type' | 'constellation' | 'search', label: string): string {
+    const safeLabel = label
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    return `<button type="button" class="active-chip" data-remove-chip="${kind}" aria-label="Прибрати фільтр ${safeLabel}">
+      <span>${safeLabel}</span>
+      <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+        <line x1="18" y1="6" x2="6" y2="18"/>
+        <line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>`;
+  }
+
+  private updateEmptyState(show: boolean) {
     if (!this.galleryContainer) return;
 
-    const emptyState = document.createElement('div');
-    emptyState.className = 'empty-state';
-    emptyState.innerHTML = `
+    if (!show) {
+      this.emptyState?.remove();
+      this.emptyState = null;
+      return;
+    }
+    if (this.emptyState) return;
+
+    const el = document.createElement('div');
+    el.className = 'empty-state';
+    el.setAttribute('role', 'status');
+    el.setAttribute('aria-live', 'polite');
+    el.innerHTML = `
       <div class="empty-state-content">
-        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <circle cx="11" cy="11" r="8"></circle>
           <path d="m21 21-4.35-4.35"></path>
         </svg>
         <p>Нічого не знайдено</p>
-        <button onclick="window.location.reload()" class="reset-button">Скинути фільтри</button>
+        <button type="button" class="reset-button" data-reset-filters>Скинути фільтри</button>
       </div>
     `;
-    this.galleryContainer.appendChild(emptyState);
+    el.querySelector<HTMLButtonElement>('[data-reset-filters]')?.addEventListener('click', () => this.resetFilters());
+    this.galleryContainer.appendChild(el);
+    this.emptyState = el;
+  }
+
+  private resetFilters() {
+    this.state = { ...DEFAULT_STATE };
+
+    this.syncFilterButtons();
+
+    const searchInput = document.getElementById('search-input') as HTMLInputElement | null;
+    if (searchInput) searchInput.value = '';
+    const searchClear = document.getElementById('search-clear');
+    if (searchClear) (searchClear as HTMLElement).style.display = 'none';
+
+    this.updateURL();
+    this.applyFiltersAndSort();
   }
 
   private updateURL() {
@@ -276,35 +393,18 @@ class GalleryFilter {
     const params = new URLSearchParams(window.location.search);
 
     const type = params.get('type');
-    if (type) {
-      this.state.type = type;
-      const button = document.querySelector(`[data-type="${type}"]`);
-      if (button) {
-        document.querySelectorAll('[data-type]').forEach(btn => btn.classList.remove('active'));
-        button.classList.add('active');
-      }
-    }
+    if (type) this.state.type = type;
 
     const constellation = params.get('constellation');
-    if (constellation) {
-      this.state.constellation = constellation;
-      const button = document.querySelector(`[data-constellation="${constellation}"]`);
-      if (button) {
-        document.querySelectorAll('[data-constellation]').forEach(btn => btn.classList.remove('active'));
-        button.classList.add('active');
-      }
-    }
+    if (constellation) this.state.constellation = constellation;
 
     const sort = params.get('sort');
-    if (sort) {
-      this.state.sortBy = sort;
-      const select = document.getElementById('sort-select') as HTMLSelectElement;
-      if (select) select.value = sort;
-    }
+    if (sort) this.state.sortBy = sort;
+
+    this.syncFilterButtons();
   }
 }
 
-// Initialize when DOM is ready
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', () => new GalleryFilter());
 } else {
