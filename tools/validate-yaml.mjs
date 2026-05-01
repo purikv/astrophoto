@@ -148,7 +148,7 @@ function validateSessionSpecific(data, fileName) {
     } else {
       data.subs.forEach((sub, idx) => {
         if (!sub.band) errors.push(`subs[${idx}]: відсутнє поле band`);
-        if (!sub.iso) errors.push(`subs[${idx}]: відсутнє поле iso`);
+        if (!sub.iso && !sub.gain) errors.push(`subs[${idx}]: потрібно вказати iso або gain`);
         if (!sub.exposure_s) errors.push(`subs[${idx}]: відсутнє поле exposure_s`);
         if (!sub.count) errors.push(`subs[${idx}]: відсутнє поле count`);
       });

@@ -14,6 +14,8 @@ export interface AstroObject {
 export interface SubExposure {
   band: string;
   iso?: number;
+  gain?: number;
+  offset?: number;
   exposure_s: number;
   count: number;
 }

@@ -965,7 +965,9 @@ const bortleFillStyle = session?.bortle
                   <div class="exposure-band">{sub.band}</div>
                   <div class="exposure-details">
                     <span class="exposure-count">{sub.count} × {sub.exposure_s}s</span>
-                    {sub.iso && <span class="exposure-iso">ISO {sub.iso}</span>}
+                    {sub.gain != null
+                      ? <span class="exposure-iso">Gain {sub.gain}{sub.offset != null && ` · Offset ${sub.offset}`}</span>
+                      : sub.iso && <span class="exposure-iso">ISO {sub.iso}</span>}
                   </div>
                   <div class="exposure-time">{((sub.count * sub.exposure_s) / 3600).toFixed(2)}h</div>
                 </div>
