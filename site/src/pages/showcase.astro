@@ -501,6 +501,161 @@ const total = galleryData.length;
     }
   }
 
+  /* Landscape mobile: image-first, floating chrome, max viewport real-estate */
+  @media (orientation: landscape) and (max-height: 500px) {
+    .showcase {
+      grid-template-rows: 1fr;
+    }
+
+    .showcase-image-container {
+      padding: 0;
+    }
+
+    /* Compact close — top-right with safe-area */
+    .showcase-close {
+      top: calc(env(safe-area-inset-top, 0px) + 0.4rem);
+      right: calc(env(safe-area-inset-right, 0px) + 0.4rem);
+      width: 36px;
+      height: 36px;
+    }
+
+    /* Counter moves to top-left to balance close, doesn't fight info panel */
+    .showcase-counter {
+      top: calc(env(safe-area-inset-top, 0px) + 0.5rem);
+      left: calc(env(safe-area-inset-left, 0px) + 0.5rem);
+      transform: none;
+      font-size: 0.7rem;
+      padding: 0.25rem 0.65rem;
+    }
+
+    /* Smaller nav arrows hugging the edges */
+    .showcase-nav {
+      width: 38px;
+      height: 38px;
+    }
+    .showcase-prev {
+      left: calc(env(safe-area-inset-left, 0px) + 0.3rem);
+    }
+    .showcase-next {
+      right: calc(env(safe-area-inset-right, 0px) + 0.3rem);
+    }
+    .showcase-nav:hover:not(:disabled).showcase-prev { transform: translateY(-50%) translateX(-2px); }
+    .showcase-nav:hover:not(:disabled).showcase-next { transform: translateY(-50%) translateX(2px); }
+
+    /* Info panel becomes a floating glass chip at bottom-left */
+    .showcase-info {
+      position: absolute;
+      bottom: calc(env(safe-area-inset-bottom, 0px) + 0.4rem);
+      left: calc(env(safe-area-inset-left, 0px) + 0.4rem);
+      max-width: min(58vw, 460px);
+      background: rgba(0, 0, 0, 0.55);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 0.5rem 0.75rem;
+      z-index: 15;
+    }
+
+    .showcase-info-header {
+      margin: 0 0 0.3rem;
+      gap: 0.5rem;
+    }
+
+    .showcase-title {
+      font-size: 0.95rem;
+      line-height: 1.25;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .showcase-info-btn {
+      width: 28px;
+      height: 28px;
+    }
+
+    .showcase-info-btn svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .showcase-meta {
+      margin: 0;
+      gap: 0.3rem;
+    }
+
+    .meta-pill {
+      font-size: 0.62rem;
+      padding: 0.12rem 0.5rem;
+    }
+
+    /* Hide the always-visible 2-line preview; full description appears via "i" */
+    .showcase-short-desc {
+      display: none;
+    }
+
+    .showcase-long-desc {
+      font-size: 0.78rem;
+      line-height: 1.5;
+    }
+
+    .showcase-long-desc.open {
+      max-height: 38vh;
+      margin-top: 0.5rem;
+      padding-right: 0.25rem;
+    }
+
+    /* Zoom controls — bottom-right corner, away from info chip */
+    .showcase-zoom-controls {
+      bottom: calc(env(safe-area-inset-bottom, 0px) + 0.4rem);
+      right: calc(env(safe-area-inset-right, 0px) + 0.4rem);
+      left: auto;
+      transform: none;
+      padding: 0.25rem;
+      gap: 0.2rem;
+      border-radius: 10px;
+    }
+
+    .zoom-btn {
+      width: 32px;
+      height: 32px;
+      font-size: 0.65rem;
+    }
+
+    .zoom-btn svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    /* When controls are auto-hidden, gently fade info chip too */
+    .showcase.controls-hidden .showcase-info {
+      opacity: 0.35;
+      transition: opacity 0.3s ease;
+    }
+  }
+
+  /* Very short landscape (older phones, ~320–375 height): info chip more compact */
+  @media (orientation: landscape) and (max-height: 380px) {
+    .showcase-info {
+      padding: 0.4rem 0.6rem;
+      max-width: 52vw;
+    }
+    .showcase-info-header {
+      margin: 0 0 0.25rem;
+    }
+    .showcase-title {
+      font-size: 0.85rem;
+    }
+    .meta-pill {
+      font-size: 0.6rem;
+      padding: 0.1rem 0.42rem;
+    }
+    .showcase-long-desc.open {
+      max-height: 50vh;
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .showcase-image,
     .showcase-info,
