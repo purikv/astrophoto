@@ -29,4 +29,8 @@ finals:
     preview: "thumbnails/m51_v10_800.jpg"
     plate_solved: true
     title: "Галактика Вир (M51)"
+  - path: "images/m51/final/M51_v7.png"
+    preview: "thumbnails/m51_v7_800.jpg"
+    plate_solved: true
+    title: "Галактика Вир (M51)"
 notes: ""
