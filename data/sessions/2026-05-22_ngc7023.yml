@@ -21,8 +21,12 @@ calibration:
 stacking_software: "PixInsight"
 processing_software: ["PixInsight", "BlurXTerminator", "GraXpert Denoise"]
 finals:
+  - path: "images/ngc7023/final/Iris_v4.png"
+    preview: "thumbnails/iris_v4_800.jpg"
+    plate_solved: true
+    title: "Туманність Ірис (NGC 7023)"
   - path: "images/ngc7023/final/Iris_v3.png"
     preview: "thumbnails/iris_v3_800.jpg"
     plate_solved: true
-    title: "Туманність Ірис (NGC 7023)"
+    title: "Туманність Ірис (NGC 7023) — v3"
 notes: ""
