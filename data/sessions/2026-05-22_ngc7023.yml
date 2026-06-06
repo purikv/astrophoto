@@ -13,7 +13,7 @@ subs:
   - band: "RGB"
     iso: 125
     exposure_s: 180
-    count: 70
+    count: 402
 calibration:
   bias: 70
   darks: { exposure_s: 180, count: 70, temp_c: null }
@@ -21,12 +21,8 @@ calibration:
 stacking_software: "PixInsight"
 processing_software: ["PixInsight", "BlurXTerminator", "GraXpert Denoise"]
 finals:
-  - path: "images/ngc7023/final/Iris_v4.png"
-    preview: "thumbnails/iris_v4_800.jpg"
+  - path: "images/ngc7023/final/Iris_v14.png"
+    preview: "thumbnails/iris_v14_800.jpg"
     plate_solved: true
     title: "Туманність Ірис (NGC 7023)"
-  - path: "images/ngc7023/final/Iris_v3.png"
-    preview: "thumbnails/iris_v3_800.jpg"
-    plate_solved: true
-    title: "Туманність Ірис (NGC 7023) — v3"
 notes: ""
