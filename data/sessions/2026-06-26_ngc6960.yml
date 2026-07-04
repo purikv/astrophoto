@@ -1,0 +1,28 @@
+object_id: ngc6960
+date_utc: "2026-06-26"
+location: "Dnipropetrovska oblast, UA"
+bortle: 5
+camera: "Player One Poseidon-C"
+sensor_temp_c: null
+mount: "AZ-EQ5 GT"
+telescope: "Arsenal GSO 203/1000 N (f/5)"
+coma_corrector: "TS GPU CC"
+filters: ["UV IR-cut Anti-Halo"]
+guiding: { camera: "ZWO ASI 120 M", rms_arcsec: null, software: "PHD2" }
+subs:
+  - band: "RGB"
+    iso: 125
+    exposure_s: 180
+    count: 206
+calibration:
+  bias: 70
+  darks: { exposure_s: 180, count: 70, temp_c: null }
+  flats: { count: 70, method: "flat panel" }
+stacking_software: "PixInsight"
+processing_software: ["PixInsight", "BlurXTerminator", "GraXpert Denoise"]
+finals:
+  - path: "images/ngc6960/final/NGC6960_v12.png"
+    preview: "thumbnails/ngc6960_800.jpg"
+    plate_solved: true
+    title: "Туманність Західна Вуаль (NGC 6960)"
+notes: ""
