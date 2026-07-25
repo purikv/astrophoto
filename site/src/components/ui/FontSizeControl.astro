@@ -1,0 +1,141 @@
+---
+/**
+ * FontSizeControl — floating A− / A+ panel that scales the whole site
+ * via the --font-scale multiplier on <html> (all font sizes are rem-based).
+ * The chosen scale persists in localStorage and is applied before first
+ * paint by an inline script in BaseLayout <head>.
+ */
+---
+
+<div class="font-size-control" role="group" aria-label="Розмір шрифту">
+  <button type="button" class="fsc-btn" data-fsc="down" aria-label="Зменшити шрифт" title="Зменшити шрифт">
+    <span aria-hidden="true">A−</span>
+  </button>
+  <button type="button" class="fsc-value" data-fsc="reset" aria-label="Скинути розмір шрифту" title="Скинути розмір шрифту">100%</button>
+  <button type="button" class="fsc-btn" data-fsc="up" aria-label="Збільшити шрифт" title="Збільшити шрифт">
+    <span aria-hidden="true">A+</span>
+  </button>
+</div>
+
+<style>
+  .font-size-control {
+    position: fixed;
+    right: 1rem;
+    bottom: 1rem;
+    z-index: 900;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    padding: 0.25rem;
+    background: rgba(10, 14, 39, 0.75);
+    border: 1px solid rgba(168, 85, 247, 0.35);
+    border-radius: 100px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.4);
+    /* Fixed px so the control itself doesn't grow with the scale it changes */
+    font-size: 13px;
+  }
+
+  .fsc-btn,
+  .fsc-value {
+    border: none;
+    background: transparent;
+    color: #e0c9ff;
+    font-family: inherit;
+    font-size: inherit;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    border-radius: 100px;
+    padding: 0.4rem 0.7rem;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+
+  .fsc-value {
+    min-width: 3.2em;
+    text-align: center;
+    color: #a0a0a0;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .fsc-btn:hover,
+  .fsc-btn:focus-visible,
+  .fsc-value:hover,
+  .fsc-value:focus-visible {
+    background: rgba(168, 85, 247, 0.22);
+    color: #fff;
+    outline: none;
+  }
+
+  .fsc-btn:disabled {
+    opacity: 0.35;
+    cursor: default;
+    background: transparent;
+    color: #e0c9ff;
+  }
+
+  /* The problem this solves is large screens; on phones pinch-zoom exists
+     and screen space is precious. */
+  @media (max-width: 767px) {
+    .font-size-control {
+      display: none;
+    }
+  }
+
+  /* Don't overlap the slideshow UI */
+  :global(body.showcase-body) .font-size-control {
+    display: none;
+  }
+</style>
+
+<script>
+  const STORAGE_KEY = 'astro-font-scale';
+  const MIN = 0.8;
+  const MAX = 1.5;
+  const STEP = 0.1;
+
+  function readScale(): number {
+    try {
+      const v = parseFloat(localStorage.getItem(STORAGE_KEY) ?? '');
+      if (v >= MIN && v <= MAX) return v;
+    } catch { /* localStorage unavailable */ }
+    return 1;
+  }
+
+  function applyScale(scale: number): void {
+    document.documentElement.style.setProperty('--font-scale', String(scale));
+    try {
+      if (scale === 1) localStorage.removeItem(STORAGE_KEY);
+      else localStorage.setItem(STORAGE_KEY, String(scale));
+    } catch { /* localStorage unavailable */ }
+  }
+
+  function initControl(root: Element): void {
+    const valueBtn = root.querySelector<HTMLButtonElement>('[data-fsc="reset"]');
+    const downBtn = root.querySelector<HTMLButtonElement>('[data-fsc="down"]');
+    const upBtn = root.querySelector<HTMLButtonElement>('[data-fsc="up"]');
+    if (!valueBtn || !downBtn || !upBtn) return;
+
+    let scale = readScale();
+
+    function render(): void {
+      valueBtn!.textContent = `${Math.round(scale * 100)}%`;
+      downBtn!.disabled = scale <= MIN;
+      upBtn!.disabled = scale >= MAX;
+    }
+
+    function set(next: number): void {
+      scale = Math.round(Math.min(MAX, Math.max(MIN, next)) * 10) / 10;
+      applyScale(scale);
+      render();
+    }
+
+    downBtn.addEventListener('click', () => set(scale - STEP));
+    upBtn.addEventListener('click', () => set(scale + STEP));
+    valueBtn.addEventListener('click', () => set(1));
+
+    render();
+  }
+
+  document.querySelectorAll('.font-size-control').forEach(initControl);
+</script>

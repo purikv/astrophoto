@@ -86,6 +86,22 @@
 
 html {
   scroll-behavior: smooth;
+  /* --font-scale is the user-controlled multiplier (FontSizeControl, localStorage).
+     The base percentage grows on large screens so text stays readable at 2K/4K. */
+  --font-scale: 1;
+  font-size: calc(100% * var(--font-scale));
+}
+
+@media (min-width: 1600px) {
+  html {
+    font-size: calc(112.5% * var(--font-scale));
+  }
+}
+
+@media (min-width: 2400px) {
+  html {
+    font-size: calc(125% * var(--font-scale));
+  }
 }
 
 body {

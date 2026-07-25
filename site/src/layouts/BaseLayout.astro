@@ -7,6 +7,7 @@
 import '../styles/global.css';
 import '../styles/animations.css';
 import '../styles/effects.css';
+import FontSizeControl from '../components/ui/FontSizeControl.astro';
 
 interface Props {
   title: string;
@@ -56,11 +57,25 @@ const base = import.meta.env.BASE_URL;
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
 
+    <script is:inline>
+      // Apply the saved font scale before first paint to avoid a flash
+      // of resized text (see FontSizeControl.astro).
+      (function () {
+        try {
+          var s = parseFloat(localStorage.getItem('astro-font-scale'));
+          if (s >= 0.8 && s <= 1.5) {
+            document.documentElement.style.setProperty('--font-scale', s);
+          }
+        } catch (e) { /* localStorage unavailable */ }
+      })();
+    </script>
+
     <slot name="head" />
   </head>
   <body class={bodyClass}>
     <a href="#main-content" class="skip-link">Перейти до контенту</a>
     <slot />
+    <FontSizeControl />
   </body>
 </html>
 
