@@ -145,7 +145,7 @@ GitHub Actions workflow (`.github/workflows/build-and-deploy.yml`):
 5. **Generates thumbnails** via `npm run thumbs` (using sharp library)
    - 800px width for gallery thumbnails
    - Full-size (no resize) for high-quality viewing with 95% JPEG quality
-6. **Copies** `thumbnails/` and `images/` to `site/public/`
+6. **Copies** `thumbnails/` to `site/public/` (originals from `images/` are NOT published — the site only serves thumbnails, and copying originals made the Pages artifact exceed deploy limits)
 7. **Builds** Astro site (includes `npm run generate` for gallery.json)
 8. **Deploys** `site/dist/` to GitHub Pages
 

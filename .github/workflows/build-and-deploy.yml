@@ -53,12 +53,12 @@ jobs:
         working-directory: site
         run: npm run check
 
-      - name: Copy to public (for Astro to process)
+      # Only thumbnails are published: the site never links to images/ originals,
+      # and copying them (~774 MB) made the Pages artifact time out on deploy.
+      - name: Copy thumbnails to public (for Astro to process)
         run: |
           mkdir -p site/public/thumbnails
-          mkdir -p site/public/images
           cp -r thumbnails/* site/public/thumbnails/
-          cp -r images/* site/public/images/
 
       - name: Build site (includes gallery.json generation)
         working-directory: site
@@ -86,3 +86,5 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4
+        with:
+          timeout: 1200000
