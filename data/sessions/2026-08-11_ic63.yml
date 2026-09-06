@@ -1,0 +1,29 @@
+object_id: ic63
+date_utc: "2026-08-11"
+location: "Dnipropetrovska oblast, UA"
+bortle: 5
+camera: "Player One Poseidon-C"
+sensor_temp_c: -10
+mount: "AZ-EQ5 GT"
+telescope: "Arsenal GSO 203/1000 N (f/5)"
+coma_corrector: "TS GPU CC"
+filters: ["UV IR-cut Anti-Halo"]
+guiding: { camera: "ZWO ASI 120 M", rms_arcsec: null, software: "PHD2" }
+subs:
+  - band: "RGB"
+    gain: 125
+    offset: 25
+    exposure_s: 90
+    count: 1063
+calibration:
+  bias: 100
+  darks: { exposure_s: 90, count: 50, temp_c: -10 }
+  flats: { count: 302, method: "flat panel" }
+stacking_software: "PixInsight (WBPP)"
+processing_software: ["PixInsight", "BlurXTerminator", "GraXpert Denoise"]
+finals:
+  - path: "images/ic63/final/IC63_v11.png"
+    preview: "thumbnails/ic63_800.jpg"
+    plate_solved: true
+    title: "Туманність Привид Кассіопеї (IC 63)"
+notes: "Загальна експозиція 26 год 34 хв (1063×90 с) за 7 ночей 11–18 серпня 2026. Перша ніч знята при −5 °C, ніч 16→17 серпня — без охолодження (+21…+25 °C), для них використані окремі бібліотеки дарків"

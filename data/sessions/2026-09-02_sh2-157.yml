@@ -1,0 +1,29 @@
+object_id: sh2-157
+date_utc: "2026-09-02"
+location: "Dnipropetrovska oblast, UA"
+bortle: 5
+camera: "Player One Poseidon-C"
+sensor_temp_c: -10
+mount: "AZ-EQ5 GT"
+telescope: "Arsenal GSO 203/1000 N (f/5)"
+coma_corrector: "TS GPU CC"
+filters: ["UV IR-cut Anti-Halo"]
+guiding: { camera: "ZWO ASI 120 M", rms_arcsec: null, software: "PHD2" }
+subs:
+  - band: "RGB"
+    gain: 125
+    offset: 25
+    exposure_s: 180
+    count: 106
+calibration:
+  bias: 100
+  darks: { exposure_s: 180, count: 50, temp_c: -10 }
+  flats: { count: 35, method: "flat panel" }
+stacking_software: "PixInsight 1.9.4 (WBPP 3.0.1)"
+processing_software: ["PixInsight", "BlurXTerminator", "GraXpert Denoise"]
+finals:
+  - path: "images/sh2-157/final/Sh2-157_v1.png"
+    preview: "thumbnails/sh2-157_800.jpg"
+    plate_solved: true
+    title: "Туманність Клешня Омара (Sh2-157)"
+notes: "Загальна експозиція 5 год 18 хв (106×180 с), зйомка в ніч 2–3 вересня 2026"

@@ -1,0 +1,29 @@
+object_id: ngc7380
+date_utc: "2026-07-29"
+location: "Dnipropetrovska oblast, UA"
+bortle: 5
+camera: "Player One Poseidon-C"
+sensor_temp_c: -10
+mount: "AZ-EQ5 GT"
+telescope: "Arsenal GSO 203/1000 N (f/5)"
+coma_corrector: "TS GPU CC"
+filters: ["UV IR-cut Anti-Halo"]
+guiding: { camera: "ZWO ASI 120 M", rms_arcsec: null, software: "PHD2" }
+subs:
+  - band: "RGB"
+    gain: 125
+    offset: 25
+    exposure_s: 180
+    count: 232
+calibration:
+  bias: 100
+  darks: { exposure_s: 180, count: 50, temp_c: -10 }
+  flats: { count: 108, method: "flat panel" }
+stacking_software: "PixInsight (WBPP)"
+processing_software: ["PixInsight", "BlurXTerminator", "GraXpert Denoise"]
+finals:
+  - path: "images/ngc7380/final/ngc7380_v6.png"
+    preview: "thumbnails/ngc7380_800.jpg"
+    plate_solved: true
+    title: "Туманність Чарівник (NGC 7380)"
+notes: "Загальна експозиція 11 год 36 хв (232×180 с) за 4 ночі 29 липня – 3 серпня 2026"

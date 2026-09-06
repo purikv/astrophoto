@@ -1,0 +1,29 @@
+object_id: sh2-155
+date_utc: "2026-08-28"
+location: "Dnipropetrovska oblast, UA"
+bortle: 5
+camera: "Player One Poseidon-C"
+sensor_temp_c: -10
+mount: "AZ-EQ5 GT"
+telescope: "Arsenal GSO 203/1000 N (f/5)"
+coma_corrector: "TS GPU CC"
+filters: ["UV IR-cut Anti-Halo"]
+guiding: { camera: "ZWO ASI 120 M", rms_arcsec: null, software: "PHD2" }
+subs:
+  - band: "RGB"
+    gain: 125
+    offset: 25
+    exposure_s: 180
+    count: 145
+calibration:
+  bias: 100
+  darks: { exposure_s: 180, count: 50, temp_c: -10 }
+  flats: { count: 67, method: "flat panel" }
+stacking_software: "PixInsight 1.9.4 (WBPP 3.0.1)"
+processing_software: ["PixInsight", "BlurXTerminator", "GraXpert Denoise"]
+finals:
+  - path: "images/sh2-155/final/Sh2-155_v5.png"
+    preview: "thumbnails/sh2-155_800.jpg"
+    plate_solved: true
+    title: "Туманність Печера (Sh2-155)"
+notes: "Загальна експозиція 7 год 15 хв (145×180 с) за 2 ночі 28–30 серпня 2026"

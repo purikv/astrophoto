@@ -1,0 +1,39 @@
+object_id: ic1805
+date_utc: "2026-08-20"
+location: "Dnipropetrovska oblast, UA"
+bortle: 5
+camera: "Player One Poseidon-C"
+sensor_temp_c: -10
+mount: "AZ-EQ5 GT"
+telescope: "Arsenal GSO 203/1000 N (f/5)"
+coma_corrector: "TS GPU CC"
+filters: ["UV IR-cut Anti-Halo", "Antlia ALP-T Dualband 3nm Ha & OIII", "Antlia ALP-T Dualband 3nm SII & OIII"]
+guiding: { camera: "ZWO ASI 120 M", rms_arcsec: null, software: "PHD2" }
+subs:
+  - band: "RGB (UV/IR-cut)"
+    gain: 125
+    offset: 25
+    exposure_s: 180
+    count: 58
+  - band: "Ha + OIII (Antlia ALP-T 3nm)"
+    gain: 125
+    offset: 25
+    exposure_s: 180
+    count: 146
+  - band: "SII + OIII (Antlia ALP-T 3nm)"
+    gain: 125
+    offset: 25
+    exposure_s: 180
+    count: 197
+calibration:
+  bias: 100
+  darks: { exposure_s: 180, count: 50, temp_c: -10 }
+  flats: { count: 274, method: "flat panel" }
+stacking_software: "PixInsight (WBPP)"
+processing_software: ["PixInsight", "BlurXTerminator", "GraXpert Denoise"]
+finals:
+  - path: "images/ic1805/final/IC1805_v14.png"
+    preview: "thumbnails/ic1805_800.jpg"
+    plate_solved: true
+    title: "Туманність Серце (IC 1805)"
+notes: "Загальна експозиція 20 год 3 хв за 6 ночей 20–26 серпня 2026: RGB 58×180 с, Ha+OIII 146×180 с, SII+OIII 197×180 с"
