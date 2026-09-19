@@ -7,23 +7,28 @@ sensor_temp_c: -10
 mount: "AZ-EQ5 GT"
 telescope: "Arsenal GSO 203/1000 N (f/5)"
 coma_corrector: "TS GPU CC"
-filters: ["UV IR-cut Anti-Halo"]
+filters: ["UV IR-cut Anti-Halo", "Antlia ALP-T Dualband 3nm SII & OIII"]
 guiding: { camera: "ZWO ASI 120 M", rms_arcsec: null, software: "PHD2" }
 subs:
-  - band: "RGB"
+  - band: "RGB (UV/IR-cut)"
     gain: 125
     offset: 25
     exposure_s: 180
     count: 232
+  - band: "SII + OIII (Antlia ALP-T 3nm)"
+    gain: 125
+    offset: 25
+    exposure_s: 180
+    count: 146
 calibration:
   bias: 100
   darks: { exposure_s: 180, count: 50, temp_c: -10 }
-  flats: { count: 108, method: "flat panel" }
-stacking_software: "PixInsight (WBPP)"
+  flats: { count: 179, method: "flat panel" }
+stacking_software: "PixInsight 1.9.5 (WBPP 3.1.0)"
 processing_software: ["PixInsight", "BlurXTerminator", "GraXpert Denoise"]
 finals:
-  - path: "images/ngc7380/final/ngc7380_v6.png"
+  - path: "images/ngc7380/final/ngc7380_v14.png"
     preview: "thumbnails/ngc7380_800.jpg"
     plate_solved: true
     title: "Туманність Чарівник (NGC 7380)"
-notes: "Загальна експозиція 11 год 36 хв (232×180 с) за 4 ночі 29 липня – 3 серпня 2026"
+notes: "Загальна експозиція 18 год 54 хв: RGB 232×180 с за 4 ночі 29 липня – 3 серпня 2026, SII+OIII 146×180 с за 2 ночі 17–19 вересня 2026"

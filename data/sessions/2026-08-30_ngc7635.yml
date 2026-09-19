@@ -1,0 +1,34 @@
+object_id: ngc7635
+date_utc: "2026-08-30"
+location: "Dnipropetrovska oblast, UA"
+bortle: 5
+camera: "Player One Poseidon-C"
+sensor_temp_c: -10
+mount: "AZ-EQ5 GT"
+telescope: "Arsenal GSO 203/1000 N (f/5)"
+coma_corrector: "TS GPU CC"
+filters: ["UV IR-cut Anti-Halo", "Antlia ALP-T Dualband 3nm SII & OIII"]
+guiding: { camera: "ZWO ASI 120 M", rms_arcsec: null, software: "PHD2" }
+subs:
+  - band: "RGB (UV/IR-cut)"
+    gain: 125
+    offset: 25
+    exposure_s: 180
+    count: 76
+  - band: "SII + OIII (Antlia ALP-T 3nm)"
+    gain: 125
+    offset: 25
+    exposure_s: 180
+    count: 100
+calibration:
+  bias: 100
+  darks: { exposure_s: 180, count: 50, temp_c: -10 }
+  flats: { count: 70, method: "flat panel" }
+stacking_software: "PixInsight (WBPP)"
+processing_software: ["PixInsight", "BlurXTerminator", "GraXpert Denoise"]
+finals:
+  - path: "images/ngc7635/final/NGC7635_v9.png"
+    preview: "thumbnails/ngc7635_800.jpg"
+    plate_solved: true
+    title: "Туманність Бульбашка (NGC 7635)"
+notes: "Загальна експозиція 8 год 48 хв за 2 ночі 30 серпня – 1 вересня 2026: RGB 76×180 с, SII+OIII 100×180 с"
